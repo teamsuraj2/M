@@ -1,0 +1,30 @@
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Binaries
+/app
+
+# Go cache & modules
+vendor/
+bin/
+pkg/
+
+# VCS
+.git/
+.gitignore
+
+# IDE/editor settings
+.vscode/
+.idea/
+*.swp
+
+# OS/temporary files
+.DS_Store
+*.log
+*.tmp

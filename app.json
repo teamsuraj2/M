@@ -1,0 +1,44 @@
+{
+  "name": "EditguardianBot",
+  "description": "Editguardian bot",
+  "logo": "https://graph.org/file/c0e014ff34f34d1056627.png",
+  "success_url": "https://github.com/Vivekkumar-IN/EditguardianBot",
+  "keywords": [
+    "golang",
+    "telegram",
+    "bot",
+    "telegram-bot",
+    "gotgbot"
+  ],
+  "stack": "container",
+  "env": {
+    "BOT_TOKEN": {
+      "description": "A Bot's token. Get it from BotFather",
+      "value": "",
+      "required": false
+    },
+    "START_IMG_URL": {
+      "description": "URL for the bot's start image",
+      "value": "https://telegra.ph/file/ba238ec5e542d8754cea7-dc1786aa23ae1224f2.jpg",
+      "required": false
+    },
+    "LOGGER_ID": {
+      "description": "Telegram ID of the logger group",
+      "required": false
+    },
+    "MONGO_DB_URI": {
+      "description": "MongoDB URI for the database connection",
+      "required": false
+    },
+    "OWNER_ID": {
+      "description": "Owner's Telegram ID",
+      "required": false
+    }
+  },
+  "formation": {
+    "worker": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  }
+}
