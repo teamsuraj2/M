@@ -7,7 +7,7 @@ import (
 )
 
 func deleteEditedMessage(m *telegram.NewMessage) error {
-	if !IsSupergroup(m) || m.EditHide {
+	if !IsSupergroup(m) || m.Message.EditHide {
 		return nil
 	}
 	if ShouldIgnoreGroupAnonymous(m) {
