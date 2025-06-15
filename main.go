@@ -16,7 +16,7 @@ func main() {
 		ParseMode: "HTML",
 	})
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 	client.LoginBot(config.Token)
 	defer database.Disconnect()
