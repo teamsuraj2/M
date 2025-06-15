@@ -80,9 +80,9 @@ func SetLongModeHandler(m *telegram.NewMessage) error {
 		return telegram.EndGroup
 	}
 
- if mode == "auto"{
-mode="automatic"
-}
+	if mode == "auto" {
+		mode = "automatic"
+	}
 	settings := &database.EchoSettings{
 		ChatID: m.ChannelID(),
 		Mode:   mode,
