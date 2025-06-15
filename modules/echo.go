@@ -51,7 +51,7 @@ func EcoHandler(m *telegram.NewMessage) error {
 		return telegram.EndGroup
 	}
 	_, err := m.Delete()
- if handleNeedPerm(err, m){
+	if handleNeedPerm(err, m) {
 		return telegram.EndGroup
 	}
 
