@@ -50,6 +50,10 @@ func EcoHandler(m *telegram.NewMessage) error {
 	if isgroup := IsValidSupergroup(m); !isgroup {
 		return telegram.EndGroup
 	}
+	_, err := m.Delete()
+ if x:= handleNeedPerm(err, m); x{
+		return telegram.EndGroup
+	}
 
 	if m.Args() == "" {
 		m.Reply("Usage: /echo &lt;long message&gt;")
@@ -58,7 +62,7 @@ func EcoHandler(m *telegram.NewMessage) error {
 
 	m.Delete()
 
-	settings, err := database.GetEchoSettings(m.ChannelID())
+	settings, err = database.GetEchoSettings(m.ChannelID())
 	if err != nil {
 		m.Respond(fmt.Sprintf("⚠️ Something went wrong while processing the limit.\nError: %v", err))
 		return err
