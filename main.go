@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
+	"strings"
 
 	"github.com/amarnathcjd/gogram/telegram"
 
@@ -23,10 +26,10 @@ func main() {
 	}
 	err = client.LoginBot(config.Token)
 	if err != nil {
-if strings.Contains(err.Error(), "ACCESS_TOKEN_EXPIRED") {
-	fmt.Println("❌ Bot token has been revoked or expired.")
-	os.Exit(1)
-}
+		if strings.Contains(err.Error(), "ACCESS_TOKEN_EXPIRED") {
+			fmt.Println("❌ Bot token has been revoked or expired.")
+			os.Exit(1)
+		}
 		log.Panic(err)
 	}
 
