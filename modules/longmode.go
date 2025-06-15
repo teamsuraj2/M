@@ -75,11 +75,14 @@ func SetLongModeHandler(m *telegram.NewMessage) error {
 		return telegram.EndGroup
 	}
 	mode := strings.ToLower(strings.Fields(m.Args())[0])
-	if mode != "off" && mode != "manual" && mode != "automatic" {
+	if mode != "off" && mode != "manual" && mode != "automatic" && mode != "auto" {
 		m.Respond("Invalid mode. Use one of: <code>off</code>, <code>manual</code>, <code>automatic</code>.")
 		return telegram.EndGroup
 	}
 
+ if mode == "auto"{
+mode="automatic"
+}
 	settings := &database.EchoSettings{
 		ChatID: m.ChannelID(),
 		Mode:   mode,
