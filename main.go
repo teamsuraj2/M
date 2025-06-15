@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/amarnathcjd/gogram/telegram"
 
 	"main/config"
