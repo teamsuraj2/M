@@ -10,15 +10,12 @@ import (
 	"main/config/helpers"
 )
 
-func handleNeedPerm(e error, m *telegram.NewMessage){
-
-if strings.Conatins(e.Error(), "MESSAGE_DELETE_FORBIDDEN"){
-
-m.Respond("I need 'Delete Message' Permission to work properly")
+func handleNeedPerm(e error, m *telegram.NewMessage) {
+	if strings.Conatins(e.Error(), "MESSAGE_DELETE_FORBIDDEN") {
+		m.Respond("I need 'Delete Message' Permission to work properly")
+	}
 }
 
-
-}
 func IsSupergroup(m *telegram.NewMessage) bool {
 	return m.ChatType() == telegram.EntityChat && m.Channel != nil
 }
