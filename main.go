@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+defer database.Disconnect()
 	client, err := telegram.NewClient(telegram.ClientConfig{
 		AppID:     config.ApiId,
 		AppHash:   config.ApiHash,
@@ -20,10 +21,14 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-	client.LoginBot(config.Token)
-	defer database.Disconnect()
+	err = client.LoginBot(config.Token)
+	if err != nil {
+		log.Panic(err)
+	}
+
 
 	modules.LoadMods(client)
 	client.SendMessage(config.LoggerId, "Started...")
+	log.Println("Started...")
 	client.Idle()
 }
