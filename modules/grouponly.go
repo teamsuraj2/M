@@ -12,9 +12,9 @@ import (
 )
 
 func handleNeedPerm(e error, m *telegram.NewMessage) bool {
- if e == nil {
-return false 
-} else 	if strings.Contains(e.Error(), "MESSAGE_DELETE_FORBIDDEN") {
+	if e == nil {
+		return false
+	} else if strings.Contains(e.Error(), "MESSAGE_DELETE_FORBIDDEN") {
 		m.Respond("I need 'Delete Message' Permission to work properly")
 		return true
 	}
