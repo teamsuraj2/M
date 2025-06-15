@@ -3,6 +3,7 @@ package modules
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/amarnathcjd/gogram/telegram"
 
@@ -11,7 +12,7 @@ import (
 )
 
 func handleNeedPerm(e error, m *telegram.NewMessage) bool {
-	if strings.Conatins(e.Error(), "MESSAGE_DELETE_FORBIDDEN") {
+	if strings.Contains(e.Error(), "MESSAGE_DELETE_FORBIDDEN") {
 		m.Respond("I need 'Delete Message' Permission to work properly")
 		return true
 	}
