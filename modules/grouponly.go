@@ -14,7 +14,7 @@ func handleNeedPerm(e error, m *telegram.NewMessage) {
 	if strings.Conatins(e.Error(), "MESSAGE_DELETE_FORBIDDEN") {
 		m.Respond("I need 'Delete Message' Permission to work properly")
 	}
-        log.Println("Error hanlded by HandleNeedPerm: %v", e)
+	log.Println("Error hanlded by HandleNeedPerm: %v", e)
 }
 
 func IsSupergroup(m *telegram.NewMessage) bool {
