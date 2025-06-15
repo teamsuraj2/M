@@ -10,7 +10,7 @@ import (
 	"main/config/helpers"
 )
 
-handleNeedPerm(e error, m *telegram.NewMessage){
+func handleNeedPerm(e error, m *telegram.NewMessage){
 
 if strings.Conatins(e.Error(), "MESSAGE_DELETE_FORBIDDEN"){
 
