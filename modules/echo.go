@@ -121,11 +121,9 @@ func deleteLongMessage(m *telegram.NewMessage) error {
 	if settings.Mode == "AUTOMATIC" {
 		isAutomatic = true
 	}
-	_, err = m.Delete()
-	if err != nil {
-		fmt.Println(" Long mode automatic Delete error:", err)
-		return err
-	}
+	        if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
+                return err
+        }
 
 	if !isAutomatic {
 		deleteWarningTracker.Lock(chatID)
