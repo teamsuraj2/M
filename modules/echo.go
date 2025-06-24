@@ -190,7 +190,7 @@ func sendEchoMessage(m *telegram.NewMessage, text string) error {
 
 		return err
 	} else if rmsg.Sender != nil {
-		replyUserFullName := strings.TrimSpace(s.FirstName + " " + s.LastName)
+		replyUserFullName := strings.TrimSpace(rmsg.Sender.FirstName + " " + rmsg.Sender.LastName)
 
 		msg = fmt.Sprintf(msgTemplate, m.ReplySenderID(), replyUserFullName, m.SenderID(), userFullName, url)
 		opts.ReplyID = m.ReplyID()
