@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -117,7 +118,7 @@ func CreateTelegraphPage(content, firstName, authorURL string) (string, error) {
 	for {
 		accessToken, err := getAvailableToken()
 		if err != nil {
-		  log.Println("Telegraph Token error: %v", err)
+			log.Println("Telegraph Token error: %v", err)
 			return "", err
 		}
 
@@ -137,7 +138,7 @@ func CreateTelegraphPage(content, firstName, authorURL string) (string, error) {
 		if err != nil {
 			log.Println("Telegraph json marshal error: %v", err)
 			return "", err
-			
+
 		}
 
 		req, err := http.NewRequest("POST", TelegraphApi+"createPage", bytes.NewReader(jsonData))
@@ -149,8 +150,8 @@ func CreateTelegraphPage(content, firstName, authorURL string) (string, error) {
 
 		resp, err := client.Do(req)
 		if err != nil {
-		  log.Println("Telegraph api error: %v", err)
-			
+			log.Println("Telegraph api error: %v", err)
+
 			return "", err
 		}
 		defer resp.Body.Close()
@@ -174,9 +175,9 @@ func CreateTelegraphPage(content, firstName, authorURL string) (string, error) {
 			AccountMap[accessToken] = time.Now().Unix() + floodWaitTime
 			continue
 		}
-		
+
 		log.Println("Telegraph Error error: %s", result.Error)
-			
+
 		return "", errors.New(result.Error)
 	}
 }

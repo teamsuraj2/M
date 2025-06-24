@@ -2,6 +2,7 @@ package modules
 
 import (
 	"fmt"
+	"log"
 	"strings"
 	"sync"
 	"time"
@@ -164,16 +165,16 @@ Alternatively, use /echo for sending longer messages. 📜
 func sendEchoMessage(m *telegram.NewMessage, text string) error {
 	var authorURL string
 	userFullName := strings.TrimSpace(m.Sender.FirstName + " " + m.Sender.LastName)
-		if um := m.Sender.Username; um != "" {
-			authorURL = fmt.Sprintf("https://t.me/%s", um)
-		} else {
-			authorURL = config.SupportChannel
-		}
+	if um := m.Sender.Username; um != "" {
+		authorURL = fmt.Sprintf("https://t.me/%s", um)
+	} else {
+		authorURL = config.SupportChannel
+	}
 
 	url, err := helpers.CreateTelegraphPage(text, userFullName, authorURL)
 	if err != nil {
-	  log.Println("Echo Telegraph error: %v", err)
-			
+		log.Println("Echo Telegraph error: %v", err)
+
 		return err
 	}
 
@@ -185,12 +186,12 @@ func sendEchoMessage(m *telegram.NewMessage, text string) error {
 	}
 
 	if rmsg, err := m.GetReplyMessage(); err != nil {
-	  log.Println("Echo GetReplyMessage error: %v", err)
-			
+		log.Println("Echo GetReplyMessage error: %v", err)
+
 		return err
-	} else if rmsg.Sender != nil{
+	} else if rmsg.Sender != nil {
 		replyUserFullName := strings.TrimSpace(s.FirstName + " " + s.LastName)
-		
+
 		msg = fmt.Sprintf(msgTemplate, m.ReplySenderID(), replyUserFullName, m.SenderID(), userFullName, url)
 		opts.ReplyID = m.ReplyID()
 	} else {
@@ -199,7 +200,7 @@ func sendEchoMessage(m *telegram.NewMessage, text string) error {
 
 	_, err = m.Respond(msg, opts)
 	log.Println("Echo Respond error: %v", err)
-			
+
 	return err
 }
 
