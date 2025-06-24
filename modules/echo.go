@@ -2,6 +2,7 @@ package modules
 
 import (
 	"fmt"
+	"html"
 	"log"
 	"strings"
 	"sync"
@@ -163,58 +164,58 @@ Alternatively, use /echo for sending longer messages. 📜
 }
 
 func sendEchoMessage(m *telegram.NewMessage, text string) error {
-        var authorURL string
-        userFullName := strings.TrimSpace(m.Sender.FirstName + " " + m.Sender.LastName)
-        if um := m.Sender.Username; um != "" {
-                authorURL = fmt.Sprintf("https://t.me/%s", um)
-        } else {
-                authorURL = config.SupportChannel
-        }
+	var authorURL string
+	userFullName := strings.TrimSpace(m.Sender.FirstName + " " + m.Sender.LastName)
+	if um := m.Sender.Username; um != "" {
+		authorURL = fmt.Sprintf("https://t.me/%s", um)
+	} else {
+		authorURL = config.SupportChannel
+	}
 
-        url, err := helpers.CreateTelegraphPage(text, userFullName, authorURL)
-        if err != nil {
-                log.Println("Echo Telegraph error: %v", err)
-                return err
-        }
+	url, err := helpers.CreateTelegraphPage(text, userFullName, authorURL)
+	if err != nil {
+		log.Println("Echo Telegraph error: %v", err)
+		return err
+	}
 
-        var msg string
-        opts := telegram.SendOptions{
-                LinkPreview: false,
-        }
+	var msg string
+	opts := telegram.SendOptions{
+		LinkPreview: false,
+	}
 
-        if m.IsReply() {
-                rmsg, err := m.GetReplyMessage()
-                if err != nil {
-                        log.Println("Echo GetReplyMessage error:", err)
-                        return err
-                } else if rmsg.Sender != nil {
-                        replyUserFullName := strings.TrimSpace(rmsg.Sender.FirstName + " " + rmsg.Sender.LastName)
+	if m.IsReply() {
+		rmsg, err := m.GetReplyMessage()
+		if err != nil {
+			log.Println("Echo GetReplyMessage error:", err)
+			return err
+		} else if rmsg.Sender != nil {
+			replyUserFullName := strings.TrimSpace(rmsg.Sender.FirstName + " " + rmsg.Sender.LastName)
 
-                        // Use the full template with both names
-                        msg = fmt.Sprintf(
-                                `Hello <a href="tg://user?id=%d">%s</a>, <a href="tg://user?id=%d">%s</a> wanted to share a message, but it was too long to send here. You can view the full message on <b><a href="%s">Telegraph 📝</a></b>`,
-                                m.ReplySenderID(), html.EscapeString(replyUserFullName),
-                                m.SenderID(), html.EscapeString(userFullName),
-                                url,
-                        )
-                        opts.ReplyID = m.ReplyID()
-                }
-        }
+			// Use the full template with both names
+			msg = fmt.Sprintf(
+				`Hello <a href="tg://user?id=%d">%s</a>, <a href="tg://user?id=%d">%s</a> wanted to share a message, but it was too long to send here. You can view the full message on <b><a href="%s">Telegraph 📝</a></b>`,
+				m.ReplySenderID(), html.EscapeString(replyUserFullName),
+				m.SenderID(), html.EscapeString(userFullName),
+				url,
+			)
+			opts.ReplyID = m.ReplyID()
+		}
+	}
 
-        // Non-reply fallback (no empty <a> tag)
-        if msg == "" {
-                msg = fmt.Sprintf(
-                        `Hello <a href="tg://user?id=%d">%s</a> wanted to share a message, but it was too long to send here. You can view the full message on <b><a href="%s">Telegraph 📝</a></b>`,
-                        m.SenderID(), html.EscapeString(userFullName), url,
-                )
-        }
+	// Non-reply fallback (no empty <a> tag)
+	if msg == "" {
+		msg = fmt.Sprintf(
+			`Hello <a href="tg://user?id=%d">%s</a> wanted to share a message, but it was too long to send here. You can view the full message on <b><a href="%s">Telegraph 📝</a></b>`,
+			m.SenderID(), html.EscapeString(userFullName), url,
+		)
+	}
 
-        _, err = m.Respond(msg, opts)
-        if err != nil {
-                log.Println("Echo Respond error: %v", err)
-        }
+	_, err = m.Respond(msg, opts)
+	if err != nil {
+		log.Println("Echo Respond error: %v", err)
+	}
 
-        return err
+	return err
 }
 
 func (w *warningTracker) Lock(chatId int64) {
