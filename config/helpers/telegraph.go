@@ -75,7 +75,7 @@ func createAccount(shortName string) (string, error) {
 
 func init() {
 	AccountMap = make(map[string]int64)
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 3; i++ {
 		token, err := createAccount("EcoBot" + strconv.Itoa(i+1))
 		if err == nil {
 			AccountMap[token] = 0
@@ -117,6 +117,7 @@ func CreateTelegraphPage(content, firstName, authorURL string) (string, error) {
 	for {
 		accessToken, err := getAvailableToken()
 		if err != nil {
+		  log.Println("Telegraph Token error: %v", err)
 			return "", err
 		}
 
@@ -134,7 +135,9 @@ func CreateTelegraphPage(content, firstName, authorURL string) (string, error) {
 
 		jsonData, err := json.Marshal(payload)
 		if err != nil {
+			log.Println("Telegraph json marshal error: %v", err)
 			return "", err
+			
 		}
 
 		req, err := http.NewRequest("POST", TelegraphApi+"createPage", bytes.NewReader(jsonData))
@@ -146,6 +149,8 @@ func CreateTelegraphPage(content, firstName, authorURL string) (string, error) {
 
 		resp, err := client.Do(req)
 		if err != nil {
+		  log.Println("Telegraph api error: %v", err)
+			
 			return "", err
 		}
 		defer resp.Body.Close()
@@ -169,7 +174,9 @@ func CreateTelegraphPage(content, firstName, authorURL string) (string, error) {
 			AccountMap[accessToken] = time.Now().Unix() + floodWaitTime
 			continue
 		}
-
+		
+		log.Println("Telegraph Error error: %s", result.Error)
+			
 		return "", errors.New(result.Error)
 	}
 }

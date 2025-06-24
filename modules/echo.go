@@ -162,25 +162,18 @@ Alternatively, use /echo for sending longer messages. 📜
 }
 
 func sendEchoMessage(m *telegram.NewMessage, text string) error {
-	var userFullName, authorURL string
-	if m.SenderChat != nil {
-		userFullName = m.SenderChat.Title
-		if u := m.SenderChat.Username; u != "" {
-			authorURL = fmt.Sprintf("https://t.me/%s", u)
-		} else {
-			authorURL = fmt.Sprintf("https://t.me/%s?start=info_%d", m.Client.Me().Username, m.SenderChat.ID)
-		}
-	} else if m.Sender != nil {
-		userFullName = strings.TrimSpace(m.Sender.FirstName + " " + m.Sender.LastName)
+	var authorURL string
+	userFullName := strings.TrimSpace(m.Sender.FirstName + " " + m.Sender.LastName)
 		if um := m.Sender.Username; um != "" {
 			authorURL = fmt.Sprintf("https://t.me/%s", um)
 		} else {
-			authorURL = fmt.Sprintf("https://t.me/%s?start=info_%d", m.Client.Me().Username, m.Sender.ID)
+			authorURL = config.SupportChannel
 		}
-	}
 
 	url, err := helpers.CreateTelegraphPage(text, userFullName, authorURL)
 	if err != nil {
+	  log.Println("Echo Telegraph error: %v", err)
+			
 		return err
 	}
 
@@ -192,15 +185,12 @@ func sendEchoMessage(m *telegram.NewMessage, text string) error {
 	}
 
 	if rmsg, err := m.GetReplyMessage(); err != nil {
+	  log.Println("Echo GetReplyMessage error: %v", err)
+			
 		return err
-	} else if rmsg.Sender != nil || rmsg.SenderChat != nil {
-		var replyUserFullName string
-		if s := rmsg.Sender; s != nil {
-			replyUserFullName = strings.TrimSpace(s.FirstName + " " + s.LastName)
-		} else if cs := rmsg.SenderChat; cs != nil {
-			replyUserFullName = cs.Title
-		}
-
+	} else if rmsg.Sender != nil{
+		replyUserFullName := strings.TrimSpace(s.FirstName + " " + s.LastName)
+		
 		msg = fmt.Sprintf(msgTemplate, m.ReplySenderID(), replyUserFullName, m.SenderID(), userFullName, url)
 		opts.ReplyID = m.ReplyID()
 	} else {
@@ -208,7 +198,9 @@ func sendEchoMessage(m *telegram.NewMessage, text string) error {
 	}
 
 	_, err = m.Respond(msg, opts)
-	return orCont(err)
+	log.Println("Echo Respond error: %v", err)
+			
+	return err
 }
 
 func (w *warningTracker) Lock(chatId int64) {
