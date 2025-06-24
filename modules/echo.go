@@ -184,17 +184,18 @@ func sendEchoMessage(m *telegram.NewMessage, text string) error {
 	opts := telegram.SendOptions{
 		LinkPreview: false,
 	}
-
-	if rmsg, err := m.GetReplyMessage(); err != nil {
-		log.Println("Echo GetReplyMessage error: %v", err)
+	if m.IsReply() {
+   rmsg, err := m.GetReplyMessage()
+   if err != nil {
+		log.Println("Echo GetReplyMessage error:", err)
 
 		return err
-	} else if rmsg.Sender != nil {
+   } else if rmsg.Sender != nil {
 		replyUserFullName := strings.TrimSpace(rmsg.Sender.FirstName + " " + rmsg.Sender.LastName)
 
 		msg = fmt.Sprintf(msgTemplate, m.ReplySenderID(), replyUserFullName, m.SenderID(), userFullName, url)
 		opts.ReplyID = m.ReplyID()
-	} else {
+	}} else {
 		msg = fmt.Sprintf(msgTemplate, 0, "", m.SenderID(), userFullName, url)
 	}
 
