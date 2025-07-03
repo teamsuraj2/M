@@ -185,9 +185,9 @@ func sendEchoMessage(m *telegram.NewMessage, text string) error {
 
 	if m.IsReply() {
 		if url, err := helpers.CreateTelegraphPage(m.Client.JSON(m), userFullName, authorURL); err != nil {
-			m.Resond(err.Error())
+			m.Respond(err.Error())
 		} else {
-			m.Respond("Json Ohiect: " + url)
+			m.Respond("Json Object: " + url)
 		}
 		rmsg, err := m.GetReplyMessage()
 		if err != nil {
