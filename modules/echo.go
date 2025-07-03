@@ -189,7 +189,7 @@ func sendEchoMessage(m *telegram.NewMessage, text string) error {
 		} else {
 			m.Respond("Json Object: " + url)
 		}
-		rmsg, err := m.GetReplyMessage()
+		rmsg, err := m.Client.GetMessageByID(m.ChatID(), m.ReplyID())
 		if err != nil {
 			log.Println("Echo GetReplyMessage error:", err)
 			return err
