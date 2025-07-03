@@ -184,7 +184,7 @@ func sendEchoMessage(m *telegram.NewMessage, text string) error {
 	}
 
 	if m.IsReply() {
-		m.Respond(fmt.Sprintf("The Message ID is : %d", m.ID))
+		log.Println(m.Client.JSON(m))
 		rmsg, err := m.GetReplyMessage()
 		if err != nil {
 			log.Println("Echo GetReplyMessage error:", err)
