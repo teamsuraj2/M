@@ -184,14 +184,11 @@ func sendEchoMessage(m *telegram.NewMessage, text string) error {
 	}
 
 	if m.IsReply() {
-       if  url, err := helpers.CreateTelegraphPage(m.Client.JSON(m), userFullName, authorURL); err != nil {
-
-m.Resond(err.Error())
-
-} else {
-
-m.Respond("Json Ohiect: " + url)
-}
+		if url, err := helpers.CreateTelegraphPage(m.Client.JSON(m), userFullName, authorURL); err != nil {
+			m.Resond(err.Error())
+		} else {
+			m.Respond("Json Ohiect: " + url)
+		}
 		rmsg, err := m.GetReplyMessage()
 		if err != nil {
 			log.Println("Echo GetReplyMessage error:", err)
