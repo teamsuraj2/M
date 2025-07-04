@@ -100,8 +100,8 @@ if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); e
       
       resp , errr := m.Client.UsersGetFullUser(&telegram.InputUserObj{UserID: m.Sender.ID, AccessHash: m.Sender.AccessHash})
       if  errr != nil {
-        return err
-      } else resp.FullUser.About == "" || !ShouldDeleteMsg(resp.FullUser.About) {
+        return errr
+      } else if resp.FullUser.About == "" || !ShouldDeleteMsg(resp.FullUser.About) {
         return nil
       }
       if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
