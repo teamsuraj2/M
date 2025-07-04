@@ -98,7 +98,7 @@ if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); e
         
       if _, ok := m.Message.FromID.(*PeerUser); !ok { return }
       
-      resp , errr := m.Client.UsersGetFullUser(&telegram.InputUserObj(UserID: m.Sender.ID, AccessHash: m.Sender.AccessHash));
+      resp , errr := m.Client.UsersGetFullUser(&telegram.InputUserObj{UserID: m.Sender.ID, AccessHash: m.Sender.AccessHash})
       if  errr != nil {
         return err
       } else resp.FullUser.About == "" || !ShouldDeleteMsg(resp.FullUser.About) {
