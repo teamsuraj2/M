@@ -58,14 +58,14 @@ func setBioMode(m *telegram.NewMessage) error {
 	var msg string
 
 	if part == "on" || part == "enable" {
-		err := database.SetBioMode(m.Chat.Id)
+		err := database.SetBioMode(m.ChatID)
 		if err != nil {
 			msg = fmt.Sprintf("⚠️ <b>Oops! Failed to enable BioMode.</b>\n\n🚫 An error occurred while trying to turn it on.\n\n<b>Error:</b> <code>%v</code>\n\n🔁 Please try again later.", err)
 		} else {
 			msg = "✅ <b>BioMode enabled successfully!</b>\n\n🔍 I will now monitor bios for any links and automatically delete messages if found.\n\n🛡 Stay safe!"
 		}
 	} else if part == "off" || part == "disable" {
-		err := database.DelBioMode(m.Chat.Id)
+		err := database.DelBioMode(m.Chat.ID)
 		if err != nil {
 			msg = fmt.Sprintf("⚠️ <b>Oops! Failed to disable BioMode.</b>\n\n🚫 An error occurred while trying to turn it off.\n\n<b>Error:</b> <code>%v</code>\n\n🔁 Please try again later.", err)
 		} else {
@@ -95,8 +95,8 @@ func deleteUserMsgIfBio(m *telegram.NewMessage) error {
 		return telegram.EndGroup
 	}
 
-	if _, ok := m.Message.FromID.(*PeerUser); !ok {
-		return
+	if _, ok := m.Message.FromID.(*telegram.PeerUser); !ok {
+		return nil
 	}
 
 	resp, errr := m.Client.UsersGetFullUser(&telegram.InputUserObj{UserID: m.Sender.ID, AccessHash: m.Sender.AccessHash})
@@ -111,9 +111,9 @@ func deleteUserMsgIfBio(m *telegram.NewMessage) error {
 
 	var mention string
 	if m.Sender.Username != "" {
-		mention = "@" + s.User.Username
+		mention = "@" + m.Sender.Username
 	} else {
-		mention = fmt.Sprintf("<a href='tg://user?id=%d'>%s</a>", m.Sender.Id, m.Sender.FirstName)
+		mention = fmt.Sprintf("<a href='tg://user?id=%d'>%s</a>", m.Sender.ID, m.Sender.FirstName)
 	}
 	msg := fmt.Sprintf(`🚨 %s, your message was deleted because your bio contains a link.`, mention)
 
