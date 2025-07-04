@@ -16,10 +16,6 @@ func SetLongLimitHandler(m *telegram.NewMessage) error {
 	if !IsValidSupergroup(m) {
 		return telegram.EndGroup
 	}
-
-	if m.Sender == nil {
-		return Continue
-	}
 	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
 		return err
 	} else if !isadmin {
@@ -58,9 +54,6 @@ func SetLongLimitHandler(m *telegram.NewMessage) error {
 func SetLongModeHandler(m *telegram.NewMessage) error {
 	if isgroup := IsValidSupergroup(m); !isgroup {
 		return telegram.EndGroup
-	}
-	if m.Sender == nil {
-		return Continue
 	}
 	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
 		return err

@@ -19,8 +19,8 @@ func deleteEditedMessage(m *telegram.NewMessage) error {
 		return nil
 	}
 
-	if _, err := m.Delete(); err != nil {
-		return err
+	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
+		return telegram.EndGroup
 	}
 
 	reason := "<b>🚫 Editing messages is prohibited in this chat.</b> Please refrain from modifying your messages to maintain the integrity of the conversation."
