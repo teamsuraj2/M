@@ -148,7 +148,7 @@ func NoLinksCmd(m *telegram.NewMessage) error {
 	return telegram.EndGroup
 }
 
-func AllowHostCmd(b *gotgbot.Bot, ctx *ext.Context) error {
+func AllowHostCmd(m *telegram.NewMessage) error {
 	args := strings.Fields(m.MessageText())
 
 	if isgroup := IsValidSupergroup(m); !isgroup {
@@ -184,7 +184,7 @@ func AllowHostCmd(b *gotgbot.Bot, ctx *ext.Context) error {
 	return telegram.EndGroup
 }
 
-func RemoveHostCmd(b *gotgbot.Bot, ctx *ext.Context) error {
+func RemoveHostCmd(m *telegram.NewMessage) error {
 	args := strings.Fields(m.MessageText())
 
 	if isgroup := IsValidSupergroup(m); !isgroup {
@@ -225,7 +225,7 @@ func RemoveHostCmd(b *gotgbot.Bot, ctx *ext.Context) error {
 	return telegram.EndGroup
 }
 
-func AllowHostCmd(b *gotgbot.Bot, ctx *ext.Context) error {
+func AllowHostCmd(m *telegram.NewMessage) error {
 	args := strings.Fields(m.MessageText())
 
 	if isgroup := IsValidSupergroup(m); !isgroup {
@@ -261,7 +261,7 @@ func AllowHostCmd(b *gotgbot.Bot, ctx *ext.Context) error {
 	return telegram.EndGroup
 }
 
-func RemoveHostCmd(b *gotgbot.Bot, ctx *ext.Context) error {
+func RemoveHostCmd(m *telegram.NewMessage) error {
 	args := strings.Fields(m.MessageText())
 
 	if isgroup := IsValidSupergroup(m, b); !isgroup {
@@ -298,7 +298,7 @@ func RemoveHostCmd(b *gotgbot.Bot, ctx *ext.Context) error {
 	return telegram.EndGroup
 }
 
-func ListAllowedHosts(b *gotgbot.Bot, ctx *ext.Context) error {
+func ListAllowedHosts(m *telegram.NewMessage) error {
 	if isgroup := IsValidSupergroup(m); !isgroup {
 		return telegram.EndGroup
 	}
