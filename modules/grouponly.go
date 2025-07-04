@@ -61,10 +61,7 @@ func ShouldIgnoreGroupAnonymous(m *telegram.NewMessage) bool {
 		return false
 	}
 
-	if m.Sender.ID == m.Chat.ID { // Sender is group admin
-		return true
-	}
-	if m.Sender.ID == 0 && m.SenderID() == 0 { // Group anonmous
+	if m.Sender.ID == m.Chat.ID {
 		return true
 	}
 
