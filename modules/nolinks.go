@@ -7,6 +7,8 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/PaulSonOfLars/gotgbot/v2"
+	"github.com/PaulSonOfLars/gotgbot/v2/ext"
 	"github.com/amarnathcjd/gogram/telegram"
 
 	"main/config"
@@ -86,26 +88,25 @@ func deleteLinkMessage(m *telegram.NewMessage) error {
 		allowed[strings.ToLower(h)] = struct{}{}
 	}
 
-        for _, link := range rawLinks {
-                host := extractHostname(link)
-                if host == "" {
-                        continue
-                }
-                if _, ok := allowed[host]; !ok {
-                        if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
-		return telegram.EndGroup
+	for _, link := range rawLinks {
+		host := extractHostname(link)
+		if host == "" {
+			continue
+		}
+		if _, ok := allowed[host]; !ok {
+			if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
+				return telegram.EndGroup
+			}
+			m.Respond(fmt.Sprintf("⚠️ Unapproved link detected. Only allowed domains are permitted.\nIf this is a mistake, please contact an admin.\n\nOr use <a href='%s'>Example formatted link</a>", config.SupportChannel),
+				&telegram.SendOptions{
+					ParseMode:   "HTML",
+					LinkPreview: false,
+				},
+			)
+			return telegram.EndGroup
+		}
 	}
-                        m.Respond(fmt.Sprintf("⚠️ Unapproved link detected. Only allowed domains are permitted.\nIf this is a mistake, please contact an admin.\n\nOr use <a href='%s'>Example formatted link</a>", config.SupportChannel),
-                                &telegram.SendOptions{
-                                        ParseMode: "HTML",
-                                        LinkPreview: false,
-                                },
-                        )
-                        return telegram.EndGroup
-                }
-        }
-        return nil
-        
+	return nil
 }
 
 func NoLinksCmd(m *telegram.NewMessage) error {
@@ -116,7 +117,7 @@ func NoLinksCmd(m *telegram.NewMessage) error {
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
 	}
-        if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
+	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
 		return err
 	} else if !isadmin {
 		m.Respond("Access denied: Only group admins can use this command.")
@@ -124,41 +125,40 @@ func NoLinksCmd(m *telegram.NewMessage) error {
 		return telegram.EndGroup
 	}
 
-        if len(args) < 2 {
-                m.Respond("⚠️ Usage:\n<code>/nolinks on</code>\n<code>/nolinks off</code>")
-                return telegram.EndGroup
-        }
-        arg := strings.ToLower(args[1])
-        enable := arg == "on"
-        if arg != "on" && arg != "off" {
-                m.Respond("❌ Invalid option.\nUse <code>/nolinks on</code> or <code>/nolinks off</code>")
-                return telegram.EndGroup
-        }
-        if err := database.SetLinkFilterEnabled(m.Chat.Id, enable); err != nil {
-                log.Println("Links.DB error:", err)
-                m.Respond("❌ Failed to update link filter setting.")
-                return  telegram.EndGroup 
-        }
-        status := "🔗 Link filter enabled ✅"
-        if !enable {
-                status = "🔕 Link filter disabled ❌"
-        }
-        m.Respond(status)
-        return telegram.EndGroup 
+	if len(args) < 2 {
+		m.Respond("⚠️ Usage:\n<code>/nolinks on</code>\n<code>/nolinks off</code>")
+		return telegram.EndGroup
+	}
+	arg := strings.ToLower(args[1])
+	enable := arg == "on"
+	if arg != "on" && arg != "off" {
+		m.Respond("❌ Invalid option.\nUse <code>/nolinks on</code> or <code>/nolinks off</code>")
+		return telegram.EndGroup
+	}
+	if err := database.SetLinkFilterEnabled(m.Chat.Id, enable); err != nil {
+		log.Println("Links.DB error:", err)
+		m.Respond("❌ Failed to update link filter setting.")
+		return telegram.EndGroup
+	}
+	status := "🔗 Link filter enabled ✅"
+	if !enable {
+		status = "🔕 Link filter disabled ❌"
+	}
+	m.Respond(status)
+	return telegram.EndGroup
 }
 
 func AllowHostCmd(b *gotgbot.Bot, ctx *ext.Context) error {
-        
-        args := strings.Fields(m.MessageText())
+	args := strings.Fields(m.MessageText())
 
-        if isgroup := IsValidSupergroup(m); !isgroup {
+	if isgroup := IsValidSupergroup(m); !isgroup {
 		return telegram.EndGroup
 	}
-	
-        	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
+
+	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
 	}
-        if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
+	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
 		return err
 	} else if !isadmin {
 		m.Respond("Access denied: Only group admins can use this command.")
@@ -166,35 +166,34 @@ func AllowHostCmd(b *gotgbot.Bot, ctx *ext.Context) error {
 		return telegram.EndGroup
 	}
 
-        if len(args) < 2 {
-                m.Respond("⚠️ Usage: <code>/allowlink github.com</code>")
-                return telegram.EndGroup 
-        }
-        host := extractHostname(args[1])
-        if host == "" {
-                m.Respond("❌ Invalid domain or URL.\nExample: <code>/allowlink github.com</code>")
-                return telegram.EndGroup 
-        }
-        if err := database.AddAllowedHostname(m.Chat.Id, host); err != nil {
-                log.Println("AddAllowedHostname error:", err)
-                m.Respond("❌ Failed to allow host.")
-                return telegram.EndGroup 
-        }
-        m.Respond("✅ Allowed: <code>"+host+"</code>")
-        return telegram.EndGroup 
+	if len(args) < 2 {
+		m.Respond("⚠️ Usage: <code>/allowlink github.com</code>")
+		return telegram.EndGroup
+	}
+	host := extractHostname(args[1])
+	if host == "" {
+		m.Respond("❌ Invalid domain or URL.\nExample: <code>/allowlink github.com</code>")
+		return telegram.EndGroup
+	}
+	if err := database.AddAllowedHostname(m.Chat.Id, host); err != nil {
+		log.Println("AddAllowedHostname error:", err)
+		m.Respond("❌ Failed to allow host.")
+		return telegram.EndGroup
+	}
+	m.Respond("✅ Allowed: <code>" + host + "</code>")
+	return telegram.EndGroup
 }
 
 func RemoveHostCmd(b *gotgbot.Bot, ctx *ext.Context) error {
-        
-        args := strings.Fields(m.MessageText())
+	args := strings.Fields(m.MessageText())
 
-        if isgroup := IsValidSupergroup(m); !isgroup {
-                return nil
-        }
-        	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
+	if isgroup := IsValidSupergroup(m); !isgroup {
+		return nil
+	}
+	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
 	}
-	
+
 	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
 		return err
 	} else if !isadmin {
