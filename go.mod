@@ -3,7 +3,6 @@ module main
 go 1.24.2
 
 require (
-	github.com/PaulSonOfLars/gotgbot/v2 v2.0.0-rc.32
 	github.com/amarnathcjd/gogram v1.6.0
 	github.com/joho/godotenv v1.5.1
 	github.com/shirou/gopsutil/v4 v4.25.6
