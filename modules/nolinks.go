@@ -64,10 +64,10 @@ func deleteLinkMessage(m *telegram.NewMessage) error {
 
 	var rawLinks []string
 	for _, p := range m.Message.Entities {
-		if et, ok := p.(*telegram.MessageEntityURL); ok {
+		if entity, ok := p.(*telegram.MessageEntityURL); ok {
 			offset := int(entity.Offset)
 			length := int(entity.Length)
-			if offset+length > len(m.Text) {
+			if offset+length > len(m.Text()) {
 				continue
 			}
 			rawLinks = append(rawLinks, m.MessageText()[offset:offset+length])
@@ -77,7 +77,7 @@ func deleteLinkMessage(m *telegram.NewMessage) error {
 	if len(rawLinks) == 0 {
 		return nil
 	}
-	allowedHosts, err := database.GetAllowedHostnames(m.Chat.Id)
+	allowedHosts, err := database.GetAllowedHostnames(m.Chat.ID)
 	if err != nil {
 		return err
 	}
@@ -96,7 +96,7 @@ func deleteLinkMessage(m *telegram.NewMessage) error {
 				return telegram.EndGroup
 			}
 			m.Respond(fmt.Sprintf("⚠️ Unapproved link detected. Only allowed domains are permitted.\nIf this is a mistake, please contact an admin.\n\nOr use <a href='%s'>Example formatted link</a>", config.SupportChannel),
-				&telegram.SendOptions{
+				telegram.SendOptions{
 					ParseMode:   "HTML",
 					LinkPreview: false,
 				},

@@ -21,7 +21,7 @@ func init() {
 			"➤ <code>/biolink off</code> - Disable BioMode\n\n"+
 			"🚫 When enabled, users with links in their bios won't be able to send messages.\n"+
 			"👮 Only admins can enable or disable this feature.",
-		nil,
+		
 	)
 }
 
@@ -58,7 +58,7 @@ func setBioMode(m *telegram.NewMessage) error {
 	var msg string
 
 	if part == "on" || part == "enable" {
-		err := database.SetBioMode(m.ChatID)
+		err := database.SetBioMode(m.ChatID())
 		if err != nil {
 			msg = fmt.Sprintf("⚠️ <b>Oops! Failed to enable BioMode.</b>\n\n🚫 An error occurred while trying to turn it on.\n\n<b>Error:</b> <code>%v</code>\n\n🔁 Please try again later.", err)
 		} else {
@@ -84,7 +84,7 @@ func deleteUserMsgIfBio(m *telegram.NewMessage) error {
 		return nil
 	}
 
-	if mode, err := database.GetBioMode(m.ChatId()); err != nil {
+	if mode, err := database.GetBioMode(m.ChatID()); err != nil {
 		return err
 	} else if !mode {
 		return Continue
@@ -118,6 +118,4 @@ func deleteUserMsgIfBio(m *telegram.NewMessage) error {
 	msg := fmt.Sprintf(`🚨 %s, your message was deleted because your bio contains a link.`, mention)
 
 	return m.E(m.Respond(msg))
-
-	return IsValidSupergroup(m)
 }
