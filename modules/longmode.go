@@ -25,7 +25,7 @@ func SetLongLimitHandler(m *telegram.NewMessage) error {
 	}
 
 	if m.Args() == "" {
-		m.Respond("Usage: /setlonglimit <number>")
+		m.Respond("Usage: /setlonglimit &lt;number&gt;")
 		return telegram.EndGroup
 	}
 
@@ -64,7 +64,7 @@ func SetLongModeHandler(m *telegram.NewMessage) error {
 	}
 
 	if m.Args() == "" {
-		m.Respond("Usage: /setlongmode <off|manual|automatic>")
+		m.Respond("Usage: /setlongmode &lt;off|manual|automatic&gt;")
 		return telegram.EndGroup
 	}
 	mode := strings.ToLower(strings.Fields(m.Args())[0])

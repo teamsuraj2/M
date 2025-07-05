@@ -124,7 +124,7 @@ func NoLinksCmd(m *telegram.NewMessage) error {
 	}
 
 	if len(args) < 2 {
-		m.Respond("⚠️ Usage:\n<code>/nolinks on</code>\n<code>/nolinks off</code>")
+		m.Respond("⚠️ Usage:\n<code>/nolinks on</code> – Enable link filtering\n<code>/nolinks off</code> – Disable link filtering")
 		return telegram.EndGroup
 	}
 	arg := strings.ToLower(args[1])
