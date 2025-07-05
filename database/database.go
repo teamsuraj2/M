@@ -59,7 +59,6 @@ func init() {
 	CreateIndex(ctx, echoDB, bson.D{{Key: "chat_id", Value: 1}}, true)
 	CreateIndex(ctx, linksDB, bson.D{{Key: "chat_id", Value: 1}}, true)
 	CreateIndex(ctx, loggerDB, bson.D{{Key: "enabled", Value: 1}}, false)
-	CreateIndex(ctx, nsfwFlagsDB, bson.D{{Key: "_id", Value: 1}}, true)
 }
 
 func Disconnect() {
