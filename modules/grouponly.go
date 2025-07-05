@@ -49,9 +49,9 @@ func IsValidSupergroup(m *telegram.NewMessage) bool {
 		m.Reply("⚠️ This command is only usable in supergroups!")
 		return false
 	}
-        if _, isChannel := m.Message.FromID.(*telegram.PeerChannel); isChannel {
-                return false
-        }
+	if _, isChannel := m.Message.FromID.(*telegram.PeerChannel); isChannel {
+		return false
+	}
 	if IsAnonymousAdmin(m) {
 		m.Reply("🚫 You are an anonymous admin. You can't use this command.")
 		return false
