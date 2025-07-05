@@ -21,7 +21,6 @@ func init() {
 			"➤ <code>/biolink off</code> - Disable BioMode\n\n"+
 			"🚫 When enabled, users with links in their bios won't be able to send messages.\n"+
 			"👮 Only admins can enable or disable this feature.",
-		
 	)
 }
 
