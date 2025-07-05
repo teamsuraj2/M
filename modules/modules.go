@@ -23,6 +23,7 @@ var (
 
 func LoadMods(c *telegram.Client) {
 	c.UpdatesGetState()
+        c.On("command:biolink", setBioMode)
 	c.On("command:setlonglimit", SetLongLimitHandler)
 	c.On("command:setlongmode", SetLongModeHandler)
 	c.On("command:echo", EcoHandler)
