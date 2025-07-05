@@ -133,7 +133,7 @@ func NoLinksCmd(m *telegram.NewMessage) error {
 		m.Respond("❌ Invalid option.\nUse <code>/nolinks on</code> or <code>/nolinks off</code>")
 		return telegram.EndGroup
 	}
-	if err := database.SetLinkFilterEnabled(m.Chat.Id, enable); err != nil {
+	if err := database.SetLinkFilterEnabled(m.Chat.ID, enable); err != nil {
 		log.Println("Links.DB error:", err)
 		m.Respond("❌ Failed to update link filter setting.")
 		return telegram.EndGroup
@@ -173,7 +173,7 @@ func AllowHostCmd(m *telegram.NewMessage) error {
 		m.Respond("❌ Invalid domain or URL.\nExample: <code>/allowlink github.com</code>")
 		return telegram.EndGroup
 	}
-	if err := database.AddAllowedHostname(m.Chat.Id, host); err != nil {
+	if err := database.AddAllowedHostname(m.Chat.ID, host); err != nil {
 		log.Println("AddAllowedHostname error:", err)
 		m.Respond("❌ Failed to allow host.")
 		return telegram.EndGroup
@@ -210,7 +210,7 @@ func RemoveHostCmd(m *telegram.NewMessage) error {
 		m.Respond("❌ Invalid domain or URL.\nExample: <code>/removelink github.com</code>")
 		return telegram.EndGroup
 	}
-	if err := database.RemoveAllowedHostname(m.Chat.Id, host); err != nil {
+	if err := database.RemoveAllowedHostname(m.Chat.ID, host); err != nil {
 		log.Println("RemoveAllowedHostname error:", err)
 		m.Respond("❌ Failed to remove host.")
 		return telegram.EndGroup
@@ -224,7 +224,7 @@ func ListAllowedHosts(m *telegram.NewMessage) error {
 		return telegram.EndGroup
 	}
 	m.Delete()
-	hosts, err := database.GetAllowedHostnames(m.Chat.Id)
+	hosts, err := database.GetAllowedHostnames(m.Chat.ID)
 	if err != nil {
 		log.Println("GetAllowedHostnames error:", err)
 		m.Respond("❌ Failed to fetch allowed links.")
