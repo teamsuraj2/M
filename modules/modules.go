@@ -37,7 +37,6 @@ func LoadMods(c *telegram.Client) {
 	c.On("command:removelink", RemoveHostCmd)
 	c.On("command:listlinks", ListAllowedHosts)
 
-
 	c.On("message", deleteLongMessage)
 	c.On("edit", deleteEditedMessage)
 
