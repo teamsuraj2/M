@@ -61,8 +61,6 @@ func EcoHandler(m *telegram.NewMessage) error {
 		return telegram.EndGroup
 	}
 
-	m.Delete()
-
 	settings, err := database.GetEchoSettings(m.ChannelID())
 	if err != nil {
 		m.Respond(fmt.Sprintf("⚠️ Something went wrong while processing the limit.\nError: %v", err))

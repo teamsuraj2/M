@@ -1,0 +1,10 @@
+modules/biolink.go:34:	if isgroup := IsValidSupergroup(m); !isgroup {
+modules/echo.go:52:	if isgroup := IsValidSupergroup(m); !isgroup {
+modules/grouponly.go:47:func IsValidSupergroup(m *telegram.NewMessage) bool {
+modules/longmode.go:16:	if !IsValidSupergroup(m) {
+modules/longmode.go:55:	if isgroup := IsValidSupergroup(m); !isgroup {
+modules/nolinks.go:112:	if isgroup := IsValidSupergroup(m); !isgroup {
+modules/nolinks.go:152:	if isgroup := IsValidSupergroup(m); !isgroup {
+modules/nolinks.go:188:	if isgroup := IsValidSupergroup(m); !isgroup {
+modules/nolinks.go:223:	if isgroup := IsValidSupergroup(m); !isgroup {
+modules/reload.go:15:	if !IsValidSupergroup(m) {
