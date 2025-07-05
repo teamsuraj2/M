@@ -39,8 +39,8 @@ func LoadMods(c *telegram.Client) {
 
 	c.On("message", deleteLongMessage)
 	c.On("edit", deleteEditedMessage)
-
 	c.On("message", deleteLinkMessage)
+	c.On("message", deleteUserMsgIfBio)
 	c.On("participant", botAddded)
 	c.On("callback:close", close)
 	c.On("callback:help", helpCB)
