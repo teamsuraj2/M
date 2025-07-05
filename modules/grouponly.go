@@ -46,16 +46,16 @@ func IsAnonymousAdmin(m *telegram.NewMessage) bool {
 
 func IsValidSupergroup(m *telegram.NewMessage) bool {
 	if !IsSupergroup(m) {
-	  m.Delete()
+		m.Delete()
 		m.Respond("⚠️ This command is only usable in supergroups!")
 		return false
 	}
 	if _, isChannel := m.Message.FromID.(*telegram.PeerChannel); isChannel {
-	  m.Delete()
+		m.Delete()
 		return false
 	}
 	if IsAnonymousAdmin(m) {
-	  m.Delete()
+		m.Delete()
 		m.Respond("🚫 You are an anonymous admin. You can't use this command.")
 		return false
 	}
