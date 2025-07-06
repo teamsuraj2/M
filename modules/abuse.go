@@ -25,7 +25,6 @@ func init() {
 	)
 }
 
-
 func NoAbuseCmd(m *telegram.NewMessage) error {
 	args := strings.Fields(m.Text())
 	if isgroup := IsValidSupergroup(m); !isgroup {
