@@ -26,7 +26,7 @@ func init() {
 }
 
 func AddAbuseCmd(m *telegram.NewMessage) error {
-	`args := strings.Fields(m.Text())
+	args := strings.Fields(m.Text())
 	if !IsValidSupergroup(m) {
 		return telegram.EndGroup
 	}
@@ -68,7 +68,7 @@ func AddAbuseCmd(m *telegram.NewMessage) error {
 		return telegram.EndGroup
 	}
 	m.Respond("✅ Word added to abuse list: <code>" + word + "</code>")
-`
+
 	return telegram.EndGroup
 }
 
