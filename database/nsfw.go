@@ -47,29 +47,22 @@ func GetNSFWWords() ([]string, error) {
 	defer cancel()
 
 	BanWords := []string{
-		// English abuse & NSFW
-		"sex", "s*x", "porn", "nude", "n*de", "fuck", "f*ck", "f?ck", "bitch", "b*tch", "dick", "d*ck",
-		"pussy", "p*ssy", "slut", "boobs", "cock", "c*ck", "asshole", "a*shole", "hot*girl", "hot**girl",
-
+	
+    "s*x", "n*de", "f*ck", "f?ck", "b*tch", "d*ck", "p*ssy", "c*ck", "a*shole", "hot*girl", "hot**girl",
+    "p*rn", "sl*t", "b*obs",
 		// Hindi (Devanagari script)
 		"रंडी", "चोद", "मादरचोद", "गांड", "लंड", "भोसड़ी", "हिजड़ा", "पागल", "नंगा",
 
-		// Roman Hindi + Hinglish
-		"chutiya", "ch*tiya", "madarchod", "m*derchod", "behenchod", "b*henchod", "gandu", "g*ndu",
-		"randi", "r*ndi", "bhosdi", "b*osdi", "hijda", "lund", "l*nd", "chod", "jhaatu", "harami",
-		"kamina", "saala", "gand", "g*nd", "pagal", "bhadwa", "chut", "haramkhor", "chaalu",
-		"gadha", "badtameez", "kanjoos", "chapri", "sust", "ullu", "kuttiya",
+	
+    "ch*tiya", "m*derchod", "b*henchod", "g*ndu", "r*ndi", "b*osdi", "hijda",
+    "l*nd", "ch*d", "jh*tu", "h*rami", "k*mina", "sa*la", "g*nd", "p*gal",
+    "bh*dwa", "ch*t", "h*ramkhor", "ch*lu", "g*dha", "b*dtameez", "k*njoos",
+    "ch*pri", "s*st", "ull*", "k*ttiya",
 
 		// Phrases
 		"tera baap", "teri maa", "teri behan", "maa ka bhosda", "gaand maar dunga",
 
-		// NSFW / Fetish / Porn terms
-		"deepthroat", "hentai", "bdsm", "lesbian", "futa", "cam*girl", "call*girl", "sex*chat",
-		"child*porn", "pedo", "teen*sex", "casting*couch", "strip*club", "onlyfans",
-		"bikini*photos", "lingam*massage", "tantra*sex", "lick*pussy", "tight*pussy",
-		"wet*pussy", "handjob", "cleavage**show", "massage**sex", "body**massage",
-		"bathroom*sex", "desi*call*girl",
-
+"t*ra baap", "t*ri maa", "t*ri behan", "maa ka b*osda", "g*nd maar d*nga", "d*epthroat", "h*ntai", "b*dsm", "l*sbian", "f*ta", "cam*girl", "call*girl", "sex*chat", "child*porn", "p*do", "teen*sex", "casting*couch", "strip*club", "only*fans", "bikini*photos", "lingam*massage", "tantra*sex", "lick*pussy", "tight*pussy", "wet*pussy", "h*ndjob", "cleavage**show", "massage**sex", "body**massage", "bathroom*sex", "desi*call*girl",
 		// Wildcard-based patterns for obfuscation handling
 		"f?ck", "f*ck", "b*tch", "p*ssy", "d*ck", "l*nd", "g*nd", "hot**video", "ch*da*i", "r*ndi",
 
