@@ -1,8 +1,8 @@
 package modules
 
 import (
+	"fmt"
 	"log"
-"fmt"
 
 	"github.com/amarnathcjd/gogram/telegram"
 )
