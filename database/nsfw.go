@@ -17,35 +17,83 @@ const (
 )
 
 func AddNSFWWord(word string) error {
+	word = strings.ToLower(word)
+
+	existing, err := GetNSFWWords()
+	if err != nil {
+		return err
+	}
+
+	for _, w := range existing {
+		if w == word {
+			return nil
+		}
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
-	word = strings.ToLower(word)
-
-	_, err := nsfwWordsDB.UpdateOne(
+	_, err = nsfwWordsDB.UpdateOne(
 		ctx,
 		bson.M{"_id": nsfwWordDocID},
 		bson.M{"$addToSet": bson.M{"words": word}},
 		options.UpdateOne().SetUpsert(true),
 	)
-	return err
+	if err != nil {
+		return err
+	}
+
+	existing = append(existing, word)
+	config.Cache.Store("nsfw", existing)
+	return nil
 }
 
 func RemoveNSFWWord(word string) error {
+	word = strings.ToLower(word)
+
+	existing, err := GetNSFWWords()
+	if err != nil {
+		return err
+	}
+
+	updated := make([]string, 0, len(existing))
+	found := false
+	for _, w := range existing {
+		if w != word {
+			updated = append(updated, w)
+		} else {
+			found = true
+		}
+	}
+
+	if !found {
+		return nil
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
-	word = strings.ToLower(word)
-
-	_, err := nsfwWordsDB.UpdateOne(
+	_, err = nsfwWordsDB.UpdateOne(
 		ctx,
 		bson.M{"_id": nsfwWordDocID},
 		bson.M{"$pull": bson.M{"words": word}},
 	)
-	return err
+	if err != nil {
+		return err
+	}
+
+	config.Cache.Store("nsfw", updated)
+	return nil
 }
 
+
 func GetNSFWWords() ([]string, error) {
+	if val, ok := config.Cache.Load("nsfw"); ok {
+		if words, ok := val.([]string); ok {
+			return words, nil
+		}
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
@@ -279,6 +327,7 @@ func GetNSFWWords() ([]string, error) {
 		"ट*ट्टे", "ट*ट्टी",
 	}
 
+	
 	var result struct {
 		Words []string `bson:"words"`
 	}
@@ -301,8 +350,10 @@ func GetNSFWWords() ([]string, error) {
 		combined = append(combined, word)
 	}
 
+	config.Cache.Store("nsfw", combined)
 	return combined, nil
 }
+
 
 func SetNSFWFlag(chatID int64, enable bool) error {
 	cacheKey := fmt.Sprintf("%d_nsfw", chatID)
