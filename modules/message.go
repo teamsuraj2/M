@@ -10,7 +10,9 @@ import (
 )
 
 func OnMessageFnc(m *telegram.NewMessage) error {
-if m.GetCommand() != "" { return nil }
+	if m.GetCommand() != "" {
+		return nil
+	}
 	handlers := []func(*telegram.NewMessage) error{
 		deleteLongMessage,
 		deleteLinkMessage,
