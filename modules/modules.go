@@ -34,6 +34,7 @@ func LoadMods(c *telegram.Client) {
 	c.On("command:stats", stats)
 	c.On("command:help", help)
 	c.On("command:nolinks", NoLinksCmd)
+	c.On("command:noabuse", NoAbuseCmd)
 	c.On("command:allowlink", AllowHostCmd)
 	c.On("command:allowhost", AllowHostCmd)
 	c.On("command:removelink", RemoveHostCmd)
