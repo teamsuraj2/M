@@ -86,7 +86,6 @@ func RemoveNSFWWord(word string) error {
 	return nil
 }
 
-
 func GetNSFWWords() ([]string, error) {
 	if val, ok := config.Cache.Load("nsfw"); ok {
 		if words, ok := val.([]string); ok {
@@ -327,7 +326,6 @@ func GetNSFWWords() ([]string, error) {
 		"ट*ट्टे", "ट*ट्टी",
 	}
 
-	
 	var result struct {
 		Words []string `bson:"words"`
 	}
@@ -353,7 +351,6 @@ func GetNSFWWords() ([]string, error) {
 	config.Cache.Store("nsfw", combined)
 	return combined, nil
 }
-
 
 func SetNSFWFlag(chatID int64, enable bool) error {
 	cacheKey := fmt.Sprintf("%d_nsfw", chatID)
