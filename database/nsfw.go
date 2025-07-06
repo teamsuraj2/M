@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"fmt"
-	"regexp"
 	"strings"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -16,7 +15,6 @@ import (
 const (
 	nsfwWordDocID = "badwords"
 )
-
 
 func AddNSFWWord(word string) error {
 	word = strings.ToLower(word)

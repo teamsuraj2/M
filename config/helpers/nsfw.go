@@ -1,5 +1,12 @@
 package helpers
 
+import (
+	"regexp"
+	"strings"
+
+	"main/config"
+	"main/database"
+)
 
 func WildcardToRegex(w string) string {
 	escaped := regexp.QuoteMeta(w)

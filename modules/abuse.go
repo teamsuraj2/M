@@ -1,19 +1,30 @@
 package modules
 
+import (
+	"log"
+	"strings"
+
+	"github.com/amarnathcjd/gogram/telegram"
+
+	"main/config/helpers"
+	"main/database"
+)
+
 func init() {
 	AddHelp(
 		"🚫 NoAbuse",
 		"noabuse_help",
-		"<b>🚫 NoAbuse Filter</b>\n" +
-			"Automatically detects and filters abusive or offensive language in group messages.\n\n" +
-			"<b>🔧 Commands:</b>\n" +
-			"• <code>/noabuse on</code> – Enable abuse detection ✅\n" +
-			"• <code>/noabuse off</code> – Disable abuse detection ❌\n\n" +
-			"<b>ℹ️ Notes:</b>\n" +
-			"– Messages with offensive content will be censored or removed.\n" +
+		"<b>🚫 NoAbuse Filter</b>\n"+
+			"Automatically detects and filters abusive or offensive language in group messages.\n\n"+
+			"<b>🔧 Commands:</b>\n"+
+			"• <code>/noabuse on</code> – Enable abuse detection ✅\n"+
+			"• <code>/noabuse off</code> – Disable abuse detection ❌\n\n"+
+			"<b>ℹ️ Notes:</b>\n"+
+			"– Messages with offensive content will be censored or removed.\n"+
 			"– 👮 Only group admins can configure this setting.",
 	)
 }
+
 func AddAbuseCmd(m *telegram.NewMessage) error {
 	`args := strings.Fields(m.Text())
 	if !IsValidSupergroup(m) {
@@ -93,9 +104,9 @@ func NoAbuseCmd(m *telegram.NewMessage) error {
 		return telegram.EndGroup
 	}
 	status := "🛡️ NoAbuse detection is enabled ✅"
-if !enable {
-	status = "🚫 NoAbuse detection is disabled ❌"
-}
+	if !enable {
+		status = "🚫 NoAbuse detection is disabled ❌"
+	}
 	m.Respond(status)
 	return telegram.EndGroup
 }
