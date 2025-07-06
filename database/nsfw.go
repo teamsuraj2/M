@@ -47,22 +47,20 @@ func GetNSFWWords() ([]string, error) {
 	defer cancel()
 
 	BanWords := []string{
-	
-    "s*x", "n*de", "f*ck", "f?ck", "b*tch", "d*ck", "p*ssy", "c*ck", "a*shole", "hot*girl", "hot**girl",
-    "p*rn", "sl*t", "b*obs",
+		"s*x", "n*de", "f*ck", "f?ck", "b*tch", "d*ck", "p*ssy", "c*ck", "a*shole", "hot*girl", "hot**girl",
+		"p*rn", "sl*t", "b*obs",
 		// Hindi (Devanagari script)
 		"रंडी", "चोद", "मादरचोद", "गांड", "लंड", "भोसड़ी", "हिजड़ा", "पागल", "नंगा",
 
-	
-    "ch*tiya", "m*derchod", "b*henchod", "g*ndu", "r*ndi", "b*osdi", "hijda",
-    "l*nd", "ch*d", "jh*tu", "h*rami", "k*mina", "sa*la", "g*nd", "p*gal",
-    "bh*dwa", "ch*t", "h*ramkhor", "ch*lu", "g*dha", "b*dtameez", "k*njoos",
-    "ch*pri", "s*st", "ull*", "k*ttiya",
+		"ch*tiya", "m*derchod", "b*henchod", "g*ndu", "r*ndi", "b*osdi", "hijda",
+		"l*nd", "ch*d", "jh*tu", "h*rami", "k*mina", "sa*la", "g*nd", "p*gal",
+		"bh*dwa", "ch*t", "h*ramkhor", "ch*lu", "g*dha", "b*dtameez", "k*njoos",
+		"ch*pri", "s*st", "ull*", "k*ttiya",
 
 		// Phrases
 		"tera baap", "teri maa", "teri behan", "maa ka bhosda", "gaand maar dunga",
 
-"t*ra baap", "t*ri maa", "t*ri behan", "maa ka b*osda", "g*nd maar d*nga", "d*epthroat", "h*ntai", "b*dsm", "l*sbian", "f*ta", "cam*girl", "call*girl", "sex*chat", "child*porn", "p*do", "teen*sex", "casting*couch", "strip*club", "only*fans", "bikini*photos", "lingam*massage", "tantra*sex", "lick*pussy", "tight*pussy", "wet*pussy", "h*ndjob", "cleavage**show", "massage**sex", "body**massage", "bathroom*sex", "desi*call*girl",
+		"t*ra baap", "t*ri maa", "t*ri behan", "maa ka b*osda", "g*nd maar d*nga", "d*epthroat", "h*ntai", "b*dsm", "l*sbian", "f*ta", "cam*girl", "call*girl", "sex*chat", "child*porn", "p*do", "teen*sex", "casting*couch", "strip*club", "only*fans", "bikini*photos", "lingam*massage", "tantra*sex", "lick*pussy", "tight*pussy", "wet*pussy", "h*ndjob", "cleavage**show", "massage**sex", "body**massage", "bathroom*sex", "desi*call*girl",
 		// Wildcard-based patterns for obfuscation handling
 		"f?ck", "f*ck", "b*tch", "p*ssy", "d*ck", "l*nd", "g*nd", "hot**video", "ch*da*i", "r*ndi",
 
