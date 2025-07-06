@@ -25,52 +25,6 @@ func init() {
 	)
 }
 
-func AddAbuseCmd(m *telegram.NewMessage) error {
-	args := strings.Fields(m.Text())
-	if !IsValidSupergroup(m) {
-		return telegram.EndGroup
-	}
-	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
-		return telegram.EndGroup
-	}
-	isAdmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID())
-	if err != nil {
-		return err
-	} else if !isAdmin {
-		m.Respond("🚫 Only group admins can add abusive words.")
-		return telegram.EndGroup
-	}
-	if len(args) < 2 {
-		m.Respond("⚠️ Usage: <code>/addabuse word</code>")
-		return telegram.EndGroup
-	}
-	if len(word) > 25 {
-		m.Respond("❌ Word too long. Keep it under 25 characters.\nUse *, **, ? for matching. See /help for details.")
-		return telegram.EndGroup
-
-	}
-
-	word := string.TrimSpace(strings.ToLower(args[1]))
-	if word == "word" {
-		m.Respond("'m' is not a valid word, Please provide valid one.")
-	}
-	patterns, err := database.GetNSFWWords()
-	if err != nil {
-		m.Respond("❌ Failed to fetch abuse list.")
-		return telegram.EndGroup
-	}
-	if MatchAnyPattern(patterns, word) {
-		m.Respond("ℹ️ This word is already covered by the any abuse filters.")
-		return telegram.EndGroup
-	}
-	if err := database.AddNSFWWord(word); err != nil {
-		m.Respond("❌ Failed to add word.")
-		return telegram.EndGroup
-	}
-	m.Respond("✅ Word added to abuse list: <code>" + word + "</code>")
-
-	return telegram.EndGroup
-}
 
 func NoAbuseCmd(m *telegram.NewMessage) error {
 	args := strings.Fields(m.Text())
