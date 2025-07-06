@@ -26,4 +26,5 @@ func BroadcastFunc(m *telegram.NewMessage) error {
 	m.Delete()
 	m.Respond(fmt.Sprinf("Total Chats: %d\nTotal Users: %d", chatCount, chatCount))
 	m.Respond("Soon implemented....")
+return telegram.EndGroup
 }
