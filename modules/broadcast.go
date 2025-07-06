@@ -15,12 +15,12 @@ func BroadcastFunc(m *telegram.NewMessage) error {
 	}
 
 	userCount := 0
-	for user := range userChan {
+	for _ := range userChan {
 		userCount++
 	}
 
 	chatCount := 0
-	for chat := range chatChan {
+	for _ := range chatChan {
 		chatCount++
 	}
 	m.Delete()
