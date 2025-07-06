@@ -44,21 +44,27 @@ func UpdateNSFWRegexCache() error {
 	return nil
 }
 
-func MatchNSFWText(text string) bool {
-	val, ok := config.Cache.Load("nsfw_regex")
+func MatchNSFWText(text string) (bool, string) {
+	val, ok := Cache.Load("nsfw_regex")
 	if !ok {
-		return false
+		return false, text
 	}
 	regexList, ok := val.([]*regexp.Regexp)
 	if !ok {
-		return false
+		return false, text
 	}
+
+	matched := false
+	updated := text
+
 	for _, re := range regexList {
-		if re.MatchString(text) {
-			return true
+		if re.MatchString(updated) {
+			matched = true
+			updated = re.ReplaceAllString(updated, "****")
 		}
 	}
-	return false
+
+	return matched, updated
 }
 
 func AddNSFWWord(word string) error {
