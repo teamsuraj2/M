@@ -14,8 +14,8 @@ func init() {
 			"– 👮 Only group admins can configure this setting.",
 	)
 }
-`func AddAbuseCmd(m *telegram.NewMessage) error {
-	args := strings.Fields(m.Text())
+func AddAbuseCmd(m *telegram.NewMessage) error {
+	`args := strings.Fields(m.Text())
 	if !IsValidSupergroup(m) {
 		return telegram.EndGroup
 	}
@@ -57,8 +57,9 @@ func init() {
 		return telegram.EndGroup
 	}
 	m.Respond("✅ Word added to abuse list: <code>" + word + "</code>")
+`
 	return telegram.EndGroup
-}`
+}
 
 func NoAbuseCmd(m *telegram.NewMessage) error {
 	args := strings.Fields(m.Text())
