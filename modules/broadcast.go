@@ -2,6 +2,7 @@ package modules
 
 import (
 	"log"
+"fmt"
 
 	"github.com/amarnathcjd/gogram/telegram"
 )
@@ -24,7 +25,7 @@ func BroadcastFunc(m *telegram.NewMessage) error {
 		chatCount++
 	}
 	m.Delete()
-	m.Respond(fmt.Sprinf("Total Chats: %d\nTotal Users: %d", chatCount, chatCount))
+	m.Respond(fmt.Sprintf("Total Chats: %d\nTotal Users: %d", chatCount, chatCount))
 	m.Respond("Soon implemented....")
 	return telegram.EndGroup
 }
