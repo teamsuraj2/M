@@ -45,14 +45,14 @@ func AddAbuseCmd(m *telegram.NewMessage) error {
 		return telegram.EndGroup
 	}
 	if len(word) > 25 {
-	  m.Respond("❌ Word too long. Keep it under 25 characters.\nUse *, **, ? for matching. See /help for details.")
-	return telegram.EndGroup
-	  
+		m.Respond("❌ Word too long. Keep it under 25 characters.\nUse *, **, ? for matching. See /help for details.")
+		return telegram.EndGroup
+
 	}
-	
+
 	word := string.TrimSpace(strings.ToLower(args[1]))
 	if word == "word" {
-	  m.Respond("'m' is not a valid word, Please provide valid one.")
+		m.Respond("'m' is not a valid word, Please provide valid one.")
 	}
 	patterns, err := database.GetNSFWWords()
 	if err != nil {
