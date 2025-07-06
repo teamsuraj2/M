@@ -5,7 +5,7 @@ func BroadcastFunc(m *telegram.NewMessage) error {
 userChan, chatChan, err := m.Client.Broadcast()
 if err != nil {
     log.Println(err)
-    m Reply(err.Error())
+    m.Reply(err.Error())
 return telegram.EndGroup
 }
 
@@ -19,6 +19,8 @@ chatCount := 0
 for chat := range chatChan {
     chatCount++
 }
-m.Reply(fmt.Sprinf("Total Chats: %d\nTotal Users: %d", chatCount, chatCount))
+m.Delete()
+m.Respond(fmt.Sprinf("Total Chats: %d\nTotal Users: %d", chatCount, chatCount))
+m.Respond("Soon implemented....")
 
 }
