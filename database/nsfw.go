@@ -45,7 +45,7 @@ func UpdateNSFWRegexCache() error {
 }
 
 func MatchNSFWText(text string) (bool, string) {
-	val, ok := Cache.Load("nsfw_regex")
+	val, ok := config.Cache.Load("nsfw_regex")
 	if !ok {
 		return false, text
 	}
