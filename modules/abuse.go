@@ -85,13 +85,19 @@ func DeleteAbuseHandle(m *telegram.NewMessage) error {
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
 	}
-
+	var user string
+	if m.Sender.Username != "" {
+	user = "@" + m.Sender.Username
+	else {
+	  userFullName := strings.TrimSpace(m.Sender.FirstName + " " + m.Sender.LastName)
+	  user = fmt.Sprintf(`<a href="tg://user?id=%d">%s</a>`, m.SenderID(), html.EscapeString(userFullName))
+	}
 	if len(m.Text()) < 800 {
 		m.Respond(
-			fmt.Sprintf("🚫 Your message was deleted due to abusive words.\nDetected: <code>%s</code>", profane),
+			fmt.Sprintf("🚫 %s, Your message was deleted due to abusive words.\nDetected: <code>%s</code>",user, profane),
 		)
 	} else {
-		m.Respond("🚫 Your message was deleted due to abusive words.")
+		m.Respond(fmt.Sprintf("🚫 %s, Your message was deleted due to abusive words.", user))
 	}
 
 	return nil
