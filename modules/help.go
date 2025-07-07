@@ -3,6 +3,8 @@ package modules
 import (
 	"fmt"
 	"sort"
+	"strings"
+	"unicode"
 
 	"github.com/amarnathcjd/gogram/telegram"
 )
@@ -29,7 +31,11 @@ func help(m *telegram.NewMessage) error {
 	for name := range ModulesHelp {
 		keys = append(keys, name)
 	}
-	sort.Strings(keys)
+
+	sort.Slice(keys, func(i, j int) bool {
+		return stripPrefixEmoji(keys[i]) < stripPrefixEmoji(keys[j])
+	})
+
 	for _, name := range keys {
 		mod := ModulesHelp[name]
 		button := telegram.Button.Data(name, mod.Callback)
@@ -58,7 +64,11 @@ func helpCB(c *telegram.CallbackQuery) error {
 	for name := range ModulesHelp {
 		keys = append(keys, name)
 	}
-	sort.Strings(keys)
+
+	sort.Slice(keys, func(i, j int) bool {
+		return stripPrefixEmoji(keys[i]) < stripPrefixEmoji(keys[j])
+	})
+
 	for _, name := range keys {
 		mod := ModulesHelp[name]
 		button := telegram.Button.Data(name, mod.Callback)
@@ -103,4 +113,13 @@ func helpModuleCB(c *telegram.CallbackQuery) error {
 		ReplyMarkup: keyboard,
 	})
 	return err
+}
+
+func stripPrefixEmoji(s string) string {
+	for i, r := range s {
+		if unicode.IsLetter(r) || unicode.IsNumber(r) {
+			return strings.ToLower(s[i:])
+		}
+	}
+	return s
 }
