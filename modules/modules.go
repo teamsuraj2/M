@@ -24,7 +24,7 @@ var (
 )
 
 func FilterOwner(m *telegram.NewMessage) bool {
-	return slices.Contains(OwnerId, m.SenderID())
+	return slices.Contains(config.OwnerId, m.SenderID())
 }
 
 func LoadMods(c *telegram.Client) {
