@@ -88,7 +88,7 @@ func DeleteAbuseHandle(m *telegram.NewMessage) error {
 	var user string
 	if m.Sender.Username != "" {
 	user = "@" + m.Sender.Username
-	else {
+ }	else {
 	  userFullName := strings.TrimSpace(m.Sender.FirstName + " " + m.Sender.LastName)
 	  user = fmt.Sprintf(`<a href="tg://user?id=%d">%s</a>`, m.SenderID(), html.EscapeString(userFullName))
 	}
