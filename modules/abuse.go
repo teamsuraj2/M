@@ -82,10 +82,10 @@ func DeleteAbuseHandle(m *telegram.NewMessage) error {
 	} else if isadmin {
 		return nil
 	}
-isNsfw, profane :=  helpers.MatchNSFWText(m.Text())
-if !isNsfw {
-return nil 
-}
+	isNsfw, profane := helpers.MatchNSFWText(m.Text())
+	if !isNsfw {
+		return nil
+	}
 
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
