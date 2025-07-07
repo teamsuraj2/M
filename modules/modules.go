@@ -94,7 +94,7 @@ func orCont(err error) error {
 	return telegram.EndGroup
 }
 
-func L(m *telegram.Message, context string, err error) error {
+func L(m *telegram.NewMessage, context string, err error) error {
 	if err == nil {
 		return
 	}
