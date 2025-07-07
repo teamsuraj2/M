@@ -91,3 +91,35 @@ func orCont(err error) error {
 	}
 	return telegram.EndGroup
 }
+
+func L(m *telegram.Message, context string, err error) error {
+	if err == nil {
+		return
+	}
+	
+	log.Printf("[ERROR] %s: %v", context, err)
+
+	msg := fmt.Sprintf(
+	"<b>⚠️ Error Occurred</b>\n"+
+		"<b>🔹 Context:</b> <code>%s</code>\n"+
+		"%s"+
+		"<b>🗨️ Message:</b> <code>%s</code>\n"+
+		"<b>❗ Error:</b> <code>%s</code>",
+	context,
+	func() string {
+		if m.GetCommand() != "" {
+			return fmt.Sprintf("<b>💬 Command:</b> <code>%s</code>\n", m.Text())
+		}
+		return ""
+	}(),
+	m.Text(),
+	err.Error(),
+)
+
+	m.Client.SendMessage(config.LoggerId, msg)
+	for id := range config.OwnerId {
+	  m.Client.SendMessage(id, msg)
+	  
+	}
+	return telegram.EndGroup
+}

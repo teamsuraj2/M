@@ -25,12 +25,8 @@ func OnMessageFnc(m *telegram.NewMessage) error {
 			if errors.Is(err, telegram.EndGroup) {
 				return telegram.EndGroup
 			}
-
-			_, e := m.Client.SendMessage(config.LoggerId, "Error in OnMessageFnc: "+err.Error())
-			if e != nil {
-				log.Println("Error in OnMessagFnc error send to grp", err.Error())
-			}
-			return telegram.EndGroup
+return L(m, "Modules -> message -> Random", err)
+	
 		}
 	}
 

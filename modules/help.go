@@ -7,7 +7,10 @@ import (
 )
 
 func help(m *telegram.NewMessage) error {
+  
+	m.Delete()
 	if m.ChatType() != telegram.EntityUser {
+	  
 		keyboard := telegram.Button.Keyboard(
 			telegram.Button.Row(
 				telegram.Button.URL("🗒 Command", fmt.Sprintf("https://t.me/%s?start=help", m.Client.Me().Username)),
@@ -17,11 +20,8 @@ func help(m *telegram.NewMessage) error {
 			"Contact me in PM for help!", telegram.SendOptions{
 				ReplyMarkup: keyboard,
 			})
-		if err != nil {
-			return err
-		}
-		m.Delete()
-		return telegram.EndGroup
+			return L(m, "Modules -> help -> pvt-respond", err)
+	
 	}
 	keyboard := telegram.NewKeyboard()
 
@@ -42,11 +42,8 @@ Here you'll find details for all available plugins and features.
 	_, err := m.Respond(helpText, telegram.SendOptions{
 		ReplyMarkup: keyboard.Build(),
 	})
-	if err != nil {
-		return err
-	}
-	m.Delete()
-	return telegram.EndGroup
+		return L(m, "Modules -> help -> grp/respond", err)
+	
 }
 
 func helpCB(c *telegram.CallbackQuery) error {

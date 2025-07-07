@@ -54,6 +54,8 @@ func EcoHandler(m *telegram.NewMessage) error {
 	}
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
+	}  else if err != nil {
+	  return L(m, "Modules -> echo -> m.Delete()", err)
 	}
 
 	if m.Args() == "" {
@@ -64,12 +66,14 @@ func EcoHandler(m *telegram.NewMessage) error {
 	settings, err := database.GetEchoSettings(m.ChannelID())
 	if err != nil {
 		m.Respond(fmt.Sprintf("⚠️ Something went wrong while processing the limit.\nError: %v", err))
-		return err
+			 return L(m, "Modules -> echo -> database.GetEchoSettings()", err)
+	
 	}
 
 	if len(m.Text()) < settings.Limit {
 		if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
-			return err
+				return L(m, "Modules -> echo -> helpers.IsChatAdmin()", err)
+	
 		} else if isadmin {
 			m.Respond(fmt.Sprintf("Oops! Your message is under %d characters. Since you're an admin, you're not required to use /echo. But if you’d like to, please send a message longer than %d characters.", settings.Limit, settings.Limit))
 			return telegram.EndGroup
@@ -81,7 +85,8 @@ func EcoHandler(m *telegram.NewMessage) error {
 	text := strings.SplitN(m.Text(), " ", 2)[1]
 
 	err = sendEchoMessage(m, text)
-	return orCont(err)
+	return 	 L(m, "Modules -> echo -> sendEchoMessage(...)", err)
+	
 }
 
 func deleteLongMessage(m *telegram.NewMessage) error {
@@ -98,19 +103,16 @@ func deleteLongMessage(m *telegram.NewMessage) error {
 	}
 	chatID := m.ChannelID()
 	if isadmin, err := helpers.IsChatAdmin(m.Client, chatID, m.Sender.ID); err != nil {
-		return err
+			 L(m, "Modules -> echo -> deleteLongMessage -> helpers.IsChatAdmin()", err)
+	return nil
 	} else if isadmin {
 		return nil
 	}
 	settings, err := database.GetEchoSettings(chatID)
 	var isAutomatic bool
-	if err != nil {
-		m.Client.SendMessage(
-			config.LoggerId,
-			fmt.Sprintf("⚠️ Something went wrong while Getting the limit.\nError: %v", err),
-		)
-		return err
-	}
+		 L(m, "Modules -> echo -> database.GetEchoSettings(...)", err)
+	return nil
+	
 
 	if m.Text() == "" || len(m.Text()) < settings.Limit {
 		return nil
@@ -123,6 +125,9 @@ func deleteLongMessage(m *telegram.NewMessage) error {
 	}
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return err
+	}  else if err != nil {
+	  L(m, "Modules -> echo -> deleteLongMessage -> m.Delete()", err)
+	  return nil 
 	}
 
 	if !isAutomatic {

@@ -23,7 +23,8 @@ func init() {
 			"• <code>/noabuse off</code> – Disable abuse detection ❌\n\n"+
 			"<b>ℹ️ Notes:</b>\n"+
 			"– Messages with offensive content will be censored or removed.\n"+
-			"– 👮 Only group admins can configure this setting.",
+			"– 👮 Only group admins can configure this setting.\n\n"+
+			"<blockquote>🔧 This feature is under development and may not work at this moment.</blockquote>",
 	)
 }
 
@@ -34,9 +35,12 @@ func NoAbuseCmd(m *telegram.NewMessage) error {
 	}
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
+	} else if err != nil {
+	  return L(m, "Modules -> abuse -> m.Delete()", err)
 	}
 	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
-		return err
+		return L(m, "Modules -> abuse -> helpers.IsChatAdmin()", err)
+	
 	} else if !isadmin {
 		m.Respond("Access denied: Only group admins can use this command.")
 
@@ -78,7 +82,8 @@ func DeleteAbuseHandle(m *telegram.NewMessage) error {
 		return nil
 	}
 	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.Sender.ID); err != nil {
-		return err
+		 L(m, "Modules -> abuse -> helpers.IsChatAdmin()", err)
+	return nil
 	} else if isadmin {
 		return nil
 	}
@@ -89,6 +94,8 @@ func DeleteAbuseHandle(m *telegram.NewMessage) error {
 
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
+	}  else if err != nil {
+	  return L(m, "Modules -> abuse -> m.Delete()", err)
 	}
 	var user string
 	if m.Sender.Username != "" {

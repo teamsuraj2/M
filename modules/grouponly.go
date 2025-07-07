@@ -18,9 +18,7 @@ func handleNeedPerm(e error, m *telegram.NewMessage) bool {
 		m.Respond("I need 'Delete Message' Permission to work properly")
 		return true
 	}
-
-	log.Println("Error hanlded by HandleNeedPerm: %v", e)
-	return true
+return false
 }
 
 func IsSupergroup(m *telegram.NewMessage) bool {
@@ -72,9 +70,8 @@ func ShouldIgnoreGroupAnonymous(m *telegram.NewMessage) bool {
 
 	fullChat, err := helpers.GetFullChannel(m.Client, m.ChannelID())
 	if err != nil {
-		m.Client.SendMessage(config.LoggerId, fmt.Sprintf("Failed to get fullchannel for %d\n Errer: %v", m.ChannelID(), err))
-		log.Println(err)
-		return false
+	  L(m, "Modules -> groupOnly -> GetFullChannel", err)
+	return false
 	}
 	// Check if it's a linked channel message
 	if m.SenderID() == fullChat.LinkedChatID {

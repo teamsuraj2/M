@@ -44,10 +44,10 @@ func startCB(c *telegram.CallbackQuery) error {
 	)
 
 	replyMarkup := btn.Build()
-	_, err := c.Edit(caption, &telegram.SendOptions{
+	c.Edit(caption, &telegram.SendOptions{
 		ReplyMarkup: replyMarkup,
 	})
-	return orCont(err)
+	return telegram.EndGroup
 }
 
 func start(m *telegram.NewMessage) error {
@@ -162,7 +162,7 @@ To use my features, please upgrade this group to a supergroup.
 	if IsSupergroup(m) {
 		m.Delete()
 		database.AddServedChat(m.ChannelID())
-		if b := helpers.WarnIfLackOfPms(m.Client, m, m.ChannelID()); !b {
+		if !helpers.WarnIfLackOfPms(m.Client, m, m.ChannelID()) {
 			return nil
 		}
 

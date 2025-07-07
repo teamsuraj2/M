@@ -14,13 +14,16 @@ func deleteEditedMessage(m *telegram.NewMessage) error {
 		return nil
 	}
 	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.Sender.ID); err != nil {
-		return err
+			 L(m, "Modules -> edit -> helpers.IsChatAdmin()", err)
+	return nil
 	} else if isadmin {
 		return nil
 	}
 
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
+	}  else if err != nil {
+	  return L(m, "Modules -> edit -> m.Delete()", err)
 	}
 
 	reason := "<b>🚫 Editing messages is prohibited in this chat.</b> Please refrain from modifying your messages to maintain the integrity of the conversation."
@@ -70,5 +73,6 @@ func deleteEditedMessage(m *telegram.NewMessage) error {
 
 	_, err := m.Respond(reason)
 
-	return orCont(err)
+	return L(m, "Modules -> edit -> respond", err)
+	
 }
