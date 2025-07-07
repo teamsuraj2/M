@@ -64,7 +64,7 @@ func setBioMode(m *telegram.NewMessage) error {
 			msg = "✅ <b>BioMode enabled successfully!</b>\n\n🔍 I will now monitor bios for any links and automatically delete messages if found.\n\n🛡 Stay safe!"
 		}
 	} else if part == "off" || part == "disable" {
-		err := database.DelBioMode(m.Chat.ID)
+		err := database.DelBioMode(m.ChatID())
 		if err != nil {
 			msg = fmt.Sprintf("⚠️ <b>Oops! Failed to disable BioMode.</b>\n\n🚫 An error occurred while trying to turn it off.\n\n<b>Error:</b> <code>%v</code>\n\n🔁 Please try again later.", err)
 		} else {

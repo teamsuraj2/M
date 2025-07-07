@@ -51,7 +51,6 @@ func IsValidSupergroup(m *telegram.NewMessage) bool {
 		return false
 	}
 	if _, isChannel := m.Message.FromID.(*telegram.PeerChannel); isChannel {
-		m.Delete()
 		return false
 	}
 	if IsAnonymousAdmin(m) {
@@ -67,7 +66,7 @@ func ShouldIgnoreGroupAnonymous(m *telegram.NewMessage) bool {
 		return false
 	}
 
-	if m.Sender.ID == m.Chat.ID {
+	if m.SenderID() == m.ChatID() || m.SenderID() == 0{
 		return true
 	}
 
@@ -78,7 +77,7 @@ func ShouldIgnoreGroupAnonymous(m *telegram.NewMessage) bool {
 		return false
 	}
 	// Check if it's a linked channel message
-	if m.Sender.ID == fullChat.LinkedChatID {
+	if m.SenderID() == fullChat.LinkedChatID {
 		return true
 	}
 

@@ -51,7 +51,7 @@ func NoAbuseCmd(m *telegram.NewMessage) error {
 		m.Respond("❌ Invalid option.\nUse <code>/noabuse on</code> or <code>/noabuse off</code>")
 		return telegram.EndGroup
 	}
-	if err := database.SetNSFWFlag(m.Chat.ID, enable); err != nil {
+	if err := database.SetNSFWFlag(m.ChatID(), enable); err != nil {
 		log.Println("NoAbuse.error:", err)
 		m.Respond("❌ Failed to update setting.")
 		return telegram.EndGroup
@@ -62,4 +62,36 @@ func NoAbuseCmd(m *telegram.NewMessage) error {
 	}
 	m.Respond(status)
 	return telegram.EndGroup
+}
+
+func DeleteAbuseHandle(m *telegram.NewMessage) error {
+	if bo := IsSupergroup(m); !bo {
+		return nil
+	}
+	
+	if !database.IsNSFWEnabled(m.ChatId()) {
+		return nil
+	}
+	if ShouldIgnoreGroupAnonymous(m) {
+		return nil
+	}
+	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.Sender.ID); err != nil {
+		return err
+	} else if isadmin {
+		return nil
+	}
+
+	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
+		return telegram.EndGroup
+	}
+
+	if len(m.Text()) < 800 {
+		m.Respond(
+			fmt.Sprintf("🚫 Your message was deleted due to abusive words.\nDetected: <code>%s</code>", profane),
+		)
+	} else {
+		m.Respond("🚫 Your message was deleted due to abusive words.")
+	}
+
+	return nil
 }

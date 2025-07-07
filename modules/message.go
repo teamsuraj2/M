@@ -13,7 +13,8 @@ func OnMessageFnc(m *telegram.NewMessage) error {
 	if m.GetCommand() != "" {
 		return nil
 	}
-	handlers := []func(*telegram.NewMessage) error{
+	handlers := []func(*telegram.NewMessage) error {
+	  DeleteAbuseHandle,
 		deleteLongMessage,
 		deleteLinkMessage,
 		deleteUserMsgIfBio,
