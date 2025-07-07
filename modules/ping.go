@@ -23,7 +23,6 @@ func pingHandler(m *telegram.NewMessage) error {
 	reply, err := m.Respond("🏓 Pinging...")
 	if err != nil {
 		return L(m, "Modules -> ping -> Respond", err)
-	
 	}
 
 	latency := time.Since(start).Milliseconds()

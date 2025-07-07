@@ -1,13 +1,10 @@
 package modules
 
 import (
-	"fmt"
-	"log"
 	"strings"
 
 	"github.com/amarnathcjd/gogram/telegram"
 
-	"main/config"
 	"main/config/helpers"
 )
 
@@ -18,7 +15,7 @@ func handleNeedPerm(e error, m *telegram.NewMessage) bool {
 		m.Respond("I need 'Delete Message' Permission to work properly")
 		return true
 	}
-return false
+	return false
 }
 
 func IsSupergroup(m *telegram.NewMessage) bool {
@@ -70,8 +67,8 @@ func ShouldIgnoreGroupAnonymous(m *telegram.NewMessage) bool {
 
 	fullChat, err := helpers.GetFullChannel(m.Client, m.ChannelID())
 	if err != nil {
-	  L(m, "Modules -> groupOnly -> GetFullChannel", err)
-	return false
+		L(m, "Modules -> groupOnly -> GetFullChannel", err)
+		return false
 	}
 	// Check if it's a linked channel message
 	if m.SenderID() == fullChat.LinkedChatID {

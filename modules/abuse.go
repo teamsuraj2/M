@@ -36,11 +36,10 @@ func NoAbuseCmd(m *telegram.NewMessage) error {
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
 	} else if err != nil {
-	  return L(m, "Modules -> abuse -> m.Delete()", err)
+		return L(m, "Modules -> abuse -> m.Delete()", err)
 	}
 	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
 		return L(m, "Modules -> abuse -> helpers.IsChatAdmin()", err)
-	
 	} else if !isadmin {
 		m.Respond("Access denied: Only group admins can use this command.")
 
@@ -82,8 +81,8 @@ func DeleteAbuseHandle(m *telegram.NewMessage) error {
 		return nil
 	}
 	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.Sender.ID); err != nil {
-		 L(m, "Modules -> abuse -> helpers.IsChatAdmin()", err)
-	return nil
+		L(m, "Modules -> abuse -> helpers.IsChatAdmin()", err)
+		return nil
 	} else if isadmin {
 		return nil
 	}
@@ -94,8 +93,8 @@ func DeleteAbuseHandle(m *telegram.NewMessage) error {
 
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
-	}  else if err != nil {
-	  return L(m, "Modules -> abuse -> m.Delete()", err)
+	} else if err != nil {
+		return L(m, "Modules -> abuse -> m.Delete()", err)
 	}
 	var user string
 	if m.Sender.Username != "" {

@@ -82,5 +82,4 @@ Let me know if you need any help.`,
 		logStr,
 	)
 	return L(m, "Modules -> misc -> Respond", err)
-	
 }

@@ -2,11 +2,8 @@ package modules
 
 import (
 	"errors"
-	"log"
 
 	"github.com/amarnathcjd/gogram/telegram"
-
-	"main/config"
 )
 
 func OnMessageFnc(m *telegram.NewMessage) error {
@@ -25,8 +22,8 @@ func OnMessageFnc(m *telegram.NewMessage) error {
 			if errors.Is(err, telegram.EndGroup) {
 				return telegram.EndGroup
 			}
-return L(m, "Modules -> message -> Random", err)
-	
+			return L(m, "Modules -> message -> Random", err)
+
 		}
 	}
 

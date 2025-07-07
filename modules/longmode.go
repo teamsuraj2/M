@@ -17,12 +17,11 @@ func SetLongLimitHandler(m *telegram.NewMessage) error {
 	}
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
-	}  else if err != nil {
-	  return L(m, "Modules -> longmode -> m.Delete()", err)
+	} else if err != nil {
+		return L(m, "Modules -> longmode -> m.Delete()", err)
 	}
 	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
-			return L(m, "Modules -> longmode -> helpers.IsChatAdmin()", err)
-	
+		return L(m, "Modules -> longmode -> helpers.IsChatAdmin()", err)
 	} else if !isadmin {
 		m.Respond("Access denied: Only group admins can use this command.")
 
@@ -62,12 +61,11 @@ func SetLongModeHandler(m *telegram.NewMessage) error {
 	}
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
-	}  else if err != nil {
-	  return L(m, "Modules -> longmode -> m.Delete()", err)
+	} else if err != nil {
+		return L(m, "Modules -> longmode -> m.Delete()", err)
 	}
 	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
 		return L(m, "Modules -> longmode -> IsChatAdmin", err)
-	
 	} else if !isadmin {
 		m.Respond("Access denied: Only group admins can use this command.")
 
@@ -94,8 +92,7 @@ func SetLongModeHandler(m *telegram.NewMessage) error {
 
 	err := database.SetEchoSettings(settings)
 	if err != nil {
-	  return L(m, "Modules -> longmode -> SetEchoSettings", err)
-	
+		return L(m, "Modules -> longmode -> SetEchoSettings", err)
 	}
 
 	m.Respond(fmt.Sprintf("✅ Long message mode set to '%s'.", mode))

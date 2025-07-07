@@ -57,9 +57,9 @@ func deleteLinkMessage(m *telegram.NewMessage) error {
 		return nil
 	}
 	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.Sender.ID); err != nil {
-	  	 L(m, "Modules -> nolinks -> helpers.IsChatAdmin()", err)
-	
-		return nil 
+		L(m, "Modules -> nolinks -> helpers.IsChatAdmin()", err)
+
+		return nil
 	} else if isadmin {
 		return nil
 	}
@@ -82,7 +82,6 @@ func deleteLinkMessage(m *telegram.NewMessage) error {
 	allowedHosts, err := database.GetAllowedHostnames(m.ChatID())
 	if err != nil {
 		return L(m, "Modules -> nolinks -> database.GetAllowedHostnames", err)
-	
 	}
 	allowed := make(map[string]struct{}, len(allowedHosts))
 	for _, h := range allowedHosts {
@@ -117,12 +116,11 @@ func NoLinksCmd(m *telegram.NewMessage) error {
 	}
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
-	}  else if err != nil {
-	  return L(m, "Modules -> nolinks -> m.Delete()", err)
+	} else if err != nil {
+		return L(m, "Modules -> nolinks -> m.Delete()", err)
 	}
 	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
-			return L(m, "Modules -> nolinks -> helpers.IsChatAdmin()", err)
-	
+		return L(m, "Modules -> nolinks -> helpers.IsChatAdmin()", err)
 	} else if !isadmin {
 		m.Respond("Access denied: Only group admins can use this command.")
 
@@ -161,12 +159,11 @@ func AllowHostCmd(m *telegram.NewMessage) error {
 
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
-	}  else if err != nil {
-	  return L(m, "Modules -> nolinks -> m.Delete()", err)
+	} else if err != nil {
+		return L(m, "Modules -> nolinks -> m.Delete()", err)
 	}
 	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
-			return L(m, "Modules -> nolinks -> helpers.IsChatAdmin()", err)
-	
+		return L(m, "Modules -> nolinks -> helpers.IsChatAdmin()", err)
 	} else if !isadmin {
 		m.Respond("Access denied: Only group admins can use this command.")
 
@@ -199,13 +196,12 @@ func RemoveHostCmd(m *telegram.NewMessage) error {
 	}
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
-	}  else if err != nil {
-	  return L(m, "Modules -> nolinks -> m.Delete()", err)
+	} else if err != nil {
+		return L(m, "Modules -> nolinks -> m.Delete()", err)
 	}
 
 	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
 		return L(m, "Modules -> nolinks -> helpers.IsChatAdmin()", err)
-	
 	} else if !isadmin {
 		m.Respond("Access denied: Only group admins can use this command.")
 
@@ -224,7 +220,7 @@ func RemoveHostCmd(m *telegram.NewMessage) error {
 	}
 	if err := database.RemoveAllowedHostname(m.ChatID(), host); err != nil {
 		L(m, "Modules -> Nolinks -> database.RemoveAllowedHostname", err)
-	
+
 		m.Respond("❌ Failed to remove host.")
 		return telegram.EndGroup
 	}
@@ -238,12 +234,12 @@ func ListAllowedHosts(m *telegram.NewMessage) error {
 	}
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
-	}  else if err != nil {
-	  return L(m, "Modules -> nolinks -> m.Delete()", err)
+	} else if err != nil {
+		return L(m, "Modules -> nolinks -> m.Delete()", err)
 	}
 	hosts, err := database.GetAllowedHostnames(m.ChatID())
 	if err != nil {
-		 L(m, "Modules -> Nolinks -> database.GetAllowedHostname", err)
+		L(m, "Modules -> Nolinks -> database.GetAllowedHostname", err)
 		m.Respond("❌ Failed to fetch allowed links.")
 		return telegram.EndGroup
 	}

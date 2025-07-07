@@ -37,12 +37,11 @@ func setBioMode(m *telegram.NewMessage) error {
 
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
-	}  else if err != nil {
-	  return L(m, "Modules -> bioLink -> m.Delete()", err)
+	} else if err != nil {
+		return L(m, "Modules -> bioLink -> m.Delete()", err)
 	}
 	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
-			return L(m, "Modules -> biolink -> helpers.IsChatAdmin()", err)
-	
+		return L(m, "Modules -> biolink -> helpers.IsChatAdmin()", err)
 	} else if !isadmin {
 		m.Respond("Access denied: Only group admins can use this command.")
 
@@ -63,8 +62,8 @@ func setBioMode(m *telegram.NewMessage) error {
 		err := database.SetBioMode(m.ChatID())
 		if err != nil {
 			msg = fmt.Sprintf("⚠️ <b>Oops! Failed to enable BioMode.</b>\n\n🚫 An error occurred while trying to turn it on.\n\n<b>Error:</b> <code>%v</code>\n\n🔁 Please try again later.", err)
-		 L(m, "Modules -> biolink -> database.SetBioMode(...)", err)
-	
+			L(m, "Modules -> biolink -> database.SetBioMode(...)", err)
+
 		} else {
 			msg = "✅ <b>BioMode enabled successfully!</b>\n\n🔍 I will now monitor bios for any links and automatically delete messages if found.\n\n🛡 Stay safe!"
 		}
@@ -72,8 +71,8 @@ func setBioMode(m *telegram.NewMessage) error {
 		err := database.DelBioMode(m.ChatID())
 		if err != nil {
 			msg = fmt.Sprintf("⚠️ <b>Oops! Failed to disable BioMode.</b>\n\n🚫 An error occurred while trying to turn it off.\n\n<b>Error:</b> <code>%v</code>\n\n🔁 Please try again later.", err)
-				 L(m, "Modules -> biolink -> database.DelBioMode(...)", err)
-	
+			L(m, "Modules -> biolink -> database.DelBioMode(...)", err)
+
 		} else {
 			msg = "🛑 <b>BioMode disabled successfully!</b>\n\n🔓 I'm no longer monitoring user bios for links in this group.\n\n✅ You're back to normal behavior."
 		}
@@ -91,15 +90,15 @@ func deleteUserMsgIfBio(m *telegram.NewMessage) error {
 	}
 
 	if mode, err := database.GetBioMode(m.ChatID()); err != nil {
-	  	 L(m, "Modules -> biolink -> database.GetBioMode(...)", err)
-	
+		L(m, "Modules -> biolink -> database.GetBioMode(...)", err)
+
 		return err
 	} else if !mode {
 		return Continue
 	}
 	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
-	  	L(m, "Modules -> bioLink -> helpers.IsChatAdmin()", err)
-	
+		L(m, "Modules -> bioLink -> helpers.IsChatAdmin()", err)
+
 		return err
 	} else if isadmin {
 		return telegram.EndGroup
@@ -111,8 +110,8 @@ func deleteUserMsgIfBio(m *telegram.NewMessage) error {
 
 	resp, errr := m.Client.UsersGetFullUser(&telegram.InputUserObj{UserID: m.Sender.ID, AccessHash: m.Sender.AccessHash})
 	if errr != nil {
-	  	 L(m, "Modules -> biolink -> client.GetFullUser(...)", errr)
-	
+		L(m, "Modules -> biolink -> client.GetFullUser(...)", errr)
+
 		return errr
 	} else if resp.FullUser.About == "" || !ShouldDeleteMsg(resp.FullUser.About) {
 		return nil
