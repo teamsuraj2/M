@@ -384,12 +384,12 @@ func SetNSFWFlag(chatID int64, enable bool) error {
 	return err
 }
 
-func IsNSFWEnabled(chatID int64) (bool, error) {
+func IsNSFWEnabled(chatID int64) bool {
 	key := fmt.Sprintf("%d_nsfw", chatID)
 
 	if val, ok := config.Cache.Load(key); ok {
 		if enabled, ok := val.(bool); ok {
-			return enabled, nil
+			return enabled
 		}
 	}
 
@@ -404,11 +404,12 @@ func IsNSFWEnabled(chatID int64) (bool, error) {
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			config.Cache.Store(key, false)
-			return false, nil
+			return false
 		}
-		return false, err
+		fmt.Println("Database error IsNsfwOn", err)
+		return false
 	}
 
 	config.Cache.Store(key, result.Enabled)
-	return result.Enabled, nil
+	return result.Enabled
 }
