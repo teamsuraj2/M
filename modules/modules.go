@@ -96,7 +96,7 @@ func orCont(err error) error {
 
 func L(m *telegram.NewMessage, context string, err error) error {
 	if err == nil {
-		return
+		return telegram.EndGroup
 	}
 
 	log.Printf("[ERROR] %s: %v", context, err)
