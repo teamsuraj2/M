@@ -16,7 +16,7 @@ import (
 )
 
 func init() {
-	AddHelp("📝 Long Message", "echo", `<b>Command:</b>
+	AddHelp("📝 Echo", "echo", `<b>Command:</b>
 <blockquote>/echo &lt;text&gt;
  /setlongmode &lt;off|manual|automatic&gt;
  /setlonglimit &lt;number&gt;</blockquote>
