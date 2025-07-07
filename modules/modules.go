@@ -23,10 +23,8 @@ var (
 
 
 func FilterOwner(m *telegram.NewMessage) bool {
-  if slices.Contains(OwnerId, m.SenderID()) {
-    return true
-  }
-  return false
+  return slices.Contains(OwnerId, m.SenderID())
+  
 }
 func LoadMods(c *telegram.Client) {
   c.UpdatesGetState()
@@ -58,8 +56,7 @@ func LoadMods(c *telegram.Client) {
   c.On("callback:help", helpCB)
   c.On("callback:start_callback", startCB)
 
-  for _,
-  h: = range handler {
+  for _, h: = range handler {
     c.On(h.Pattern, h.Handler, h.Filters...)
   }
 }
@@ -77,8 +74,7 @@ func AddHelp(name, callback, help string, filters ...telegram.Filter) {
 }
 
 func GetHelp(callback string) string {
-  for _,
-  data: = range ModulesHelp {
+  for _, data: = range ModulesHelp {
     if data.Callback == callback {
       return data.Help
     }
