@@ -370,7 +370,7 @@ func SetNSFWFlag(chatID int64, enable bool) error {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
-	_, err = nsfwFlagsDB.UpdateOne(
+	_, err := nsfwFlagsDB.UpdateOne(
 		ctx,
 		bson.M{"_id": chatID},
 		bson.M{"$set": bson.M{"enabled": enable}},
