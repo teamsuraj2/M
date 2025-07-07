@@ -81,5 +81,5 @@ Let me know if you need any help.`,
 		config.LoggerId,
 		logStr,
 	)
-	return  err
+	return err
 }
