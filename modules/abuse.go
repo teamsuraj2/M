@@ -14,7 +14,7 @@ import (
 
 func init() {
 	AddHelp(
-		"🚫 NoAbuse",
+		"🚫 Abuse",
 		"noabuse_help",
 		"<b>🚫 NoAbuse Filter</b>\n"+
 			"Automatically detects and filters abusive or offensive language in group messages.\n\n"+
