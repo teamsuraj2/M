@@ -4,6 +4,8 @@ import (
 	"slices"
 
 	"github.com/amarnathcjd/gogram/telegram"
+
+	"main/config"
 )
 
 type HelpModule struct {
