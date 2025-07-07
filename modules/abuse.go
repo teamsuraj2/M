@@ -70,7 +70,7 @@ func DeleteAbuseHandle(m *telegram.NewMessage) error {
 	if bo := IsSupergroup(m); !bo {
 		return nil
 	}
-	
+
 	if !database.IsNSFWEnabled(m.ChatID()) {
 		return nil
 	}
