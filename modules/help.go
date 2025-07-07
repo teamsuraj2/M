@@ -2,6 +2,7 @@ package modules
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/amarnathcjd/gogram/telegram"
 )
@@ -9,7 +10,6 @@ import (
 func help(m *telegram.NewMessage) error {
 	m.Delete()
 	if m.ChatType() != telegram.EntityUser {
-
 		keyboard := telegram.Button.Keyboard(
 			telegram.Button.Row(
 				telegram.Button.URL("🗒 Command", fmt.Sprintf("https://t.me/%s?start=help", m.Client.Me().Username)),
@@ -20,12 +20,18 @@ func help(m *telegram.NewMessage) error {
 				ReplyMarkup: keyboard,
 			})
 		return L(m, "Modules -> help -> pvt-respond", err)
-
 	}
+
 	keyboard := telegram.NewKeyboard()
 
 	var buttons []telegram.KeyboardButton
-	for name, mod := range ModulesHelp {
+	keys := make([]string, 0, len(ModulesHelp))
+	for name := range ModulesHelp {
+		keys = append(keys, name)
+	}
+	sort.Strings(keys)
+	for _, name := range keys {
+		mod := ModulesHelp[name]
 		button := telegram.Button.Data(name, mod.Callback)
 		buttons = append(buttons, button)
 	}
@@ -48,7 +54,13 @@ func helpCB(c *telegram.CallbackQuery) error {
 	keyboard := telegram.NewKeyboard()
 
 	var buttons []telegram.KeyboardButton
-	for name, mod := range ModulesHelp {
+	keys := make([]string, 0, len(ModulesHelp))
+	for name := range ModulesHelp {
+		keys = append(keys, name)
+	}
+	sort.Strings(keys)
+	for _, name := range keys {
+		mod := ModulesHelp[name]
 		button := telegram.Button.Data(name, mod.Callback)
 		buttons = append(buttons, button)
 	}
