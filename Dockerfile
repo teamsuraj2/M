@@ -11,8 +11,9 @@ RUN go mod tidy
 
 COPY . .
 
-CMD ["go", "run", "."]
+RUN go build -o app .
 
+CMD ["./app"]
 
 # -----------------------------------------------
 # ⛔ Commented: Multi-stage production build
