@@ -1,6 +1,7 @@
 package modules
 
 import (
+	"fmt"
 	"log"
 	"strings"
 
@@ -68,7 +69,7 @@ func DeleteAbuseHandle(m *telegram.NewMessage) error {
 	if bo := IsSupergroup(m); !bo {
 		return nil
 	}
-	
+
 	if !database.IsNSFWEnabled(m.ChatId()) {
 		return nil
 	}

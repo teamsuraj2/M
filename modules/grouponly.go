@@ -66,7 +66,7 @@ func ShouldIgnoreGroupAnonymous(m *telegram.NewMessage) bool {
 		return false
 	}
 
-	if m.SenderID() == m.ChatID() || m.SenderID() == 0{
+	if m.SenderID() == m.ChatID() || m.SenderID() == 0 {
 		return true
 	}
 
