@@ -361,10 +361,8 @@ func SetNSFWFlag(chatID int64, enable bool) error {
 		}
 	}
 
-	old, err := IsNSFWEnabled(chatID)
-	if err != nil {
-		return err
-	}
+	old := IsNSFWEnabled(chatID)
+	
 	if old == enable {
 		return nil
 	}
