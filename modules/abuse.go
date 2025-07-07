@@ -2,6 +2,7 @@ package modules
 
 import (
 	"fmt"
+	"html"
 	"log"
 	"strings"
 
@@ -87,14 +88,14 @@ func DeleteAbuseHandle(m *telegram.NewMessage) error {
 	}
 	var user string
 	if m.Sender.Username != "" {
-	user = "@" + m.Sender.Username
- }	else {
-	  userFullName := strings.TrimSpace(m.Sender.FirstName + " " + m.Sender.LastName)
-	  user = fmt.Sprintf(`<a href="tg://user?id=%d">%s</a>`, m.SenderID(), html.EscapeString(userFullName))
+		user = "@" + m.Sender.Username
+	} else {
+		userFullName := strings.TrimSpace(m.Sender.FirstName + " " + m.Sender.LastName)
+		user = fmt.Sprintf(`<a href="tg://user?id=%d">%s</a>`, m.SenderID(), html.EscapeString(userFullName))
 	}
 	if len(m.Text()) < 800 {
 		m.Respond(
-			fmt.Sprintf("🚫 %s, Your message was deleted due to abusive words.\nDetected: <code>%s</code>",user, profane),
+			fmt.Sprintf("🚫 %s, Your message was deleted due to abusive words.\nDetected: <code>%s</code>", user, profane),
 		)
 	} else {
 		m.Respond(fmt.Sprintf("🚫 %s, Your message was deleted due to abusive words.", user))
