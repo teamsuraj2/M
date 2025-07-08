@@ -2,17 +2,14 @@ package modules
 
 import (
 	"errors"
-	"slices"
 
 	"github.com/amarnathcjd/gogram/telegram"
 )
 
 func OnMessageFnc(m *telegram.NewMessage) error {
 	if _, ok := commandSet[cmd]; ok {
-
-return  nil
-}
-
+		return nil
+	}
 
 	handlers := []func(*telegram.NewMessage) error{
 		DeleteAbuseHandle,
