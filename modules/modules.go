@@ -64,7 +64,6 @@ func FilterOwner(m *telegram.NewMessage) bool {
 }
 
 func LoadMods(c *telegram.Client) {
-
 	c.UpdatesGetState()
 	c.On("command:biolink", setBioMode)
 	c.On("command:setlonglimit", SetLongLimitHandler)
