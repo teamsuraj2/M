@@ -10,7 +10,7 @@ import (
 func OnMessageFnc(m *telegram.NewMessage) error {
 	if _, ok := commandSet[cmd]; ok {
 
-return 
+return  nil
 }
 
 
