@@ -22,7 +22,7 @@ type DeferredHandler struct {
 }
 
 var Continue error = nil
-const Commands []string{
+var Commands  = []string{
   "/biolink",
   "/setlonglimit",
   "/setlongmode",
@@ -39,10 +39,10 @@ const Commands []string{
   "/allowhost",
   "/removelink",
   "listlinks",
-  "sh",
-  "bash", 
-  "ls",
-  "eval",
+  "/sh",
+  "/bash", 
+  "/ls",
+  "/eval",
 } // used in OnMessageFnc like if slices.Contains(Commands, m.GetCommand()){return nil}
 var (
 	ModulesHelp = make(map[string]*HelpModule, 0)
