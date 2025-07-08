@@ -61,7 +61,7 @@ func MatchNSFWText(text string) (bool, string) {
 
 	if !matched {
 		var err error
-		matched, err = helpers.IsProfanity(updated)
+		matched, err = IsProfanity(updated)
 
 		if err != nil {
 			fmt.Println("IsProfanity Error:", err.Error())
