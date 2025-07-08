@@ -1,7 +1,7 @@
 # TODO: Long Message Handling Settings
 ---
 
-- [ ] Link filter
+- [x] Link filter
 - Add support for user can approve some domains
 - Add Support for enable/disable
 
