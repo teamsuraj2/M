@@ -1,17 +1,7 @@
 # TODO: Long Message Handling Settings
-## Dismental echo Commands to Implement
-
-- [ ] `/longsettings`  
-  - Display current mode and limit.
-
-- [ ] `/longreset`  
-  - Reset settings to default:  
-    - Mode: auto  
-    - Limit: 800
-
 ---
 
-# 1) Link filter
+- [ ] Link filter
 - Add support for user can approve some domains
 - Add Support for enable/disable
 
