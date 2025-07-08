@@ -6,7 +6,7 @@
 - Add Support for enable/disable
 
 
-- [] Approvals
+- [ ] Approvals
 - Add approve that help approved  users will be ignored by bot action
 - Add command for removing a approved users
 - Add comm for getting all approved list
@@ -15,7 +15,7 @@
 - Improve the Caching
 
 
-- [] FloodControl
+- [ ] FloodControl
 
  On Join [ Not in users added by someone ]
 
@@ -26,15 +26,15 @@
 - ON MESSAGE, SPECIALLY IN [ GIF, STICKERS ].
 - implement all method like rosebkbot keep it optional
 
-- [] On new account
+- [ ] On new account
 
 - mute the user for 24 hrs if jer account is created < 24 hrs
 
-- []. Captcha
+- [ ]. Captcha
 
 Image, button, math etc
 
 
--[]. Lockdown
+- [ ]. Lockdown
 
 in command diable all permissions  on /lockdown <s>: lock the group for that times
