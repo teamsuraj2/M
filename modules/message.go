@@ -8,9 +8,12 @@ import (
 )
 
 func OnMessageFnc(m *telegram.NewMessage) error {
-	if slices.Contains(Commands, m.GetCommand()) {
-		return nil
-	}
+	if _, ok := commandSet[cmd]; ok {
+
+return 
+}
+
+
 	handlers := []func(*telegram.NewMessage) error{
 		DeleteAbuseHandle,
 		deleteLongMessage,
