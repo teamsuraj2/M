@@ -21,29 +21,31 @@ type DeferredHandler struct {
 	Filters []telegram.Filter
 }
 
-var Continue error = nil
-var Commands  = []string{
-  "/biolink",
-  "/setlonglimit",
-  "/setlongmode",
-  "/echo",
-  "/gcast",
-  "/ping",
-  "/reload",
-  "/start",
-  "/stats",
-  "/help",
-  "/nolinks",
-  "/noabuse",
-  "/allowlink",
-  "/allowhost",
-  "/removelink",
-  "listlinks",
-  "/sh",
-  "/bash", 
-  "/ls",
-  "/eval",
-} // used in OnMessageFnc like if slices.Contains(Commands, m.GetCommand()){return nil}
+var (
+	Continue error = nil
+	Commands       = []string{
+		"/biolink",
+		"/setlonglimit",
+		"/setlongmode",
+		"/echo",
+		"/gcast",
+		"/ping",
+		"/reload",
+		"/start",
+		"/stats",
+		"/help",
+		"/nolinks",
+		"/noabuse",
+		"/allowlink",
+		"/allowhost",
+		"/removelink",
+		"listlinks",
+		"/sh",
+		"/bash",
+		"/ls",
+		"/eval",
+	} // used in OnMessageFnc like if slices.Contains(Commands, m.GetCommand()){return nil}
+)
 var (
 	ModulesHelp = make(map[string]*HelpModule, 0)
 	handler     = make([]DeferredHandler, 0)
