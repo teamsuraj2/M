@@ -22,6 +22,28 @@ type DeferredHandler struct {
 }
 
 var Continue error = nil
+const Commands []string{
+  "/biolink",
+  "/setlonglimit",
+  "/setlongmode",
+  "/echo",
+  "/gcast",
+  "/ping",
+  "/reload",
+  "/start",
+  "/stats",
+  "/help",
+  "/nolinks",
+  "/noabuse",
+  "/allowlink",
+  "/allowhost",
+  "/removelink",
+  "listlinks",
+  "sh",
+  "bash", 
+  "ls",
+  "eval",
+} // used in OnMessageFnc like if slices.Contains(Commands, m.GetCommand()){return nil}
 var (
 	ModulesHelp = make(map[string]*HelpModule, 0)
 	handler     = make([]DeferredHandler, 0)

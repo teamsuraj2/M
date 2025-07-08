@@ -7,7 +7,7 @@ import (
 )
 
 func OnMessageFnc(m *telegram.NewMessage) error {
-	if m.GetCommand() != "" {
+	if slices.Contains(Commands, m.GetCommand()){
 		return nil
 	}
 	handlers := []func(*telegram.NewMessage) error{
