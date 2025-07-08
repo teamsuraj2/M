@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"fmt"
 	"regexp"
 	"strings"
 
@@ -34,6 +35,7 @@ func UpdateNSFWRegexCache() error {
 	config.Cache.Store("nsfw_regex", patterns)
 	return nil
 }
+
 func MatchNSFWText(text string) (bool, string) {
 	val, ok := config.Cache.Load("nsfw_regex")
 	if !ok {
@@ -62,7 +64,6 @@ func MatchNSFWText(text string) (bool, string) {
 	if !matched {
 		var err error
 		matched, err = IsProfanity(updated)
-
 		if err != nil {
 			fmt.Println("IsProfanity Error:", err.Error())
 		}
