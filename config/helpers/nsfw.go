@@ -11,8 +11,8 @@ import (
 func WildcardToRegex(w string) string {
 	escaped := regexp.QuoteMeta(w)
 	escaped = strings.ReplaceAll(escaped, `\*\*`, `(?s:.*)`)
-	escaped = strings.ReplaceAll(escaped, `\*`, `\S*`)
-	escaped = strings.ReplaceAll(escaped, `\?`, `\S`)
+	escaped = strings.ReplaceAll(escaped, `\*`, `.*`)
+	escaped = strings.ReplaceAll(escaped, `\?`, `.`)
 	return `(?i)` + escaped
 }
 
