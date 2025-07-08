@@ -46,16 +46,25 @@ var (
 		"/eval",
 	} // used in OnMessageFnc like if slices.Contains(Commands, m.GetCommand()){return nil}
 )
+var commandSet map[string]struct{}
 var (
 	ModulesHelp = make(map[string]*HelpModule, 0)
 	handler     = make([]DeferredHandler, 0)
 )
+
+func init() {
+	commandSet = make(map[string]struct{}, len(Commands))
+	for _, cmd := range Commands {
+		commandSet[cmd] = struct{}{}
+	}
+}
 
 func FilterOwner(m *telegram.NewMessage) bool {
 	return slices.Contains(config.OwnerId, m.SenderID())
 }
 
 func LoadMods(c *telegram.Client) {
+
 	c.UpdatesGetState()
 	c.On("command:biolink", setBioMode)
 	c.On("command:setlonglimit", SetLongLimitHandler)
