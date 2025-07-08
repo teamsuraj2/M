@@ -186,7 +186,7 @@ func resolveImports(code string) (string, []string) {
 }
 
 func EvalHandle(m *telegram.NewMessage) error {
-	code := strings.TrimSpace(strings.Join(strings.SplitN(m.RawText(true), " ", 2)[1:], " "))
+	code := strings.TrimSpace(strings.Join(strings.SplitN(m.RawText(), " ", 2)[1:], " "))
 	code, imports := resolveImports(code)
 
 	if code == "" {
