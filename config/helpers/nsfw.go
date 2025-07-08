@@ -38,8 +38,13 @@ func UpdateNSFWRegexCache() error {
 func MatchNSFWText(text string) (bool, string) {
 	val, ok := config.Cache.Load("nsfw_regex")
 	if !ok {
-		return false, text
+		_ = UpdateNSFWRegexCache()
+		val, ok = config.Cache.Load("nsfw_regex")
+		if !ok {
+			return false, text
+		}
 	}
+
 	regexList, ok := val.([]*regexp.Regexp)
 	if !ok {
 		return false, text
