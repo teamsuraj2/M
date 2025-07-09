@@ -29,11 +29,17 @@ func deleteEditedMessage(m *telegram.NewMessage) error {
 		return L(m, "Modules -> edit -> m.Delete()", err)
 	}
 
+u, err := m.GetSender()
+if err != nil {
+
+return L(m, "Modules -> edit -> m.GetSender", err)
+
+}
 	var senderTag string
-	if m.Sender.Username != "" {
-		senderTag = "@" + m.Sender.Username
+	if u.Username != "" {
+		senderTag = "@" + u.Username
 	} else {
-		senderTag = fmt.Sprintf(`<a href="tg://user?id=%d">%s</a>`, m.Sender.ID, html.EscapeString(m.Sender.FirstName))
+		senderTag = fmt.Sprintf(`<a href="tg://user?id=%d">%s</a>`, u.ID, html.EscapeString(u.FirstName))
 	}
 
 	reason := fmt.Sprintf(`<b>🚫 %s edited a message.</b> Editing messages is prohibited in this chat to maintain conversation integrity.`, senderTag)
@@ -70,6 +76,6 @@ func deleteEditedMessage(m *telegram.NewMessage) error {
 		reason = fmt.Sprintf(`<b>🎞️ %s edited a GIF or animation.</b> Keep animations unchanged for context.`, senderTag)
 	}
 
-	_, err := m.Respond(reason)
+	_, err = m.Respond(reason)
 	return L(m, "Modules -> edit -> respond", err)
 }
