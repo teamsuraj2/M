@@ -12,10 +12,10 @@ func OnMessageFnc(m *telegram.NewMessage) error {
 	}
 
 	handlers := []func(*telegram.NewMessage) error{
-		DeleteAbuseHandle,
 		deleteLongMessage,
 		deleteLinkMessage,
 		deleteUserMsgIfBio,
+                DeleteAbuseHandle,
 	}
 
 	for _, handler := range handlers {
