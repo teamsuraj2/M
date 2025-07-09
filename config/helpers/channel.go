@@ -37,7 +37,6 @@ func GetFullChannel(c *telegram.Client, chatId any) (*telegram.ChannelFull, erro
 	return fullChat, nil
 }
 
-
 // GetUser fetches a Telegram user by ID without using cache.
 func GetUser(client *telegram.Client, userID int64) (*telegram.UserObj, error) {
 	input := &telegram.InputUserObj{
