@@ -1,8 +1,9 @@
 package modules
 
 import (
+	"fmt"
+	"html"
 	"github.com/amarnathcjd/gogram/telegram"
-
 	"main/config/helpers"
 )
 
@@ -26,21 +27,24 @@ func deleteEditedMessage(m *telegram.NewMessage) error {
 		return L(m, "Modules -> edit -> m.Delete()", err)
 	}
 
-	reason := "<b>🚫 Editing messages is prohibited in this chat.</b> Please refrain from modifying your messages to maintain the integrity of the conversation."
-	p := "<b>📷 Photo edits are blocked.</b> Images must stay unchanged to preserve context."
+	var senderTag string
+	if m.Sender.Username != "" {
+		senderTag = "@" + m.Sender.Username
+	} else {
+		senderTag = fmt.Sprintf(`<a href="tg://user?id=%d">%s</a>`, m.Sender.ID, html.EscapeString(m.Sender.FirstName))
+	}
 
-	v := "<b>🎥 Video edits aren't allowed.</b> Videos must remain as originally shared."
-
-	d := "<b>📄 Document edits are restricted.</b> Keep documents unchanged for reliability."
-
-	a := "<b>🎵 Audio edits aren't permitted.</b> Audio files must remain unaltered."
+	reason := fmt.Sprintf(`<b>🚫 %s edited a message.</b> Editing messages is prohibited in this chat to maintain conversation integrity.`, senderTag)
+	p := fmt.Sprintf(`<b>📷 %s edited a photo caption.</b> Image edits are blocked to preserve context.`, senderTag)
+	v := fmt.Sprintf(`<b>🎥 %s edited a video caption.</b> Video edits aren't allowed to retain originality.`, senderTag)
+	d := fmt.Sprintf(`<b>📄 %s edited a document caption.</b> Please avoid modifying documents.`, senderTag)
+	a := fmt.Sprintf(`<b>🎵 %s edited an audio caption.</b> Audio files must remain unaltered.`, senderTag)
 
 	switch {
 	case m.Text() != "" && !m.IsMedia():
-		reason = "<b>🚫 Editing text is not allowed.</b> Please avoid changing messages once sent to keep conversations clear."
-
+		reason = fmt.Sprintf(`<b>🚫 %s edited text.</b> Editing text is not allowed to keep conversations clear.`, senderTag)
 	case m.Text() != "" && m.IsMedia():
-		reason = "<b>✍️ Caption edits are restricted.</b> Changing them affects clarity and is not permitted."
+		reason = fmt.Sprintf(`<b>✍️ %s edited a media caption.</b> Caption edits affect clarity and are not permitted.`, senderTag)
 		if m.Photo() != nil {
 			reason = p
 		} else if m.Video() != nil {
@@ -50,28 +54,20 @@ func deleteEditedMessage(m *telegram.NewMessage) error {
 		} else if m.Audio() != nil {
 			reason = a
 		}
-
 	case m.Photo() != nil:
 		reason = p
-
 	case m.Video() != nil:
 		reason = v
-
 	case m.Document() != nil:
 		reason = d
-
 	case m.Audio() != nil:
 		reason = a
-
 	case m.Voice() != nil:
-		reason = "<b>🎙️ Voice edits are restricted.</b> Voice messages should remain original."
-
+		reason = fmt.Sprintf(`<b>🎙️ %s edited a voice message.</b> Voice messages should remain original.`, senderTag)
 	case m.Animation() != nil:
-		reason = "<b>🎞️ GIF edits are blocked.</b> Keep animations unchanged for context."
-
+		reason = fmt.Sprintf(`<b>🎞️ %s edited a GIF or animation.</b> Keep animations unchanged for context.`, senderTag)
 	}
 
 	_, err := m.Respond(reason)
-
 	return L(m, "Modules -> edit -> respond", err)
 }
