@@ -29,12 +29,10 @@ func deleteEditedMessage(m *telegram.NewMessage) error {
 		return L(m, "Modules -> edit -> m.Delete()", err)
 	}
 
-u, err := m.GetSender()
-if err != nil {
-
-return L(m, "Modules -> edit -> m.GetSender", err)
-
-}
+	u, err := m.GetSender()
+	if err != nil {
+		return L(m, "Modules -> edit -> m.GetSender", err)
+	}
 	var senderTag string
 	if u.Username != "" {
 		senderTag = "@" + u.Username
