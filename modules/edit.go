@@ -29,7 +29,7 @@ func deleteEditedMessage(m *telegram.NewMessage) error {
 		return L(m, "Modules -> edit -> m.Delete()", err)
 	}
 
-	u, err := m.GetSender()
+	u, err := helpers.GetUser(m.SenderID())
 	if err != nil {
 		return L(m, "Modules -> edit -> m.GetSender", err)
 	}
