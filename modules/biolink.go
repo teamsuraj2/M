@@ -89,52 +89,67 @@ func deleteUserMsgIfBio(m *telegram.NewMessage) error {
 		return nil
 	}
 
-	if mode, err := database.GetBioMode(m.ChatID()); err != nil {
+	mode, err := database.GetBioMode(m.ChatID())
+	if err != nil {
 		L(m, "Modules -> biolink -> database.GetBioMode(...)", err)
-
 		return err
-	} else if !mode {
+	}
+	if !mode {
 		return Continue
 	}
-	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
-		L(m, "Modules -> bioLink -> helpers.IsChatAdmin()", err)
 
+	isAdmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID())
+	if err != nil {
+		L(m, "Modules -> biolink -> helpers.IsChatAdmin()", err)
 		return err
-	} else if isadmin {
+	}
+	if isAdmin {
 		return telegram.EndGroup
 	}
 
 	if _, ok := m.Message.FromID.(*telegram.PeerUser); !ok {
 		return nil
 	}
+
 	var bio string
 	cacheKey := fmt.Sprintf("userfull_%d", m.SenderID())
-	if resp, err := m.Client.UsersGetFullUser(&telegram.InputUserObj{UserID: m.Sender.ID, AccessHash: m.Sender.AccessHash}); err != nil {
-		if !m.Client.MatchError(err, "USER_ID_INVALID") || !m.Client.MatchError(err, "FLOOD_WAIT_X") {
-			L(m, "Modules -> biolink -> client.GetFullUser(...)", errr)
-		}
 
+	resp, err := m.Client.UsersGetFullUser(&telegram.InputUserObj{
+		UserID:     m.Sender.ID,
+		AccessHash: m.Sender.AccessHash,
+	})
+
+	if err != nil {
 		if val, ok := config.LoadTyped[*telegram.UserFull](config.Cache, cacheKey); ok {
 			bio = val.About
 		} else {
-			if wait := telegram.GetFloodWait(err); wait < 15 && wait > 0 {
-				time.Sleep(time.Duration(wait) * time.Seconds)
-				if resp, err = m.Client.UsersGetFullUser(&telegram.InputUserObj{UserID: m.Sender.ID, AccessHash: m.Sender.AccessHash}); err != nil {
+			if wait := telegram.GetFloodWait(err); wait > 0 && wait < 15 {
+				time.Sleep(time.Duration(wait) * time.Second)
+				resp, err = m.Client.UsersGetFullUser(&telegram.InputUserObj{
+					UserID:     m.Sender.ID,
+					AccessHash: m.Sender.AccessHash,
+				})
+				if err != nil {
 					return telegram.EndGroup
 				}
 				bio = resp.FullUser.About
 				config.Cache.Store(cacheKey, resp.FullUser)
 			} else {
+				if !m.Client.MatchError(err, "USER_ID_INVALID") && !m.Client.MatchError(err, "FLOOD_WAIT_X") {
+					L(m, "Modules -> biolink -> client.UsersGetFullUser(...)", err)
+				}
 				return telegram.EndGroup
 			}
 		}
 	} else {
+		bio = resp.FullUser.About
 		config.Cache.Store(cacheKey, resp.FullUser)
-
-		if resp.FullUser.About == "" || !ShouldDeleteMsg(resp.FullUser.About) {
-			return nil
-		}
 	}
+
+	if bio == "" || !ShouldDeleteMsg(bio) {
+		return nil
+	}
+
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return telegram.EndGroup
 	}
@@ -145,7 +160,7 @@ func deleteUserMsgIfBio(m *telegram.NewMessage) error {
 	} else {
 		mention = fmt.Sprintf("<a href='tg://user?id=%d'>%s</a>", m.Sender.ID, m.Sender.FirstName)
 	}
-	msg := fmt.Sprintf(`🚨 %s, your message was deleted because your bio contains a link.`, mention)
 
+	msg := fmt.Sprintf("🚨 %s, your message was deleted because your bio contains a link.", mention)
 	return m.E(m.Respond(msg))
 }
