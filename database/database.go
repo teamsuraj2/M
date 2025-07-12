@@ -24,7 +24,7 @@ var (
 	bioLinkDB   *mongo.Collection
 	nsfwWordsDB *mongo.Collection
 	nsfwFlagsDB *mongo.Collection
-	timeout     = 5 * time.Second
+	timeout     = 11 * time.Second
 )
 
 func init() {
