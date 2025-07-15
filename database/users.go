@@ -68,18 +68,20 @@ func AddServedUser(userID int64) error {
 	if err != nil || exists {
 		return err
 	}
-	go func() {
-		ctx, cancel := context.WithTimeout(context.Background(), timeout)
-		defer cancel()
 
-		_, err := userDB.InsertOne(ctx, bson.M{"user_id": userID})
-		if err == nil {
-			val, _ := config.Cache.LoadOrStore("users", []int64{})
-			users := val.([]int64)
-			users = append(users, userID)
-			config.Cache.Store("users", users)
-		}
-	}()
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
+
+	_, err = userDB.InsertOne(ctx, bson.M{"user_id": userID})
+	if err != nil {
+		return err
+	}
+
+	val, _ := config.Cache.LoadOrStore("users", []int64{})
+	users := val.([]int64)
+	users = append(users, userID)
+	config.Cache.Store("users", users)
+
 	return nil
 }
 
@@ -89,24 +91,24 @@ func DeleteServedUser(userID int64) error {
 		return err
 	}
 
-	go func() {
-		ctx, cancel := context.WithTimeout(context.Background(), timeout)
-		defer cancel()
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
+	defer cancel()
 
-		_, err := userDB.DeleteOne(ctx, bson.M{"user_id": userID})
-		if err == nil {
-			if val, ok := config.Cache.Load("users"); ok {
-				users := val.([]int64)
-				for i, id := range users {
-					if id == userID {
-						users = append(users[:i], users[i+1:]...)
-						break
-					}
-				}
-				config.Cache.Store("users", users)
+	_, err = userDB.DeleteOne(ctx, bson.M{"user_id": userID})
+	if err != nil {
+		return err
+	}
+
+	if val, ok := config.Cache.Load("users"); ok {
+		users := val.([]int64)
+		for i, id := range users {
+			if id == userID {
+				users = append(users[:i], users[i+1:]...)
+				break
 			}
 		}
-	}()
+		config.Cache.Store("users", users)
+	}
 
 	return nil
 }
