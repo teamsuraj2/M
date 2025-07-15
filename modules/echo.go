@@ -91,21 +91,19 @@ func deleteLongMessage(m *telegram.NewMessage) error {
 	if !IsSupergroup(m) {
 		return nil
 	}
-
-	if m.GetCommand() == "/echo" {
-		return nil
-	}
-
+	
 	if ShouldIgnoreGroupAnonymous(m) {
 		return nil
 	}
-	chatID := m.ChannelID()
+	
+	chatID := m.ChatID()
 	if isadmin, err := helpers.IsChatAdmin(m.Client, chatID, m.Sender.ID); err != nil {
 		L(m, "Modules -> echo -> deleteLongMessage -> helpers.IsChatAdmin()", err)
 		return nil
 	} else if isadmin {
 		return nil
 	}
+	
 	settings, err := database.GetEchoSettings(chatID)
 	var isAutomatic bool
 	L(m, "Modules -> echo -> database.GetEchoSettings(...)", err)
@@ -116,10 +114,10 @@ func deleteLongMessage(m *telegram.NewMessage) error {
 	}
 	if settings.Mode == "OFF" {
 		return nil
-	}
-	if settings.Mode == "AUTOMATIC" {
+	} else	if settings.Mode == "AUTOMATIC" {
 		isAutomatic = true
 	}
+	
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
 		return err
 	} else if err != nil {
@@ -158,7 +156,7 @@ Alternatively, use /echo for sending longer messages. 📜
 		}
 	} else if isAutomatic {
 		err = sendEchoMessage(m, m.Text())
-		return orCont(err)
+		return L(m, "modules -> echo -> Auto -> sendEchoMessage()", err)
 	}
 	return nil
 }

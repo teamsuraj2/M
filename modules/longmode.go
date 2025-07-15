@@ -20,7 +20,7 @@ func SetLongLimitHandler(m *telegram.NewMessage) error {
 	} else if err != nil {
 		return L(m, "Modules -> longmode -> m.Delete()", err)
 	}
-	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
+	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChatID(), m.SenderID()); err != nil {
 		return L(m, "Modules -> longmode -> helpers.IsChatAdmin()", err)
 	} else if !isadmin {
 		m.Respond("Access denied: Only group admins can use this command.")
@@ -41,7 +41,7 @@ func SetLongLimitHandler(m *telegram.NewMessage) error {
 	}
 
 	settings := &database.EchoSettings{
-		ChatID: m.ChannelID(),
+		ChatID: m.ChatID(),
 		Limit:  limit,
 	}
 
@@ -64,7 +64,7 @@ func SetLongModeHandler(m *telegram.NewMessage) error {
 	} else if err != nil {
 		return L(m, "Modules -> longmode -> m.Delete()", err)
 	}
-	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
+	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChatID(), m.SenderID()); err != nil {
 		return L(m, "Modules -> longmode -> IsChatAdmin", err)
 	} else if !isadmin {
 		m.Respond("Access denied: Only group admins can use this command.")
@@ -86,7 +86,7 @@ func SetLongModeHandler(m *telegram.NewMessage) error {
 		mode = "automatic"
 	}
 	settings := &database.EchoSettings{
-		ChatID: m.ChannelID(),
+		ChatID: m.ChatID(),
 		Mode:   mode,
 	}
 
