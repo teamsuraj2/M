@@ -53,8 +53,7 @@ func init() {
 	nsfwFlagsDB = db.Collection("nsfw_flags")
 
 	// Indexes
-	CreateIndex(ctx, userDB, bson.D{{Key: "user_id", Value: 1}}, true)
-	CreateIndex(ctx, chatDB, bson.D{{Key: "chat_id", Value: 1}}, true)
+
 	CreateIndex(ctx, editModeDB, bson.D{{Key: "chat_id", Value: 1}}, true)
 	CreateIndex(ctx, echoDB, bson.D{{Key: "chat_id", Value: 1}}, true)
 	CreateIndex(ctx, linksDB, bson.D{{Key: "chat_id", Value: 1}}, true)
