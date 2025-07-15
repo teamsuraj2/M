@@ -65,7 +65,7 @@ func ShouldIgnoreGroupAnonymous(m *telegram.NewMessage) bool {
 		return true
 	}
 
-	fullChat, err := helpers.GetFullChannel(m.Client, m.ChannelID())
+	fullChat, err := helpers.GetFullChannel(m.Client, m.ChatID())
 	if err != nil {
 		L(m, "Modules -> groupOnly -> GetFullChannel", err)
 		return false

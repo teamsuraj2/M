@@ -16,7 +16,7 @@ func deleteEditedMessage(m *telegram.NewMessage) error {
 	if ShouldIgnoreGroupAnonymous(m) {
 		return nil
 	}
-	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.Sender.ID); err != nil {
+	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChatID(), m.Sender.ID); err != nil {
 		L(m, "Modules -> edit -> helpers.IsChatAdmin()", err)
 		return nil
 	} else if isadmin {

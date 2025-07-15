@@ -155,14 +155,14 @@ To use my features, please upgrade this group to a supergroup.
 
 		m.Respond(msg)
 		m.Delete()
-		m.Client.LeaveChannel(m.ChannelID(), true)
+		m.Client.LeaveChannel(m.ChatID(), true)
 	}
 
 	// Supergroup Chat
 	if IsSupergroup(m) {
 		m.Delete()
-		database.AddServedChat(m.ChannelID())
-		if !helpers.WarnIfLackOfPms(m.Client, m, m.ChannelID()) {
+		database.AddServedChat(m.ChatID())
+		if !helpers.WarnIfLackOfPms(m.Client, m, m.ChatID()) {
 			return nil
 		}
 

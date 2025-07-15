@@ -14,7 +14,7 @@ func pingHandler(m *telegram.NewMessage) error {
 	m.Delete()
 
 	if IsSupergroup(m) {
-		if !helpers.WarnIfLackOfPms(m.Client, m, m.ChannelID()) {
+		if !helpers.WarnIfLackOfPms(m.Client, m, m.ChatID()) {
 			return telegram.EndGroup
 		}
 	}

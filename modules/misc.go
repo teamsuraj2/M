@@ -25,17 +25,17 @@ Let me know if you need any help.`,
 
 	if m.IsAdded() {
 		m.Client.SendMessage(
-			m.ChannelID(),
+			m.ChatID(),
 			text,
 		)
-		database.AddServedChat(m.ChannelID())
+		database.AddServedChat(m.ChatID())
 	}
 	if r := database.IsLoggerEnabled(); !r {
 		return telegram.EndGroup
 	}
 	var chatMemberCount int32
 	var status, groupUsername, groupTitle, logStr string
-	if _, cmc, err := m.Client.GetChatMembers(m.ChannelID(), &telegram.ParticipantOptions{
+	if _, cmc, err := m.Client.GetChatMembers(m.ChatID(), &telegram.ParticipantOptions{
 		Limit: -1,
 	}); err != nil {
 		chatMemberCount = 0
@@ -43,7 +43,7 @@ Let me know if you need any help.`,
 		chatMemberCount = cmc
 	}
 
-	if chat, err := m.Client.GetChannel(m.ChannelID()); err != nil {
+	if chat, err := m.Client.GetChannel(m.ChatID()); err != nil {
 		groupUsername = "N/A"
 		groupTitle = "N/A"
 	} else {
@@ -74,7 +74,7 @@ Let me know if you need any help.`,
 ━━━━━━━━━━━━━━━━━`,
 		status,
 		groupTitle,
-		m.ChannelID(),
+		m.ChatID(),
 		groupUsername,
 		chatMemberCount,
 	)

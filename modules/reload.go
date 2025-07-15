@@ -18,7 +18,7 @@ func ReloadHandler(m *telegram.NewMessage) error {
 
 	x, _ := m.Respond("Refreshing Cache of chat admins...")
 
-	admins, _, err := m.Client.GetChatMembers(m.ChannelID(), &telegram.ParticipantOptions{
+	admins, _, err := m.Client.GetChatMembers(m.ChatID(), &telegram.ParticipantOptions{
 		Filter: &telegram.ChannelParticipantsAdmins{},
 		Limit:  -1,
 	})
@@ -32,10 +32,10 @@ func ReloadHandler(m *telegram.NewMessage) error {
 		return L(m, "Modules -> Reload -> GetChatMembers", err)
 
 	}
-	config.Cache.Store(fmt.Sprintf("admins:%d", m.ChannelID()), admins)
+	config.Cache.Store(fmt.Sprintf("admins:%d", m.ChatID()), admins)
 
 	var text string
-	if isb, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
+	if isb, err := helpers.IsChatAdmin(m.Client, m.ChatID(), m.SenderID()); err != nil {
 		return err
 	} else if isb {
 		text = "✅ Successfully refreshed the cache of chat admins!"

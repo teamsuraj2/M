@@ -56,7 +56,7 @@ func deleteLinkMessage(m *telegram.NewMessage) error {
 	if ShouldIgnoreGroupAnonymous(m) {
 		return nil
 	}
-	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.Sender.ID); err != nil {
+	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChatID(), m.Sender.ID); err != nil {
 		L(m, "Modules -> nolinks -> helpers.IsChatAdmin()", err)
 
 		return nil
@@ -119,7 +119,7 @@ func NoLinksCmd(m *telegram.NewMessage) error {
 	} else if err != nil {
 		return L(m, "Modules -> nolinks -> m.Delete()", err)
 	}
-	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
+	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChatID(), m.SenderID()); err != nil {
 		return L(m, "Modules -> nolinks -> helpers.IsChatAdmin()", err)
 	} else if !isadmin {
 		m.Respond("Access denied: Only group admins can use this command.")
@@ -162,7 +162,7 @@ func AllowHostCmd(m *telegram.NewMessage) error {
 	} else if err != nil {
 		return L(m, "Modules -> nolinks -> m.Delete()", err)
 	}
-	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
+	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChatID(), m.SenderID()); err != nil {
 		return L(m, "Modules -> nolinks -> helpers.IsChatAdmin()", err)
 	} else if !isadmin {
 		m.Respond("Access denied: Only group admins can use this command.")
@@ -200,7 +200,7 @@ func RemoveHostCmd(m *telegram.NewMessage) error {
 		return L(m, "Modules -> nolinks -> m.Delete()", err)
 	}
 
-	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
+	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChatID(), m.SenderID()); err != nil {
 		return L(m, "Modules -> nolinks -> helpers.IsChatAdmin()", err)
 	} else if !isadmin {
 		m.Respond("Access denied: Only group admins can use this command.")

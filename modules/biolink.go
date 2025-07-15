@@ -42,7 +42,7 @@ func setBioMode(m *telegram.NewMessage) error {
 	} else if err != nil {
 		return L(m, "Modules -> bioLink -> m.Delete()", err)
 	}
-	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
+	if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChatID(), m.SenderID()); err != nil {
 		return L(m, "Modules -> biolink -> helpers.IsChatAdmin()", err)
 	} else if !isadmin {
 		m.Respond("Access denied: Only group admins can use this command.")
@@ -100,7 +100,7 @@ func deleteUserMsgIfBio(m *telegram.NewMessage) error {
 		return Continue
 	}
 
-	isAdmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID())
+	isAdmin, err := helpers.IsChatAdmin(m.Client, m.ChatID(), m.SenderID())
 	if err != nil {
 		L(m, "Modules -> biolink -> helpers.IsChatAdmin()", err)
 		return err

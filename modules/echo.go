@@ -63,7 +63,7 @@ func EcoHandler(m *telegram.NewMessage) error {
 		return telegram.EndGroup
 	}
 
-	settings, err := database.GetEchoSettings(m.ChannelID())
+	settings, err := database.GetEchoSettings(m.ChatID())
 	if err != nil {
 		m.Respond(fmt.Sprintf("⚠️ Something went wrong while processing the limit.\nError: %v", err))
 		return L(m, "Modules -> echo -> database.GetEchoSettings()", err)
@@ -71,7 +71,7 @@ func EcoHandler(m *telegram.NewMessage) error {
 	}
 
 	if len(m.Text()) < settings.Limit {
-		if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChannelID(), m.SenderID()); err != nil {
+		if isadmin, err := helpers.IsChatAdmin(m.Client, m.ChatID(), m.SenderID()); err != nil {
 			return L(m, "Modules -> echo -> helpers.IsChatAdmin()", err)
 		} else if isadmin {
 			m.Respond(fmt.Sprintf("Oops! Your message is under %d characters. Since you're an admin, you're not required to use /echo. But if you’d like to, please send a message longer than %d characters.", settings.Limit, settings.Limit))
