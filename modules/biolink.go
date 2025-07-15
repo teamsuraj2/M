@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-	"strings"
 	"time"
 
 	"github.com/amarnathcjd/gogram/telegram"
