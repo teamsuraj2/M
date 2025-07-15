@@ -34,15 +34,6 @@ func GetServedChats() ([]int64, error) {
 }
 
 func IsServedChat(chatID int64) (bool, error) {
-	if val, ok := config.Cache.Load("chats"); ok {
-		chats := val.([]int64)
-		for _, id := range chats {
-			if id == chatID {
-				return true, nil
-			}
-		}
-	}
-
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
@@ -52,15 +43,19 @@ func IsServedChat(chatID int64) (bool, error) {
 	}
 
 	if count > 0 {
-		if val, ok := config.Cache.Load("chats"); ok {
-			chats := val.([]int64)
-			config.Cache.Store("chats", append(chats, chatID))
-		} else {
-			config.Cache.Store("chats", []int64{chatID})
+		val, _ := config.Cache.LoadOrStore("chats", []int64{})
+		chats := val.([]int64)
+		for _, id := range chats {
+			if id == chatID {
+				return true, nil
+			}
 		}
+		chats = append(chats, chatID)
+		config.Cache.Store("chats", chats)
+		return true, nil
 	}
 
-	return count > 0, nil
+	return false, nil
 }
 
 func AddServedChat(chatID int64) error {
@@ -77,12 +72,10 @@ func AddServedChat(chatID int64) error {
 		return err
 	}
 
-	if val, ok := config.Cache.Load("chats"); ok {
-		chats := val.([]int64)
-		config.Cache.Store("chats", append(chats, chatID))
-	} else {
-		config.Cache.Store("chats", []int64{chatID})
-	}
+	val, _ := config.Cache.LoadOrStore("chats", []int64{})
+	chats := val.([]int64)
+	chats = append(chats, chatID)
+	config.Cache.Store("chats", chats)
 
 	return nil
 }
