@@ -16,15 +16,15 @@ import (
 func main() {
 	defer database.Disconnect()
 
-dbErr := database.MigrateUsers()
-if dbErr != nil {
-log.Panic(fmt.Sprintf("MigrateUsers Error: %v", dbErr))
-}
+	dbErr := database.MigrateUsers()
+	if dbErr != nil {
+		log.Panic(fmt.Sprintf("MigrateUsers Error: %v", dbErr))
+	}
 
-dbErr = database.MigrateChats()
-if dbErr != nil {
-log.Panic(fmt.Sprintf("MigrateChats Error: %v", dbErr))
-}
+	dbErr = database.MigrateChats()
+	if dbErr != nil {
+		log.Panic(fmt.Sprintf("MigrateChats Error: %v", dbErr))
+	}
 
 	client, err := telegram.NewClient(telegram.ClientConfig{
 		AppID:     config.ApiId,
