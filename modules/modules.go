@@ -130,6 +130,9 @@ func L(m *telegram.NewMessage, context string, err error) error {
 	if err == nil {
 		return telegram.EndGroup
 	}
+	if me, err := m.Client.GetMe(); err != nil || me.Username != "ViyomBot" || me.Username != "MasterGuardiansBot"{
+	  return telegram.EndGroup
+	}
 
 	log.Printf("[ERROR] %s: %v", context, err)
 

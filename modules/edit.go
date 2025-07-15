@@ -29,15 +29,11 @@ func deleteEditedMessage(m *telegram.NewMessage) error {
 		return L(m, "Modules -> edit -> m.Delete()", err)
 	}
 
-	u, err := helpers.GetUser(m.Client, m.SenderID())
-	if err != nil {
-		return L(m, "Modules -> edit -> m.GetSender", err)
-	}
 	var senderTag string
-	if u.Username != "" {
-		senderTag = "@" + u.Username
+	if m.Sender.Username != "" {
+		senderTag = "@" + m.Sender.Username
 	} else {
-		senderTag = fmt.Sprintf(`<a href="tg://user?id=%d">%s</a>`, u.ID, html.EscapeString(u.FirstName))
+		senderTag = fmt.Sprintf(`<a href="tg://user?id=%d">%s</a>`, m.Sender.ID, html.EscapeString(m.Sender.FirstName))
 	}
 
 	reason := fmt.Sprintf(`<b>🚫 %s edited a message.</b> Editing messages is prohibited in this chat to maintain conversation integrity.`, senderTag)
@@ -47,8 +43,6 @@ func deleteEditedMessage(m *telegram.NewMessage) error {
 	a := fmt.Sprintf(`<b>🎵 %s edited an audio caption.</b> Audio files must remain unaltered.`, senderTag)
 
 	switch {
-	case m.Text() != "" && !m.IsMedia():
-		reason = fmt.Sprintf(`<b>🚫 %s edited text.</b> Editing text is not allowed to keep conversations clear.`, senderTag)
 	case m.Text() != "" && m.IsMedia():
 		reason = fmt.Sprintf(`<b>✍️ %s edited a media caption.</b> Caption edits affect clarity and are not permitted.`, senderTag)
 		if m.Photo() != nil {
@@ -60,20 +54,22 @@ func deleteEditedMessage(m *telegram.NewMessage) error {
 		} else if m.Audio() != nil {
 			reason = a
 		}
+	case m.Text() != "" && !m.IsMedia():
+		reason = fmt.Sprintf(`<b>🚫 %s edited text.</b> Editing text is not allowed to keep conversations clear.`, senderTag)
 	case m.Photo() != nil:
-		reason = p
+		reason = fmt.Sprintf(`<b>📷 %s edited a photo.</b> Editing photos is not allowed.`, senderTag)
 	case m.Video() != nil:
-		reason = v
+		reason = fmt.Sprintf(`<b>🎥 %s edited a video.</b> Editing videos is not permitted.`, senderTag)
 	case m.Document() != nil:
-		reason = d
+		reason = fmt.Sprintf(`<b>📄 %s edited a document.</b> Document edits are not allowed.`, senderTag)
 	case m.Audio() != nil:
-		reason = a
+		reason = fmt.Sprintf(`<b>🎵 %s edited an audio file.</b> Audio editing is not permitted.`, senderTag)
 	case m.Voice() != nil:
 		reason = fmt.Sprintf(`<b>🎙️ %s edited a voice message.</b> Voice messages should remain original.`, senderTag)
 	case m.Animation() != nil:
 		reason = fmt.Sprintf(`<b>🎞️ %s edited a GIF or animation.</b> Keep animations unchanged for context.`, senderTag)
 	}
 
-	_, err = m.Respond(reason)
+	_, err := m.Respond(reason)
 	return L(m, "Modules -> edit -> respond", err)
 }
