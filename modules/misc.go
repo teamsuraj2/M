@@ -23,7 +23,7 @@ Let me know if you need any help.`,
 		m.Client.Me().FirstName,
 	)
 
-	if .IsAdded() {
+	if m.IsAdded() {
 		m.Client.SendMessage(
 			m.ChannelID(),
 			text,
