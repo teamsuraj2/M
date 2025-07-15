@@ -28,6 +28,7 @@ Let me know if you need any help.`,
 			m.ChannelID(),
 			text,
 		)
+                database.AddServedChat(m.ChannelID())
 	}
 	if r := database.IsLoggerEnabled(); !r {
 		return telegram.EndGroup
