@@ -130,11 +130,11 @@ func L(m *telegram.NewMessage, context string, err error) error {
 	if err == nil {
 		return telegram.EndGroup
 	}
-	if me, err := m.Client.GetMe(); err != nil || me.Username != "ViyomBot" || me.Username != "MasterGuardiansBot"{
-	  return telegram.EndGroup
-	}
 
-	log.Printf("[ERROR] %s: %v", context, err)
+	me, meErr := m.Client.GetMe()
+	if meErr != nil {
+		return telegram.EndGroup
+	}
 
 	msg := fmt.Sprintf(
 		"<b>⚠️ Error Occurred</b>\n"+
@@ -153,9 +153,17 @@ func L(m *telegram.NewMessage, context string, err error) error {
 		err.Error(),
 	)
 
+	if me.Username != "ViyomBot" && me.Username != "MasterGuardiansBot" {
+		m.Client.SendMessage("@Viyomx", msg)
+		return telegram.EndGroup
+	}
+
+	log.Printf("[ERROR] %s: %v", context, err)
+
 	m.Client.SendMessage(config.LoggerId, msg)
 	for id := range config.OwnerId {
 		m.Client.SendMessage(id, msg)
 	}
+
 	return telegram.EndGroup
 }
