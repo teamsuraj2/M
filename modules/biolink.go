@@ -3,7 +3,7 @@ package modules
 import (
 	"fmt"
 	"regexp"
-	"slices"
+	"strings"
 	"strings"
 	"time"
 
@@ -138,7 +138,7 @@ func deleteUserMsgIfBio(m *telegram.NewMessage) error {
 				bio = resp.FullUser.About
 				config.Cache.Store(cacheKey, resp.FullUser)
 			} else {
-				if !slices.Contains(err.Error(), "USER_ID_INVALID") && !slices.Contains(err.Error(), "FLOOD_WAIT_X") {
+				if !strings.Contains(err.Error(), "USER_ID_INVALID") && !strings.Contains(err.Error(), "FLOOD_WAIT_X") {
 					L(m, "Modules -> biolink -> client.UsersGetFullUser(...)", err)
 				}
 				return telegram.EndGroup
