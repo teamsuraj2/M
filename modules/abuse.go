@@ -29,8 +29,8 @@ import (
 // }
 
 func NoAbuseCmd(m *telegram.NewMessage) error {
-  m.Respond("feature is under development...")
-  return telegram.EndGroup
+	m.Respond("feature is under development...")
+	return telegram.EndGroup
 	args := strings.Fields(m.Text())
 	if isgroup := IsValidSupergroup(m); !isgroup {
 		return telegram.EndGroup
