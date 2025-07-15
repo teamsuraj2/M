@@ -121,7 +121,7 @@ func deleteUserMsgIfBio(m *telegram.NewMessage) error {
 	})
 
 	if err != nil {
-		if val, ok := config.LoadTyped[*telegram.UserFull](config.Cache, cacheKey); ok {
+		if val, ok := helpers.LoadTyped[*telegram.UserFull](config.Cache, cacheKey); ok {
 			bio = val.About
 		} else {
 			if wait := telegram.GetFloodWait(err); wait > 0 && wait < 15 {
@@ -136,7 +136,7 @@ func deleteUserMsgIfBio(m *telegram.NewMessage) error {
 				bio = resp.FullUser.About
 				config.Cache.Store(cacheKey, resp.FullUser)
 			} else {
-				if !m.Client.MatchError(err, "USER_ID_INVALID") && !m.Client.MatchError(err, "FLOOD_WAIT_X") {
+				if !slices.Contains(err.Error(), "USER_ID_INVALID") && !slices.Contains(err.Error(), "FLOOD_WAIT_X") {
 					L(m, "Modules -> biolink -> client.UsersGetFullUser(...)", err)
 				}
 				return telegram.EndGroup
