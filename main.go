@@ -43,7 +43,13 @@ func main() {
 		}
 		log.Panic(err)
 	}
-
+	
+	modules.BotInfo, err = client.GetMe()
+	
+	if err != nil {
+	  client.SendMessage(config.LoggerId, "Failed to getme: " + err.Error())
+	  
+	}
 	modules.LoadMods(client)
 	client.SendMessage(config.LoggerId, "Started...")
 	log.Println("Started...")
