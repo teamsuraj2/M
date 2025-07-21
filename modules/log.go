@@ -32,7 +32,7 @@ func botAddded(m *telegram.ParticipantUpdate) error {
 		if m.Channel.Title != "" {
 			groupTitle = html.EscapeString(m.Channel.Title)
 		}
-		chatMemberCount = m.Channel.ParticipantsCount
+		chatMemberCount = int(m.Channel.ParticipantsCount)
 	}
 
 	if m.Actor != nil {
@@ -44,8 +44,69 @@ func botAddded(m *telegram.ParticipantUpdate) error {
 		}
 	}
 
+	if admin, ok := m.Old.(*telegram.ChannelParticipantAdmin); ok {
+		if _, stillMember := m.New.(*telegram.ChannelParticipantObj); stillMember {
+			warnMsg := `⚠️ <b>I was demoted from admin!</b>
+
+To work properly, I need admin rights with:
+• <code>Delete messages</code>
+
+Leaving... 👋`
+
+			_, _ = m.Client.SendMessage(m.ChannelID(), warnMsg)
+
+			logStr := fmt.Sprintf(
+				`⚠️ <b>I was <u>demoted</u> in a group and left.</b>
+━━━━━━━━━━━━━━━━━
+📌 <b>Group Name:</b> %s
+🆔 <b>Group ID:</b> <code>%d</code>
+🔗 <b>Username:</b> %s
+👤 <b>By:</b> %s
+━━━━━━━━━━━━━━━━━`,
+				groupTitle,
+				m.ChannelID(),
+				groupUsername,
+				actor,
+			)
+
+			_, _ = m.Client.SendMessage(config.LoggerId, logStr)
+			database.DeleteServedChat(m.ChannelID())
+			return m.Client.LeaveChannel(m.ChannelID())
+		}
+	}
+
 	if isAdded {
-		m.Client.SendMessage(
+		if admin, ok := m.New.(*telegram.ChannelParticipantAdmin); !ok || !admin.CanDeleteMessages {
+			warnMsg := `⚠️ <b>I was added but lack the required admin rights!</b>
+
+I need:
+• <code>Delete messages</code> permission
+
+Leaving... 👋`
+
+			_, _ = m.Client.SendMessage(m.ChannelID(), warnMsg)
+
+			logStr := fmt.Sprintf(
+				`⚠️ <b>Bot added without proper permissions</b>
+━━━━━━━━━━━━━━━━━
+📌 <b>Group Name:</b> %s
+🆔 <b>Group ID:</b> <code>%d</code>
+🔗 <b>Username:</b> %s
+👤 <b>Added By:</b> %s
+🚫 <b>Missing:</b> Delete messages
+━━━━━━━━━━━━━━━━━`,
+				groupTitle,
+				m.ChannelID(),
+				groupUsername,
+				actor,
+			)
+
+			_, _ = m.Client.SendMessage(config.LoggerId, logStr)
+			database.DeleteServedChat(m.ChannelID())
+			return m.Client.LeaveChannel(m.ChannelID())
+		}
+
+		_, _ = m.Client.SendMessage(
 			m.ChannelID(),
 			fmt.Sprintf(
 				`Hello 👋 I'm <b>%s</b>, here to help keep the chat transparent and secure.
@@ -100,37 +161,6 @@ Let me know if you need any help.`,
 		_, err := m.Client.SendMessage(config.LoggerId, logStr)
 		database.DeleteServedChat(m.ChannelID())
 		return err
-	}
-
-	if _, wasAdmin := m.OldParticipant.(*telegram.ChannelParticipantAdmin); wasAdmin {
-		if _, stillMember := m.NewParticipant.(*telegram.ChannelParticipantObj); stillMember {
-			warnMsg := `⚠️ <b>I was demoted from admin!</b>
-
-To work properly, I need admin rights with:
-• <code>Delete messages</code>
-
-Leaving... 👋`
-
-			_, _ = m.Client.SendMessage(m.ChannelID(), warnMsg)
-
-			logStr := fmt.Sprintf(
-				`⚠️ <b>I was <u>demoted</u> in a group and left.</b>
-━━━━━━━━━━━━━━━━━
-📌 <b>Group Name:</b> %s
-🆔 <b>Group ID:</b> <code>%d</code>
-🔗 <b>Username:</b> %s
-👤 <b>By:</b> %s
-━━━━━━━━━━━━━━━━━`,
-				groupTitle,
-				m.ChannelID(),
-				groupUsername,
-				actor,
-			)
-
-			_ = m.Client.SendMessage(config.LoggerId, logStr)
-			database.DeleteServedChat(m.ChannelID())
-			return m.Client.LeaveChannel(m.ChannelID())
-		}
 	}
 
 	return nil
