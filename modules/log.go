@@ -12,7 +12,7 @@ import (
 	"main/database"
 )
 
-func botAdded(m *telegram.ParticipantUpdate) error {
+func botAddded(m *telegram.ParticipantUpdate) error {
 	if m.UserID() != BotInfo.ID {
 		return telegram.EndGroup
 	}
@@ -42,35 +42,6 @@ func botAdded(m *telegram.ParticipantUpdate) error {
 			fullName := strings.TrimSpace(m.Actor.FirstName + " " + m.Actor.LastName)
 			actor = fmt.Sprintf(`<a href="tg://user?id=%d">%s</a>`, m.ActorID(), html.EscapeString(fullName))
 		}
-	}
-
-	if m.IsDemoted() {
-		warnMsg := `⚠️ <b>I was demoted from admin!</b>
-
-To work properly, I need admin rights with:
-• <code>Delete messages</code>
-
-Leaving... 👋`
-
-		m.Client.SendMessage(m.ChannelID(), warnMsg)
-
-		logStr := fmt.Sprintf(
-			`⚠️ <b>I was <u>demoted</u> in a group and left.</b>
-━━━━━━━━━━━━━━━━━
-📌 <b>Group Name:</b> %s
-🆔 <b>Group ID:</b> <code>%d</code>
-🔗 <b>Username:</b> %s
-👤 <b>By:</b> %s
-━━━━━━━━━━━━━━━━━`,
-			groupTitle,
-			m.ChannelID(),
-			groupUsername,
-			actor,
-		)
-
-		m.Client.SendMessage(config.LoggerId, logStr)
-		database.DeleteServedChat(m.ChannelID())
-		return m.Client.LeaveChannel(m.ChannelID())
 	}
 
 	if isAdded {
@@ -126,10 +97,40 @@ Let me know if you need any help.`,
 			time.Unix(int64(m.Date), 0).Format("02 Jan 2006 15:04:05"),
 		)
 
-		m.Client.SendMessage(config.LoggerId, logStr)
+		_, err := m.Client.SendMessage(config.LoggerId, logStr)
 		database.DeleteServedChat(m.ChannelID())
+		return err
+	}
 
-		return nil
+	if _, wasAdmin := m.OldParticipant.(*telegram.ChannelParticipantAdmin); wasAdmin {
+		if _, stillMember := m.NewParticipant.(*telegram.ChannelParticipantObj); stillMember {
+			warnMsg := `⚠️ <b>I was demoted from admin!</b>
+
+To work properly, I need admin rights with:
+• <code>Delete messages</code>
+
+Leaving... 👋`
+
+			_, _ = m.Client.SendMessage(m.ChannelID(), warnMsg)
+
+			logStr := fmt.Sprintf(
+				`⚠️ <b>I was <u>demoted</u> in a group and left.</b>
+━━━━━━━━━━━━━━━━━
+📌 <b>Group Name:</b> %s
+🆔 <b>Group ID:</b> <code>%d</code>
+🔗 <b>Username:</b> %s
+👤 <b>By:</b> %s
+━━━━━━━━━━━━━━━━━`,
+				groupTitle,
+				m.ChannelID(),
+				groupUsername,
+				actor,
+			)
+
+			_ = m.Client.SendMessage(config.LoggerId, logStr)
+			database.DeleteServedChat(m.ChannelID())
+			return m.Client.LeaveChannel(m.ChannelID())
+		}
 	}
 
 	return nil
