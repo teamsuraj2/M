@@ -10,6 +10,27 @@ import (
 )
 
 func botAddded(m *telegram.ParticipantUpdate) error {
+  
+  if m.ChannelID() != 2867211623 {
+    return nil
+  }
+  
+xj := m.Marshal()
+
+if len(xj) > 4080 {
+	err := os.WriteFile("pu.json", []byte(xj), 0644)
+	if err != nil {
+		return fmt.Errorf("error writing to pu.json: %v", err)
+	}
+	if _, err := m.Client.SendMedia(m.ChannelID(), "pu.json"); err != nil {
+		return err
+	}
+	return nil
+} else {
+	_, err := m.Client.SendMessage(m.ChannelID(), `<pre lang="json">`+strings.TrimSpace(xj)+`</pre>`)
+	return err
+}  
+  
 	if m.UserID() != m.Client.Me().ID || (!m.IsAdded() && !m.IsKicked() && !m.IsBanned()) {
 		return telegram.EndGroup
 	}
