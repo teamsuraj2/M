@@ -52,6 +52,7 @@ var (
 	handler     = make([]DeferredHandler, 0)
 )
 var BotInfo *telegram.UserObj
+
 func init() {
 	commandSet = make(map[string]struct{}, len(Commands))
 	for _, cmd := range Commands {
@@ -131,15 +132,14 @@ func L(m *telegram.NewMessage, context string, err error) error {
 		return telegram.EndGroup
 	}
 	if BotInfo == nil {
-	  
-	
-	me, meErr := m.Client.GetMe()
-	if meErr != nil {
-		return telegram.EndGroup
-	}
-	BotInfo = me
 
-}
+		me, meErr := m.Client.GetMe()
+		if meErr != nil {
+			return telegram.EndGroup
+		}
+		BotInfo = me
+
+	}
 	msg := fmt.Sprintf(
 		"<b>⚠️ Error Occurred</b>\n"+
 			"<b>🔹 Context:</b> <code>%s</code>\n"+
