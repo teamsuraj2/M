@@ -4,17 +4,18 @@ import (
 	"errors"
 
 	"github.com/amarnathcjd/gogram/telegram"
+
+	"main/database"
 )
 
 func OnMessageFnc(m *telegram.NewMessage) error {
-  go func(){
-    if m.IsPrivate() {
-	database.AddServedUser(m.ChatID())
-} else {
-	database.AddServedChat(m.ChatID())
-}
-    
-  }()
+	go func() {
+		if m.IsPrivate() {
+			database.AddServedUser(m.ChatID())
+		} else {
+			database.AddServedChat(m.ChatID())
+		}
+	}()
 	if _, ok := commandSet[m.GetCommand()]; ok {
 		return nil
 	}
