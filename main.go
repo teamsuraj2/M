@@ -85,7 +85,7 @@ func startAPIServer() {
 	})
 
 	log.Println("🌐 Web UI: http://localhost:8080")
-	go http.ListenAndServe(":8080", nil)
+	
 }
 
 func writeJSON(w http.ResponseWriter, data interface{}) {
@@ -132,6 +132,12 @@ func main() {
 	modules.LoadMods(client)
 
 	startAPIServer()
+go func() {
+		log.Println("🌐 Web UI: http://localhost:8080")
+		if err := http.ListenAndServe(":8080", nil); err != nil {
+			log.Fatalf("API server error: %v", err)
+		}
+	}()
 
 	client.SendMessage(config.LoggerId, "Started...")
 	log.Println("Started...")
