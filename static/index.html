@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Group Settings</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://unpkg.com/mdui@2/mdui.min.css" rel="stylesheet">
-  <link href="style.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://unpkg.com/mdui@2/mdui.min.css" rel="stylesheet" />
+  <link href="style.css" rel="stylesheet" />
 </head>
 <body>
   <div id="loading" class="loading">
@@ -15,34 +15,41 @@
   <div class="container" id="settings-container" style="display:none;">
     <section>
       <h2>🛡️ BioMode</h2>
-      <mdui-switch id="biomode-switch">Enable</mdui-switch>
+      <mdui-switch id="biomode-switch">Enable BioMode</mdui-switch>
     </section>
 
     <section>
-      <h2>📝 Echo</h2>
-      <mdui-text-field id="echo-input" placeholder="/echo &lt;text&gt;"></mdui-text-field>
-      <mdui-select id="longmode-select">
-        <option value="off">Off</option>
-        <option value="manual">Manual</option>
-        <option value="automatic">Automatic</option>
-      </mdui-select>
-      <mdui-text-field id="longlimit-input" type="number" placeholder="Long limit (200–4000)"></mdui-text-field>
+      <h2>📝 Echo Settings</h2>
+      <div>
+        <label for="longmode-select">Long Message Mode:</label>
+        <select id="longmode-select" class="mdui-select">
+          <option value="off">Off</option>
+          <option value="manual">Manual</option>
+          <option value="automatic">Automatic</option>
+        </select>
+      </div>
+      <div>
+        <label for="longlimit-input">Long Message Limit (200–4000):</label>
+        <input id="longlimit-input" type="number" min="200" max="4000" class="mdui-text-field-input" />
+      </div>
     </section>
 
     <section>
       <h2>🔗 Link Filter</h2>
-      <mdui-switch id="linkfilter-switch">Enable</mdui-switch>
+      <mdui-switch id="linkfilter-switch">Enable Link Filter</mdui-switch>
+
       <div class="flex">
-        <mdui-text-field id="allow-domain-input" placeholder="example.com"></mdui-text-field>
-        <mdui-button id="allow-btn">Add</mdui-button>
+        <input id="allow-domain-input" type="text" placeholder="example.com" />
+        <button id="allow-btn" class="mdui-btn mdui-btn-raised">Add Domain</button>
       </div>
-      <table id="allowed-links-table">
+
+      <table id="allowed-links-table" class="mdui-table">
         <thead><tr><th>Domain</th><th>Action</th></tr></thead>
         <tbody id="allowed-links-body"></tbody>
       </table>
     </section>
 
-    <mdui-button id="save-all" fullWidth variant="filled">Save All</mdui-button>
+    <button id="save-all" class="mdui-btn mdui-btn-raised mdui-color-theme-accent" style="width: 100%; margin-top: 16px;">Save All</button>
   </div>
 
   <script src="https://unpkg.com/mdui@2/mdui.min.js"></script>
