@@ -40,55 +40,74 @@ var (
 )
 
 func startAPIServer() {
-	http.Handle("/", http.FileServer(http.Dir("./static")))
+    http.Handle("/", http.FileServer(http.Dir("./static")))
 
-	http.HandleFunc("/api/biomode", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodGet:
-			writeJSON(w, bioModeConfig)
-		case http.MethodPost:
-			var newCfg BioModeSettings
-			json.NewDecoder(r.Body).Decode(&newCfg)
-			bioModeConfig = newCfg
-			writeJSON(w, map[string]string{"status": "ok"})
-		default:
-			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-		}
-	})
+    http.HandleFunc("/api/biomode", func(w http.ResponseWriter, r *http.Request) {
+        chatID := r.URL.Query().Get("chat_id")
+        if chatID == "" {
+            http.Error(w, "chat_id required", http.StatusBadRequest)
+            return
+        }
 
-	http.HandleFunc("/api/echo", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodGet:
-			writeJSON(w, echoConfig)
-		case http.MethodPost:
-			var newCfg EchoSettings
-			json.NewDecoder(r.Body).Decode(&newCfg)
-			echoConfig = newCfg
-			writeJSON(w, map[string]string{"status": "ok"})
-		default:
-			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-		}
-	})
+        switch r.Method {
+        case http.MethodGet:
+            cfg := database.GetBioMode(chatID)
+            writeJSON(w, cfg)
+        case http.MethodPost:
+            var newCfg database.BioModeSettings
+            if err := json.NewDecoder(r.Body).Decode(&newCfg); err != nil {
+                http.Error(w, "Invalid JSON", http.StatusBadRequest)
+                return
+            }
+            database.SaveBioMode(chatID, newCfg)
+            writeJSON(w, map[string]string{"status": "ok"})
+        }
+    })
 
-	http.HandleFunc("/api/linkfilter", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodGet:
-			writeJSON(w, linkFilterConfig)
-		case http.MethodPost:
-			var newCfg LinkFilterSettings
-			json.NewDecoder(r.Body).Decode(&newCfg)
-			linkFilterConfig = newCfg
-			writeJSON(w, map[string]string{"status": "ok"})
-		default:
-			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-		}
-	})
+    http.HandleFunc("/api/echo", func(w http.ResponseWriter, r *http.Request) {
+        chatID := r.URL.Query().Get("chat_id")
+        if chatID == "" {
+            http.Error(w, "chat_id required", http.StatusBadRequest)
+            return
+        }
+
+        switch r.Method {
+        case http.MethodGet:
+            cfg := database.GetEcho(chatID)
+            writeJSON(w, cfg)
+        case http.MethodPost:
+            var newCfg database.EchoSettings
+            json.NewDecoder(r.Body).Decode(&newCfg)
+            database.SaveEcho(chatID, newCfg)
+            writeJSON(w, map[string]string{"status": "ok"})
+        }
+    })
+
+    http.HandleFunc("/api/linkfilter", func(w http.ResponseWriter, r *http.Request) {
+        chatID := r.URL.Query().Get("chat_id")
+        if chatID == "" {
+            http.Error(w, "chat_id required", http.StatusBadRequest)
+            return
+        }
+
+        switch r.Method {
+        case http.MethodGet:
+            cfg := database.GetLinkConfig(chatID)
+            writeJSON(w, cfg)
+        case http.MethodPost:
+            var newCfg database.LinkFilterSettings
+            json.NewDecoder(r.Body).Decode(&newCfg)
+            database.SaveLinkFilter(chatID, newCfg)
+            writeJSON(w, map[string]string{"status": "ok"})
+        }
+    })
 }
 
 func writeJSON(w http.ResponseWriter, data interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(data)
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(data)
 }
+
 
 func main() {
 	defer database.Disconnect()
