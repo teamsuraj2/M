@@ -54,7 +54,7 @@ func startAPIServer() {
 			cfg := database.GetBioMode(chatID)
 			writeJSON(w, cfg)
 		case http.MethodPost:
-			var newCfg database.BioModeSettings
+			var newCfg BioModeSettings
 			if err := json.NewDecoder(r.Body).Decode(&newCfg); err != nil {
 				http.Error(w, "Invalid JSON", http.StatusBadRequest)
 				return
@@ -76,7 +76,7 @@ func startAPIServer() {
 			cfg := database.GetEcho(chatID)
 			writeJSON(w, cfg)
 		case http.MethodPost:
-			var newCfg database.EchoSettings
+			var newCfg EchoSettings
 			json.NewDecoder(r.Body).Decode(&newCfg)
 			database.SaveEcho(chatID, newCfg)
 			writeJSON(w, map[string]string{"status": "ok"})
@@ -95,7 +95,7 @@ func startAPIServer() {
 			cfg := database.GetLinkConfig(chatID)
 			writeJSON(w, cfg)
 		case http.MethodPost:
-			var newCfg database.LinkFilterSettings
+			var newCfg LinkFilterSettings
 			json.NewDecoder(r.Body).Decode(&newCfg)
 			database.SaveLinkFilter(chatID, newCfg)
 			writeJSON(w, map[string]string{"status": "ok"})
