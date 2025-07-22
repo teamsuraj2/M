@@ -83,8 +83,6 @@ func startAPIServer() {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 		}
 	})
-
-	log.Println("🌐 Web UI: http://localhost:8080")
 }
 
 func writeJSON(w http.ResponseWriter, data interface{}) {
@@ -132,10 +130,15 @@ func main() {
 
 	startAPIServer()
 	go func() {
-		log.Println("🌐 Web UI: http://localhost:8080")
-		if err := http.ListenAndServe(":8080", nil); err != nil {
-			log.Fatalf("API server error: %v", err)
-		}
+    port := os.Getenv("PORT")
+    if port == "" {
+        port = "8080"
+    }
+    log.Printf("🌐 Web UI: http://localhost:%s\n", port)
+    if err := http.ListenAndServe(":"+port, nil); err != nil {
+        log.Fatalf("API server error: %v", err)
+    }
+}()
 	}()
 
 	client.SendMessage(config.LoggerId, "Started...")
