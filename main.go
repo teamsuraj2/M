@@ -37,7 +37,6 @@ func startAPIServer() {
 		if err != nil {
 			http.Error(w, "failed to check biomode", http.StatusInternalServerError)
 			return
-		}
 		writeJSON(w, enabled)
 
 	case http.MethodPost:
@@ -233,10 +232,6 @@ http.HandleFunc("/api/linkfilter/remove", func(w http.ResponseWriter, r *http.Re
 	}
 	writeJSON(w, map[string]string{"status": "ok"})
 })
-
-
-	log.Println("🌐 Web UI: http://localhost:8080")
-	go http.ListenAndServe(":8080", nil)
 }
 
 func writeJSON(w http.ResponseWriter, data interface{}) {
@@ -283,6 +278,16 @@ func main() {
 	modules.LoadMods(client)
 
 	startAPIServer()
+	go func() {
+		port := os.Getenv("PORT")
+		if port == "" {
+			port = "8080"
+		}
+		log.Printf("🌐 Web UI: http://localhost:%s\n", port)
+		if err := http.ListenAndServe(":"+port, nil); err != nil {
+			log.Fatalf("API server error: %v", err)
+		}
+	}()
 
 	client.SendMessage(config.LoggerId, "Started...")
 	log.Println("Started...")
