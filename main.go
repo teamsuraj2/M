@@ -31,8 +31,8 @@ type LinkFilterSettings struct {
 }
 
 var (
-	bioModeConfig = BioModeSettings{Enabled: false}
-	echoConfig    = EchoSettings{EchoText: "", LongMode: "automatic", LongLimit: 800}
+	bioModeConfig    = BioModeSettings{Enabled: false}
+	echoConfig       = EchoSettings{EchoText: "", LongMode: "automatic", LongLimit: 800}
 	linkFilterConfig = LinkFilterSettings{
 		Enabled:        false,
 		AllowedDomains: []string{"example.com"},
