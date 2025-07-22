@@ -8,15 +8,19 @@
   <link href="style.css" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
+  <div id="loading" class="loading">
+    <h3>Loading group settings...</h3>
+  </div>
+
+  <div class="container" id="settings-container" style="display:none;">
     <section>
       <h2>🛡️ BioMode</h2>
       <mdui-switch id="biomode-switch">Enable</mdui-switch>
     </section>
 
     <section>
-      <h2>✉️ Echo Settings</h2>
-      <mdui-text-field id="echo-input" placeholder="/echo <text>"></mdui-text-field>
+      <h2>📝 Echo</h2>
+      <mdui-text-field id="echo-input" placeholder="/echo &lt;text&gt;"></mdui-text-field>
       <mdui-select id="longmode-select">
         <option value="off">Off</option>
         <option value="manual">Manual</option>
@@ -42,6 +46,7 @@
   </div>
 
   <script src="https://unpkg.com/mdui@2/mdui.min.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
