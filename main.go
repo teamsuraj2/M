@@ -139,7 +139,6 @@ func main() {
         log.Fatalf("API server error: %v", err)
     }
 }()
-	}()
 
 	client.SendMessage(config.LoggerId, "Started...")
 	log.Println("Started...")
