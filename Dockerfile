@@ -13,6 +13,10 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -ldflags="-s -w" -o app .
 
+# -----------------------------------------------
+# ✅ Final Minimal Image
+# -----------------------------------------------
+
 FROM debian:bullseye-slim
 WORKDIR /app
 
@@ -20,7 +24,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates && \
     rm -rf /var/lib/apt/lists/*
 
+# Copy binary and static files
 COPY --from=builder /app/app .
+COPY --from=builder /app/static ./static
 
 EXPOSE 8080
 
