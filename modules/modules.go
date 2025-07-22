@@ -72,6 +72,7 @@ func LoadMods(c *telegram.Client) {
 	c.On("command:setlongmode", SetLongModeHandler)
 	c.On("command:echo", EcoHandler)
 	c.On("command:ping", pingHandler)
+  c.On("command:chk", HandleWebAppCommand)
 	c.On("command:reload", ReloadHandler)
 	c.On("command:start", start)
 	c.On("command:stats", stats)
