@@ -1,0 +1,35 @@
+body {
+  padding: 32px;
+  background: #f5f7fb;
+  font-family: system-ui, sans-serif;
+}
+.container {
+  max-width: 500px;
+  margin: auto;
+  background: white;
+  padding: 24px;
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+section {
+  margin-bottom: 32px;
+}
+.flex {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+table {
+  width: 100%;
+  margin-top: 12px;
+  border-collapse: collapse;
+}
+th, td {
+  padding: 8px 12px;
+}
+tr:nth-child(even) {
+  background: #f1f1f1;
+}
+button {
+  font-size: 0.9em;
+}

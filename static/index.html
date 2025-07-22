@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Group Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://unpkg.com/mdui@2/mdui.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <section>
+      <h2>🛡️ BioMode</h2>
+      <mdui-switch id="biomode-switch">Enable</mdui-switch>
+    </section>
+
+    <section>
+      <h2>✉️ Echo Settings</h2>
+      <mdui-text-field id="echo-input" placeholder="/echo <text>"></mdui-text-field>
+      <mdui-select id="longmode-select">
+        <option value="off">Off</option>
+        <option value="manual">Manual</option>
+        <option value="automatic">Automatic</option>
+      </mdui-select>
+      <mdui-text-field id="longlimit-input" type="number" placeholder="Long limit (200–4000)"></mdui-text-field>
+    </section>
+
+    <section>
+      <h2>🔗 Link Filter</h2>
+      <mdui-switch id="linkfilter-switch">Enable</mdui-switch>
+      <div class="flex">
+        <mdui-text-field id="allow-domain-input" placeholder="example.com"></mdui-text-field>
+        <mdui-button id="allow-btn">Add</mdui-button>
+      </div>
+      <table id="allowed-links-table">
+        <thead><tr><th>Domain</th><th>Action</th></tr></thead>
+        <tbody id="allowed-links-body"></tbody>
+      </table>
+    </section>
+
+    <mdui-button id="save-all" fullWidth variant="filled">Save All</mdui-button>
+  </div>
+
+  <script src="https://unpkg.com/mdui@2/mdui.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

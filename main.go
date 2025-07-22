@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 
@@ -12,6 +14,84 @@ import (
 	"main/database"
 	"main/modules"
 )
+
+type BioModeSettings struct {
+	Enabled bool `json:"enabled"`
+}
+
+type EchoSettings struct {
+	EchoText  string `json:"echo_text"`
+	LongMode  string `json:"long_mode"`
+	LongLimit int    `json:"long_limit"`
+}
+
+type LinkFilterSettings struct {
+	Enabled        bool     `json:"enabled"`
+	AllowedDomains []string `json:"allowed_domains"`
+}
+
+var (
+	bioModeConfig = BioModeSettings{Enabled: false}
+	echoConfig    = EchoSettings{EchoText: "", LongMode: "automatic", LongLimit: 800}
+	linkFilterConfig = LinkFilterSettings{
+		Enabled:        false,
+		AllowedDomains: []string{"example.com"},
+	}
+)
+
+func startAPIServer() {
+	http.Handle("/", http.FileServer(http.Dir("./static")))
+
+	http.HandleFunc("/api/biomode", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			writeJSON(w, bioModeConfig)
+		case http.MethodPost:
+			var newCfg BioModeSettings
+			json.NewDecoder(r.Body).Decode(&newCfg)
+			bioModeConfig = newCfg
+			writeJSON(w, map[string]string{"status": "ok"})
+		default:
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		}
+	})
+
+	http.HandleFunc("/api/echo", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			writeJSON(w, echoConfig)
+		case http.MethodPost:
+			var newCfg EchoSettings
+			json.NewDecoder(r.Body).Decode(&newCfg)
+			echoConfig = newCfg
+			writeJSON(w, map[string]string{"status": "ok"})
+		default:
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		}
+	})
+
+	http.HandleFunc("/api/linkfilter", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			writeJSON(w, linkFilterConfig)
+		case http.MethodPost:
+			var newCfg LinkFilterSettings
+			json.NewDecoder(r.Body).Decode(&newCfg)
+			linkFilterConfig = newCfg
+			writeJSON(w, map[string]string{"status": "ok"})
+		default:
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		}
+	})
+
+	log.Println("🌐 Web UI: http://localhost:8080")
+	go http.ListenAndServe(":8080", nil)
+}
+
+func writeJSON(w http.ResponseWriter, data interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(data)
+}
 
 func main() {
 	defer database.Disconnect()
@@ -48,7 +128,11 @@ func main() {
 	if err != nil {
 		client.SendMessage(config.LoggerId, "Failed to getme: "+err.Error())
 	}
+
 	modules.LoadMods(client)
+
+	startAPIServer()
+
 	client.SendMessage(config.LoggerId, "Started...")
 	log.Println("Started...")
 	client.Idle()
