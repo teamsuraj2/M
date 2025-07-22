@@ -44,7 +44,7 @@ func botAddded(m *telegram.ParticipantUpdate) error {
 		}
 	}
 
-	if admin, ok := m.Old.(*telegram.ChannelParticipantAdmin); ok {
+	if _, ok := m.Old.(*telegram.ChannelParticipantAdmin); ok {
 		if _, stillMember := m.New.(*telegram.ChannelParticipantObj); stillMember {
 			warnMsg := `⚠️ <b>I was demoted from admin!</b>
 
