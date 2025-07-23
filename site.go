@@ -23,11 +23,11 @@ func writeJSON(w http.ResponseWriter, data interface{}) {
 
 func startAPIServer(bot *telegram.Client) {
 	http.Handle("/", http.FileServer(http.Dir("./static")))
- http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-        writeJSON(w, map[string]string{
-            "message": "pong",
-        })
-    })
+	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+		writeJSON(w, map[string]string{
+			"message": "pong",
+		})
+	})
 
 	http.HandleFunc("/report-unauthorized", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
