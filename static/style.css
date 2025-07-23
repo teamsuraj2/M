@@ -317,12 +317,19 @@ sl-select::part(display-input) {
     color: var(--md-sys-color-on-surface);
 }
 
-sl-input::part(input):focus,
+sl-select::part(display-input) {
+  border: none !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
 sl-select::part(display-input):focus {
     border-color: var(--md-sys-color-primary);
     outline: 2px solid var(--md-sys-color-primary);
     outline-offset: -1px;
 }
+
 
 sl-button::part(base) {
     border-radius: 12px;
