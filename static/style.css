@@ -92,29 +92,25 @@ body {
 .container {
   max-width: 420px;
   margin: 0 auto;
-  background: var(--md-sys-color-surface-container);
-  border-radius: 28px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-  overflow: hidden;
+  padding: 20px;
+  background: var(--md-sys-color-surface);
 }
 
 .main-title {
   text-align: center;
-  margin: 0;
-  padding: 24px;
-  background: var(--md-sys-color-primary);
-  color: var(--md-sys-color-on-primary);
+  margin: 0 0 24px 0;
+  padding: 16px 0;
+  color: var(--md-sys-color-on-surface);
   font-size: 1.5em;
   font-weight: 500;
-  border-radius: 28px 28px 0 0;
 }
 
 .settings-section {
-  border-bottom: 1px solid var(--md-sys-color-outline-variant);
-}
-
-.settings-section:last-of-type {
-  border-bottom: none;
+  background: var(--md-sys-color-surface-container);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  overflow: hidden;
+  border: 1px solid var(--md-sys-color-outline-variant);
 }
 
 .section-header {
@@ -278,12 +274,16 @@ body {
 
 /* Shoelace component customizations for Material 3 */
 sl-switch::part(base) {
-  --height: 2.5rem;
-  --thumb-size: 1.8rem;
+  --height: 2rem;
+  --thumb-size: 1.4rem;
   --track-color-checked: var(--md-sys-color-primary);
-  --track-color-unchecked: var(--md-sys-color-outline);
+  --track-color-unchecked: var(--md-sys-color-surface-variant);
+  --thumb-color: var(--md-sys-color-surface);
+  --track-width: 3.2rem;
+}
+
+sl-switch[checked]::part(thumb) {
   --thumb-color: var(--md-sys-color-on-primary);
-  --track-width: 3.5rem;
 }
 
 sl-input::part(base),
