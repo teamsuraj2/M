@@ -48,7 +48,7 @@ func main() {
 
 	modules.LoadMods(client)
 
-	startAPIServer()
+	startAPIServer(client)
 
 	client.SendMessage(config.LoggerId, "Started...")
 	log.Println("✅ Bot Started")

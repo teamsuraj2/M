@@ -17,8 +17,36 @@ func writeJSON(w http.ResponseWriter, data interface{}) {
 	json.NewEncoder(w).Encode(data)
 }
 
-func startAPIServer() {
+func startAPIServer(bot *telegram.Client) {
 	http.Handle("/", http.FileServer(http.Dir("./static")))
+	http.HandleFunc("/report-unauthorized", func(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	defer r.Body.Close()
+	var payload map[string]interface{}
+	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
+	}
+
+	debugMsg, _ := json.MarshalIndent(payload, "", "  ")
+
+	// Send back to your personal log or debug chat via bot
+	go func() {
+		_, err := bot.SendMessage(config.LoggerId, fmt.Sprintf(
+			"🚨 Mini App opened outside group.\n\n<pre>%s</pre>", string(debugMsg)),
+			telegram.SendOptions{ParseMode: "HTML"},
+		)
+		if err != nil {
+			log.Println("Failed to send initData debug:", err)
+		}
+	}()
+
+	writeJSON(w, map[string]string{"status": "received"})
+})
 
 	// ================= BIOMODE =================
 	http.HandleFunc("/api/biomode", func(w http.ResponseWriter, r *http.Request) {
