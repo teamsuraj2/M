@@ -23,10 +23,9 @@ func writeJSON(w http.ResponseWriter, data interface{}) {
 
 func startAPIServer(bot *telegram.Client) {
 	http.Handle("/", http.FileServer(http.Dir("./static")))
+
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-		writeJSON(w, map[string]string{
-			"message": "pong",
-		})
+		writeJSON(w, map[string]string{"message": "pong"})
 	})
 
 	http.HandleFunc("/report-unauthorized", func(w http.ResponseWriter, r *http.Request) {
@@ -44,7 +43,6 @@ func startAPIServer(bot *telegram.Client) {
 
 		debugMsg, _ := json.MarshalIndent(payload, "", "  ")
 
-		// Send back to your personal log or debug chat via bot
 		go func() {
 			_, err := bot.SendMessage(config.LoggerId, fmt.Sprintf(
 				"🚨 Mini App opened outside group.\n\n<pre>%s</pre>", string(debugMsg)),
@@ -82,8 +80,8 @@ func startAPIServer(bot *telegram.Client) {
 			writeJSON(w, enabled)
 
 		case http.MethodPost:
-			var enabled bool
 			defer r.Body.Close()
+			var enabled bool
 			if err := json.NewDecoder(r.Body).Decode(&enabled); err != nil {
 				http.Error(w, "Invalid JSON: expected true/false", http.StatusBadRequest)
 				return
@@ -132,11 +130,11 @@ func startAPIServer(bot *telegram.Client) {
 			})
 
 		case http.MethodPost:
+			defer r.Body.Close()
 			var body struct {
 				LongMode  string `json:"long_mode"`
 				LongLimit int    `json:"long_limit"`
 			}
-			defer r.Body.Close()
 			if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 				http.Error(w, "invalid JSON", http.StatusBadRequest)
 				return
@@ -192,10 +190,10 @@ func startAPIServer(bot *telegram.Client) {
 			})
 
 		case http.MethodPost:
+			defer r.Body.Close()
 			var body struct {
 				Enabled bool `json:"enabled"`
 			}
-			defer r.Body.Close()
 			if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 				http.Error(w, "invalid JSON", http.StatusBadRequest)
 				return
@@ -218,6 +216,7 @@ func startAPIServer(bot *telegram.Client) {
 			return
 		}
 		defer r.Body.Close()
+
 		chatIDRaw := r.URL.Query().Get("chat_id")
 		if chatIDRaw == "" {
 			http.Error(w, "chat_id required", http.StatusBadRequest)
@@ -248,6 +247,8 @@ func startAPIServer(bot *telegram.Client) {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 			return
 		}
+		defer r.Body.Close()
+
 		chatIDRaw := r.URL.Query().Get("chat_id")
 		if chatIDRaw == "" {
 			http.Error(w, "chat_id required", http.StatusBadRequest)
@@ -271,6 +272,7 @@ func startAPIServer(bot *telegram.Client) {
 		}
 		writeJSON(w, map[string]string{"status": "ok"})
 	})
+
 	go func() {
 		port := os.Getenv("PORT")
 		if port == "" {
