@@ -1,8 +1,12 @@
 const tg = window.Telegram.WebApp;
 let chat_id;
+let isDarkTheme = false;
 
 window.onload = async () => {
   tg.ready();
+  isDarkTheme = tg.colorScheme === "dark";
+  applyTheme();
+
   const initData = tg?.initDataUnsafe;
   const user = initData?.user ?? null;
   const chat = initData?.chat ?? null;
@@ -49,6 +53,23 @@ window.onload = async () => {
     showErrorPage(e?.message ?? e);
   }
 };
+
+// ----------------------- Theme Support -----------------------
+function applyTheme() {
+  document.body.setAttribute('data-theme', isDarkTheme ? 'dark' : 'light');
+}
+
+// ----------------------- Validation Functions -----------------------
+function isValidDomain(domain) {
+  // Basic domain validation regex
+  const domainRegex = /^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
+  return domainRegex.test(domain);
+}
+
+function validateLongLimit(value) {
+  const num = parseInt(value, 10);
+  return !isNaN(num) && num >= 200 && num <= 4000;
+}
 
 // ----------------------- Section Toggle Functionality -----------------------
 function toggleSection(sectionId) {
@@ -99,7 +120,17 @@ async function loadBioMode() {
     const res = await fetch(`/api/biomode?chat_id=${chat_id}`);
     if (!res.ok) throw new Error("API not available");
     const enabled = await res.json();
-    document.getElementById('biomode-switch').checked = !!enabled;
+    const switchEl = document.getElementById('biomode-switch');
+    switchEl.checked = !!enabled;
+
+    // Add live update event listener
+    switchEl.addEventListener('sl-change', () => {
+      saveBioMode().then(() => {
+        showToast("✅ BioMode updated", "success");
+      }).catch(err => {
+        showToast("❌ Failed to update BioMode", "error");
+      });
+    });
   } catch (e) {
     // Fallback to demo mode
     document.getElementById('biomode-switch').checked = false;
@@ -122,8 +153,36 @@ async function loadEchoSettings() {
     const res = await fetch(`/api/echo?chat_id=${chat_id}`);
     if (!res.ok) throw new Error("API not available");
     const data = await res.json();
-    document.getElementById('longmode-select').value = data?.long_mode ?? 'automatic';
-    document.getElementById('longlimit-input').value = data?.long_limit ?? 800;
+
+    const selectEl = document.getElementById('longmode-select');
+    const inputEl = document.getElementById('longlimit-input');
+
+    selectEl.value = data?.long_mode ?? 'automatic';
+    inputEl.value = data?.long_limit ?? 800;
+
+    // Add live update event listeners
+    selectEl.addEventListener('sl-change', () => {
+      saveEchoSettings().then(() => {
+        showToast("✅ Echo settings updated", "success");
+      }).catch(err => {
+        showToast("❌ Failed to update echo settings", "error");
+      });
+    });
+
+    inputEl.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        if (validateLongLimit(inputEl.value)) {
+          saveEchoSettings().then(() => {
+            showToast("✅ Long limit updated", "success");
+          }).catch(err => {
+            showToast("❌ Failed to update long limit", "error");
+          });
+        } else {
+          showToast("⚠️ Long limit must be between 200 and 4000", "warning");
+          inputEl.value = data?.long_limit ?? 800; // Reset to previous value
+        }
+      }
+    });
   } catch (e) {
     // Fallback to demo mode
     document.getElementById('longmode-select').value = 'automatic';
@@ -153,12 +212,23 @@ async function loadLinkFilter() {
     const res = await fetch(`/api/linkfilter?chat_id=${chat_id}`);
     if (!res.ok) throw new Error("API not available");
     const data = await res.json();
-    document.getElementById('linkfilter-switch').checked = !!data?.enabled;
+
+    const switchEl = document.getElementById('linkfilter-switch');
+    switchEl.checked = !!data?.enabled;
     const domains = data?.allowed_domains ?? [];
 
     const tbody = document.getElementById('allowed-links-body');
     tbody.innerHTML = '';
     domains.forEach(domain => addDomainRow(domain));
+
+    // Add live update event listener for switch
+    switchEl.addEventListener('sl-change', () => {
+      saveLinkFilterState().then(() => {
+        showToast("✅ Link filter updated", "success");
+      }).catch(err => {
+        showToast("❌ Failed to update link filter", "error");
+      });
+    });
   } catch (e) {
     // Fallback to demo mode
     document.getElementById('linkfilter-switch').checked = false;
@@ -179,7 +249,11 @@ function addDomainRow(domain) {
   `;
   tr.querySelector('button').onclick = () => {
     tbody.removeChild(tr);
-    showToast(`Domain "${domain}" removed`, "info");
+    saveDomainRemove(domain).then(() => {
+      showToast(`✅ Domain "${domain}" removed`, "success");
+    }).catch(err => {
+      showToast("❌ Failed to remove domain", "error");
+    });
   };
   tbody.appendChild(tr);
 }
@@ -187,56 +261,53 @@ function addDomainRow(domain) {
 document.getElementById('allow-btn').onclick = () => {
   const input = document.getElementById('allow-domain-input');
   const domain = input?.value?.trim()?.toLowerCase();
-  if (domain) {
+  if (domain && isValidDomain(domain)) {
     addDomainRow(domain);
     input.value = '';
-    showToast(`Domain "${domain}" added`, "success");
+    saveDomainAdd(domain).then(() => {
+      showToast(`✅ Domain "${domain}" added`, "success");
+    }).catch(err => {
+      showToast("❌ Failed to add domain", "error");
+    });
   } else {
-    showToast("Please enter a valid domain", "warning");
+    showToast("⚠️ Please enter a valid domain (e.g., example.com)", "warning");
   }
 };
 
-async function saveLinkFilter() {
-  const enabled = document.getElementById('linkfilter-switch').checked;
+// Add enter key support for domain input
+document.getElementById('allow-domain-input').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    document.getElementById('allow-btn').click();
+  }
+});
 
-  // Toggle on/off first
+// Simplified functions for live updating
+async function saveLinkFilterState() {
+  const enabled = document.getElementById('linkfilter-switch').checked;
   const res = await fetch(`/api/linkfilter?chat_id=${chat_id}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ enabled }),
   });
   if (!res.ok) throw new Error("Failed to update LinkFilter state");
+}
 
-  // Get full list from backend to find deltas
-  const response = await fetch(`/api/linkfilter?chat_id=${chat_id}`);
-  const data = await response.json();
-  const oldDomains = new Set(data?.allowed_domains ?? []);
+async function saveDomainAdd(domain) {
+  const res = await fetch(`/api/linkfilter/allow?chat_id=${chat_id}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ domain }),
+  });
+  if (!res.ok) throw new Error("Failed to add domain");
+}
 
-  const tbody = document.getElementById('allowed-links-body');
-  const newDomains = Array.from(tbody.children).map(row => row.children[0].textContent);
-
-  for (const d of newDomains) {
-    if (!oldDomains.has(d)) {
-      const resAdd = await fetch(`/api/linkfilter/allow?chat_id=${chat_id}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ domain: d }),
-      });
-      if (!resAdd.ok) throw new Error("Failed to add domain: " + d);
-    }
-  }
-
-  // Remove domains that were removed in the UI
-  for (const d of oldDomains) {
-    if (!newDomains.includes(d)) {
-      const resRm = await fetch(`/api/linkfilter/remove?chat_id=${chat_id}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ domain: d }),
-      });
-      if (!resRm.ok) throw new Error("Failed to remove domain: " + d);
-    }
-  }
+async function saveDomainRemove(domain) {
+  const res = await fetch(`/api/linkfilter/remove?chat_id=${chat_id}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ domain }),
+  });
+  if (!res.ok) throw new Error("Failed to remove domain");
 }
 
 // ----------------------- Toast Notifications -----------------------
@@ -275,34 +346,4 @@ function showToast(message, type = "info") {
   }, 3000);
 }
 
-// ----------------------- Save All -----------------------
-document.getElementById('save-all').onclick = async () => {
-  const saveButton = document.getElementById('save-all');
-  const originalText = saveButton.textContent;
-
-  try {
-    saveButton.textContent = '💾 Saving...';
-    saveButton.disabled = true;
-
-    await saveBioMode();
-    await saveEchoSettings();
-    await saveLinkFilter();
-
-    showToast("✅ All settings saved successfully!", "success");
-
-    // Provide haptic feedback if available
-    if (tg.HapticFeedback) {
-      tg.HapticFeedback.notificationOccurred('success');
-    }
-  } catch (error) {
-    showToast("❌ Failed to save: " + (error?.message ?? error), "error");
-
-    // Provide haptic feedback if available
-    if (tg.HapticFeedback) {
-      tg.HapticFeedback.notificationOccurred('error');
-    }
-  } finally {
-    saveButton.textContent = originalText;
-    saveButton.disabled = false;
-  }
-};
+// Save all functionality removed - now using live updates
