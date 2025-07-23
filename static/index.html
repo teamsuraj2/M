@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <meta charset="UTF-8" />
@@ -55,6 +55,98 @@
   <script src="https://unpkg.com/mdui@2/mdui.min.js"></script> 
   <script src="https://telegram.org/js/telegram-web-app.js?58"></script>
 
+  <script src="app.js"></script>
+</body>
+</html>
+
+-->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Group Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- ✅ Tailwind CSS + DaisyUI -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.2/dist/full.css" rel="stylesheet" type="text/css" />
+
+  <!-- ✅ Telegram WebApp JavaScript -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body class="bg-gray-100 font-sans px-6 py-8">
+
+  <!-- 🔄 Shown while loading settings -->
+  <div id="loading" class="text-center mt-16 text-xl text-gray-700">
+    <h3>Loading group settings...</h3>
+  </div>
+
+  <!-- ✅ Settings UI (hidden by default) -->
+  <div id="settings-container" class="max-w-lg mx-auto bg-white p-6 rounded-2xl shadow-md hidden">
+
+    <!-- 🛡️ BioMode Switch -->
+    <section class="mb-8">
+      <h2 class="text-lg font-semibold mb-2">🛡️ BioMode</h2>
+      <label class="flex items-center space-x-3">
+        <input type="checkbox" id="biomode-switch" class="toggle toggle-primary" />
+        <span>Enable BioMode</span>
+      </label>
+    </section>
+
+    <!-- 📝 Echo Settings -->
+    <section class="mb-8">
+      <h2 class="text-lg font-semibold mb-4">📝 Echo Settings</h2>
+
+      <!-- Select Long Mode -->
+      <label class="block mb-2" for="longmode-select">Long Message Mode:</label>
+      <select id="longmode-select" class="select select-bordered w-full mb-4">
+        <option value="off">Off</option>
+        <option value="manual">Manual</option>
+        <option value="automatic">Automatic</option>
+      </select>
+
+      <!-- Input Limit -->
+      <label class="block mb-2" for="longlimit-input">Long Message Limit (200–4000):</label>
+      <input type="number" id="longlimit-input" class="input input-bordered w-full" min="200" max="4000" />
+    </section>
+
+    <!-- 🔗 Link Filter -->
+    <section class="mb-8">
+      <h2 class="text-lg font-semibold mb-4">🔗 Link Filter</h2>
+
+      <label class="flex items-center space-x-3">
+        <input type="checkbox" id="linkfilter-switch" class="toggle toggle-primary" />
+        <span>Enable Link Filter</span>
+      </label>
+
+      <!-- Add Domain Input -->
+      <div class="flex gap-2 items-center mt-4 mb-4">
+        <input id="allow-domain-input" type="text" placeholder="example.com" class="input input-bordered w-full" />
+        <button id="allow-btn" class="btn btn-primary">Add Domain</button>
+      </div>
+
+      <!-- Allowed Domains Table -->
+      <div class="overflow-x-auto">
+        <table id="allowed-links-table" class="table w-full">
+          <thead>
+            <tr>
+              <th>Domain</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="allowed-links-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ✅ Save Button -->
+    <button id="save-all" class="btn btn-accent w-full mt-4">💾 Save All</button>
+  </div>
+
+  <!-- 🔌 Your JS logic here -->
   <script src="app.js"></script>
 </body>
 </html>
