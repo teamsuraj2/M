@@ -95,7 +95,7 @@ function toggleSection(sectionId) {
   const content = document.getElementById(`${sectionId}-content`);
   const icon = document.getElementById(`${sectionId}-icon`);
 
-  // Close all other sections
+  /* // Close all other sections
   const allSections = ['biomode', 'echo', 'linkfilter'];
   allSections.forEach(id => {
     if (id !== sectionId) {
@@ -104,7 +104,7 @@ function toggleSection(sectionId) {
       otherContent.classList.remove('expanded');
       otherIcon.classList.remove('expanded');
     }
-  });
+  });*/
 
   // Toggle current section
   content.classList.toggle('expanded');
