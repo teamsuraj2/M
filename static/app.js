@@ -8,7 +8,7 @@ window.onload = async () => {
   const chat = initData?.chat ?? null;
   const initRaw = tg?.initData;
 
-  if (!chat?.id) {
+  /*if (!chat?.id) {
     // ❌ Not launched in a group
     // Report to backend for debugging
     try {
@@ -29,7 +29,9 @@ window.onload = async () => {
     return;
   }
 
-  chat_id = chat.id;
+  chat_id = chat.id;*/
+
+  chat_id = 2867211623
   tg.expand();
 
   try {
