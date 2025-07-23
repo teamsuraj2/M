@@ -83,7 +83,7 @@ func startAPIServer(bot *telegram.Client) {
 
 		case http.MethodPost:
 			var enabled bool
-                defer r.Body.Close()
+			defer r.Body.Close()
 			if err := json.NewDecoder(r.Body).Decode(&enabled); err != nil {
 				http.Error(w, "Invalid JSON: expected true/false", http.StatusBadRequest)
 				return
@@ -136,7 +136,7 @@ func startAPIServer(bot *telegram.Client) {
 				LongMode  string `json:"long_mode"`
 				LongLimit int    `json:"long_limit"`
 			}
-                defer r.Body.Close()
+			defer r.Body.Close()
 			if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 				http.Error(w, "invalid JSON", http.StatusBadRequest)
 				return
@@ -195,7 +195,7 @@ func startAPIServer(bot *telegram.Client) {
 			var body struct {
 				Enabled bool `json:"enabled"`
 			}
-                defer r.Body.Close()
+			defer r.Body.Close()
 			if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 				http.Error(w, "invalid JSON", http.StatusBadRequest)
 				return
@@ -217,7 +217,7 @@ func startAPIServer(bot *telegram.Client) {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
 			return
 		}
-                defer r.Body.Close()
+		defer r.Body.Close()
 		chatIDRaw := r.URL.Query().Get("chat_id")
 		if chatIDRaw == "" {
 			http.Error(w, "chat_id required", http.StatusBadRequest)
