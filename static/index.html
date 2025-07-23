@@ -70,83 +70,122 @@
   <title>Group Settings</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- ✅ Tailwind CSS + DaisyUI -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.2/dist/full.css" rel="stylesheet" type="text/css" />
+  <!-- ✅ Shoelace UI -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/shoelace.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/themes/light.css" />
 
-  <!-- ✅ Telegram WebApp JavaScript -->
+  <!-- ✅ Telegram WebApp -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background-color: #f3f4f6;
+      margin: 0;
+      padding: 2rem;
+      color: #333;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    sl-divider {
+      margin: 1.5rem 0;
+    }
+
+    .domain-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 0.6rem;
+      border: 1px solid #ddd;
+    }
+
+    button.remove {
+      background: transparent;
+      color: red;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 font-sans px-6 py-8">
+<body>
 
-  <!-- 🔄 Shown while loading settings -->
-  <div id="loading" class="text-center mt-16 text-xl text-gray-700">
-    <h3>Loading group settings...</h3>
-  </div>
+<div id="loading" style="text-align:center; margin-top: 4rem;">
+  <sl-spinner style="font-size: 2rem;"></sl-spinner>
+  <p style="margin-top: 1rem;">Loading group settings...</p>
+</div>
 
-  <!-- ✅ Settings UI (hidden by default) -->
-  <div id="settings-container" class="max-w-lg mx-auto bg-white p-6 rounded-2xl shadow-md hidden">
+  <div class="container">
+    <h1>⚙️ Group Settings</h1>
 
     <!-- 🛡️ BioMode Switch -->
-    <section class="mb-8">
-      <h2 class="text-lg font-semibold mb-2">🛡️ BioMode</h2>
-      <label class="flex items-center space-x-3">
-        <input type="checkbox" id="biomode-switch" class="toggle toggle-primary" />
-        <span>Enable BioMode</span>
-      </label>
-    </section>
+    <sl-switch id="biomode-switch">🛡️ Enable BioMode</sl-switch>
+
+    <sl-divider></sl-divider>
 
     <!-- 📝 Echo Settings -->
-    <section class="mb-8">
-      <h2 class="text-lg font-semibold mb-4">📝 Echo Settings</h2>
+    <h2>📝 Echo Settings</h2>
 
-      <!-- Select Long Mode -->
-      <label class="block mb-2" for="longmode-select">Long Message Mode:</label>
-      <select id="longmode-select" class="select select-bordered w-full mb-4">
-        <option value="off">Off</option>
-        <option value="manual">Manual</option>
-        <option value="automatic">Automatic</option>
-      </select>
+    <sl-select id="longmode-select" label="Long Message Mode">
+      <sl-option value="off">Off</sl-option>
+      <sl-option value="manual">Manual</sl-option>
+      <sl-option value="automatic">Automatic</sl-option>
+    </sl-select>
 
-      <!-- Input Limit -->
-      <label class="block mb-2" for="longlimit-input">Long Message Limit (200–4000):</label>
-      <input type="number" id="longlimit-input" class="input input-bordered w-full" min="200" max="4000" />
-    </section>
+    <sl-input id="longlimit-input" type="number" label="Message Limit (200–4000)" min="200" max="4000" placeholder="Enter limit..."></sl-input>
+
+    <sl-divider></sl-divider>
 
     <!-- 🔗 Link Filter -->
-    <section class="mb-8">
-      <h2 class="text-lg font-semibold mb-4">🔗 Link Filter</h2>
+    <h2>🔗 Link Filter</h2>
+    <sl-switch id="linkfilter-switch">Enable Link Filter</sl-switch>
 
-      <label class="flex items-center space-x-3">
-        <input type="checkbox" id="linkfilter-switch" class="toggle toggle-primary" />
-        <span>Enable Link Filter</span>
-      </label>
+    <div class="domain-row" style="margin-top: 1rem;">
+      <sl-input id="allow-domain-input" placeholder="example.com" style="flex: 1;"></sl-input>
+      <sl-button id="allow-btn" variant="primary">Add</sl-button>
+    </div>
 
-      <!-- Add Domain Input -->
-      <div class="flex gap-2 items-center mt-4 mb-4">
-        <input id="allow-domain-input" type="text" placeholder="example.com" class="input input-bordered w-full" />
-        <button id="allow-btn" class="btn btn-primary">Add Domain</button>
-      </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Domain</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="allowed-links-body">
+        <!-- JS will insert rows -->
+      </tbody>
+    </table>
 
-      <!-- Allowed Domains Table -->
-      <div class="overflow-x-auto">
-        <table id="allowed-links-table" class="table w-full">
-          <thead>
-            <tr>
-              <th>Domain</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="allowed-links-body"></tbody>
-        </table>
-      </div>
-    </section>
+    <sl-divider></sl-divider>
 
     <!-- ✅ Save Button -->
-    <button id="save-all" class="btn btn-accent w-full mt-4">💾 Save All</button>
+    <sl-button id="save-all" variant="success" size="large" pill block>💾 Save All</sl-button>
   </div>
 
-  <!-- 🔌 Your JS logic here -->
-  <script src="app.js"></script>
+  <!-- JS file -->
+  <script src="app.js" type="module"></script>
 </body>
 </html>
