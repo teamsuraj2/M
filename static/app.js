@@ -60,10 +60,32 @@ function applyTheme() {
 }
 
 // ----------------------- Validation Functions -----------------------
-function isValidDomain(domain) {
-  // Basic domain validation regex
-  const domainRegex = /^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
-  return domainRegex.test(domain);
+function extractHostname(input) {
+  input = input.trim();
+  if (!input.startsWith("http://") && !input.startsWith("https://")) {
+    input = "http://" + input;
+  }
+
+  try {
+    const urlObj = new URL(input);
+    return urlObj.hostname.toLowerCase();
+  } catch {
+    return "";
+  }
+}
+
+function isValidDomain(hostname) {
+  if (!hostname) return false;
+
+  const ipv4Pattern = /^(?:\d{1,3}\.){3}\d{1,3}$/;
+  const ipv6Pattern = /^\[?[a-fA-F0-9:]+\]?$/;
+  const domainPattern = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  return (
+    ipv4Pattern.test(hostname) ||
+    ipv6Pattern.test(hostname) ||
+    domainPattern.test(hostname)
+  );
 }
 
 function validateLongLimit(value) {
@@ -260,17 +282,17 @@ function addDomainRow(domain) {
 
 document.getElementById('allow-btn').onclick = () => {
   const input = document.getElementById('allow-domain-input');
-  const domain = input?.value?.trim()?.toLowerCase();
-  if (domain && isValidDomain(domain)) {
-    addDomainRow(domain);
+  const rawValue = input?.value ?? '';
+  const hostname = extractHostname(rawValue); // extract and normalize
+
+  if (hostname && isValidDomain(hostname)) {
+    addDomainRow(hostname);
     input.value = '';
-    saveDomainAdd(domain).then(() => {
-      showToast(`✅ Domain "${domain}" added`, "success");
-    }).catch(err => {
+    saveDomainAdd(hostname).then(() => {}).catch(() => {
       showToast("❌ Failed to add domain", "error");
     });
   } else {
-    showToast("⚠️ Please enter a valid domain (e.g., example.com)", "warning");
+    showToast("⚠️ Please enter a valid domain or IP (e.g., example.com or 127.0.0.1)", "warning");
   }
 };
 
