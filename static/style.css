@@ -1,3 +1,4 @@
+/* Material 3 Design System */
 :root {
   /* Light theme */
   --md-sys-color-primary: #6750A4;
@@ -170,7 +171,6 @@ body {
   padding: 16px;
   border-radius: 16px;
   margin-bottom: 20px;
-  border-left: 4px solid var(--md-sys-color-primary);
 }
 
 .section-description p {
@@ -208,7 +208,7 @@ body {
 
 .domain-input-group {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   align-items: end;
 }
 
@@ -278,11 +278,12 @@ body {
 
 /* Shoelace component customizations for Material 3 */
 sl-switch::part(base) {
-  --height: 2rem;
-  --thumb-size: 1.5rem;
+  --height: 2.5rem;
+  --thumb-size: 1.8rem;
   --track-color-checked: var(--md-sys-color-primary);
   --track-color-unchecked: var(--md-sys-color-outline);
   --thumb-color: var(--md-sys-color-on-primary);
+  --track-width: 3.5rem;
 }
 
 sl-input::part(base),
@@ -310,10 +311,11 @@ sl-select::part(display-input):focus {
 }
 
 sl-button::part(base) {
-  border-radius: 20px;
-  padding: 12px 24px;
+  border-radius: 12px;
+  padding: 10px 16px;
   font-weight: 500;
   transition: all 0.2s ease;
+  font-size: 0.9em;
 }
 
 sl-button[variant="primary"]::part(base) {
