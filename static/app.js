@@ -46,9 +46,6 @@ window.onload = async () => {
     ]);
     document.getElementById("loading").style.display = "none";
     document.getElementById("settings-container").style.display = "block";
-
-    // Initialize the first section as expanded
-    toggleSection('biomode');
   } catch (e) {
     showErrorPage(e?.message ?? e);
   }
