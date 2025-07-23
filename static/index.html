@@ -1,66 +1,3 @@
-<!-- <html>
-<head>
-  <meta charset="UTF-8" />
-  <title>Group Settings</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://unpkg.com/mdui@2/mdui.min.css" rel="stylesheet" />
-  <link href="style.css" rel="stylesheet" />
-</head>
-<body>
-  <div id="loading" class="loading">
-    <h3>Loading group settings...</h3>
-  </div>
-
-  <div class="container" id="settings-container" style="display:none;">
-    <section>
-      <h2>🛡️ BioMode</h2>
-      <mdui-switch id="biomode-switch">Enable BioMode</mdui-switch>
-    </section>
-
-    <section>
-      <h2>📝 Echo Settings</h2>
-      <div>
-        <label for="longmode-select">Long Message Mode:</label>
-        <select id="longmode-select" class="mdui-select">
-          <option value="off">Off</option>
-          <option value="manual">Manual</option>
-          <option value="automatic">Automatic</option>
-        </select>
-      </div>
-      <div>
-        <label for="longlimit-input">Long Message Limit (200–4000):</label>
-        <input id="longlimit-input" type="number" min="200" max="4000" class="mdui-text-field-input" />
-      </div>
-    </section>
-
-    <section>
-      <h2>🔗 Link Filter</h2>
-      <mdui-switch id="linkfilter-switch">Enable Link Filter</mdui-switch>
-
-      <div class="flex">
-        <input id="allow-domain-input" type="text" placeholder="example.com" />
-        <button id="allow-btn" class="mdui-btn mdui-btn-raised">Add Domain</button>
-      </div>
-
-      <table id="allowed-links-table" class="mdui-table">
-        <thead><tr><th>Domain</th><th>Action</th></tr></thead>
-        <tbody id="allowed-links-body"></tbody>
-      </table>
-    </section>
-
-    <button id="save-all" class="mdui-btn mdui-btn-raised mdui-color-theme-accent" style="width: 100%; margin-top: 16px;">Save All</button>
-  </div>
-
-  <script src="https://unpkg.com/mdui@2/mdui.min.js"></script> 
-  <script src="https://telegram.org/js/telegram-web-app.js?58"></script>
-
-  <script src="app.js"></script>
-</body>
-</html>
-
--->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -77,38 +14,116 @@
   <sl-spinner style="display: block; margin: 100px auto;" id="loading"></sl-spinner>
 
   <div class="container" id="settings-container" style="display: none;">
-    <section>
-      <h2>🛡️ BioMode</h2>
-      <sl-switch id="biomode-switch">Enable BioMode</sl-switch>
-    </section>
+    <h1 class="main-title">⚙️ Group Settings</h1>
 
-    <section>
-      <h2>📝 Echo Settings</h2>
-      <sl-select id="longmode-select" label="Long Message Mode">
-        <sl-option value="off">Off</sl-option>
-        <sl-option value="manual">Manual</sl-option>
-        <sl-option value="automatic">Automatic</sl-option>
-      </sl-select>
-
-      <sl-input id="longlimit-input" type="number" label="Long Message Limit (200–4000)" min="200" max="4000"></sl-input>
-    </section>
-
-    <section>
-      <h2>🔗 Link Filter</h2>
-      <sl-switch id="linkfilter-switch">Enable Link Filter</sl-switch>
-
-      <div class="flex">
-        <sl-input id="allow-domain-input" placeholder="example.com"></sl-input>
-        <sl-button id="allow-btn">Add Domain</sl-button>
+    <!-- BioMode Section -->
+    <div class="settings-section">
+      <div class="section-header" onclick="toggleSection('biomode')">
+        <div class="section-title">
+          <span class="section-icon">🛡️</span>
+          <span>BioMode</span>
+        </div>
+        <span class="expand-icon" id="biomode-icon">▼</span>
       </div>
 
-      <table class="shoelace-table">
-        <thead><tr><th>Domain</th><th>Action</th></tr></thead>
-        <tbody id="allowed-links-body"></tbody>
-      </table>
-    </section>
+      <div class="section-content" id="biomode-content">
+        <div class="section-description">
+          <p><strong>🛡️ BioMode</strong> monitors user bios and deletes messages if they contain URLs.</p>
+          <p class="warning">🚫 When enabled, users with links in their bios won't be able to send messages.</p>
+          <p class="admin-note">👮 Only admins can enable or disable this feature.</p>
+        </div>
 
-    <sl-button id="save-all" variant="primary" style="width: 100%;">Save All</sl-button>
+        <div class="control-group">
+          <sl-switch id="biomode-switch">Enable BioMode</sl-switch>
+        </div>
+      </div>
+    </div>
+
+    <!-- Echo Settings Section -->
+    <div class="settings-section">
+      <div class="section-header" onclick="toggleSection('echo')">
+        <div class="section-title">
+          <span class="section-icon">📝</span>
+          <span>Echo Settings</span>
+        </div>
+        <span class="expand-icon" id="echo-icon">▼</span>
+      </div>
+
+      <div class="section-content" id="echo-content">
+        <div class="section-description">
+          <p><strong>📝 Echo Mode</strong> sends back the provided text. Also allows setting how the bot handles long messages.</p>
+
+          <div class="usage-info">
+            <p><strong>Mode Settings:</strong></p>
+            <p>• <strong>Off</strong> – Bot will no longer handle long messages</p>
+            <p>• <strong>Manual</strong> – Bot will delete long messages greater than longlimit</p>
+            <p>• <strong>Automatic</strong> – Bot will delete messages greater than longlimit, paste it on telegraph and send back</p>
+          </div>
+
+          <p><strong>Long Limit:</strong> From 200 to 4000 characters (default: 800)</p>
+        </div>
+
+        <div class="control-group">
+          <sl-select id="longmode-select" label="Long Message Mode">
+            <sl-option value="off">Off</sl-option>
+            <sl-option value="manual">Manual</sl-option>
+            <sl-option value="automatic">Automatic</sl-option>
+          </sl-select>
+
+          <sl-input id="longlimit-input" type="number" label="Long Message Limit (200–4000)" min="200" max="4000"></sl-input>
+        </div>
+      </div>
+    </div>
+
+    <!-- Link Filter Section -->
+    <div class="settings-section">
+      <div class="section-header" onclick="toggleSection('linkfilter')">
+        <div class="section-title">
+          <span class="section-icon">🔗</span>
+          <span>Link Filter</span>
+        </div>
+        <span class="expand-icon" id="linkfilter-icon">▼</span>
+      </div>
+
+      <div class="section-content" id="linkfilter-content">
+        <div class="section-description">
+          <p><strong>🔗 LinkFilter</strong> allows admins to restrict messages containing unapproved links.</p>
+
+          <div class="usage-info">
+            <p><strong>Mode Settings:</strong></p>
+            <p>• <strong>On</strong> – Bot will watch for all messages. If they contain direct links except whitelisted, bot will delete</p>
+            <p>• <strong>Off</strong> – No deletions</p>
+          </div>
+
+          <p><strong>Add/Delete Links:</strong> Here you can add/delete domains directly by contacting backend</p>
+          <p class="warning">🚫 Messages with links not in the allowed list will be automatically deleted.</p>
+          <p class="admin-note">👮 Only admins can configure this filter.</p>
+        </div>
+
+        <div class="control-group">
+          <sl-switch id="linkfilter-switch">Enable Link Filter</sl-switch>
+
+          <div class="domain-input-group">
+            <sl-input id="allow-domain-input" placeholder="example.com" label="Add Allowed Domain"></sl-input>
+            <sl-button id="allow-btn" variant="primary">Add Domain</sl-button>
+          </div>
+
+          <div class="domains-table-container">
+            <table class="domains-table">
+              <thead>
+                <tr>
+                  <th>Allowed Domains</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="allowed-links-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <sl-button id="save-all" variant="primary" class="save-button">💾 Save All Settings</sl-button>
   </div>
 
   <script src="https://telegram.org/js/telegram-web-app.js?58"></script>
