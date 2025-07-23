@@ -22,12 +22,28 @@ func writeJSON(w http.ResponseWriter, data interface{}) {
 }
 
 func startAPIServer(bot *telegram.Client) {
+
+http.HandleFunc("/config.js", func(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/javascript")
+
+	scheme := "http"
+	if r.TLS != nil {
+		scheme = "https"
+	}
+
+	siteUrl := scheme + "://" + r.Host
+
+	fmt.Fprintf(w, `window.AppConfig = {
+		siteUrl: %q
+	};`, siteUrl)
+})
+
+
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, map[string]string{"message": "pong"})
-	})
-
+	}) 
 	http.HandleFunc("/report-unauthorized", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
