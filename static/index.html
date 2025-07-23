@@ -1,4 +1,4 @@
-<html>
+<!-- <html>
 <head>
   <meta charset="UTF-8" />
   <title>Group Settings</title>
@@ -54,6 +54,64 @@
   <script src="https://unpkg.com/mdui@2/mdui.min.js"></script> 
   <script src="https://telegram.org/js/telegram-web-app.js?58"></script>
 
+  <script src="app.js"></script>
+</body>
+</html>
+
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Group Settings</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Shoelace UI -->
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/shoelace.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/themes/light.css" />
+  <link href="style.css" rel="stylesheet" />
+</head>
+<body>
+  <sl-spinner style="display: block; margin: 100px auto;" id="loading"></sl-spinner>
+
+  <div class="container" id="settings-container" style="display: none;">
+    <section>
+      <h2>🛡️ BioMode</h2>
+      <sl-switch id="biomode-switch">Enable BioMode</sl-switch>
+    </section>
+
+    <section>
+      <h2>📝 Echo Settings</h2>
+      <sl-select id="longmode-select" label="Long Message Mode">
+        <sl-option value="off">Off</sl-option>
+        <sl-option value="manual">Manual</sl-option>
+        <sl-option value="automatic">Automatic</sl-option>
+      </sl-select>
+
+      <sl-input id="longlimit-input" type="number" label="Long Message Limit (200–4000)" min="200" max="4000"></sl-input>
+    </section>
+
+    <section>
+      <h2>🔗 Link Filter</h2>
+      <sl-switch id="linkfilter-switch">Enable Link Filter</sl-switch>
+
+      <div class="flex">
+        <sl-input id="allow-domain-input" placeholder="example.com"></sl-input>
+        <sl-button id="allow-btn">Add Domain</sl-button>
+      </div>
+
+      <table class="shoelace-table">
+        <thead><tr><th>Domain</th><th>Action</th></tr></thead>
+        <tbody id="allowed-links-body"></tbody>
+      </table>
+    </section>
+
+    <sl-button id="save-all" variant="primary" style="width: 100%;">Save All</sl-button>
+  </div>
+
+  <script src="https://telegram.org/js/telegram-web-app.js?58"></script>
   <script src="app.js"></script>
 </body>
 </html>
