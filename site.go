@@ -42,7 +42,7 @@ func startAPIServer(bot *telegram.Client) {
 		go func() {
 			_, err := bot.SendMessage(config.LoggerId, fmt.Sprintf(
 				"🚨 Mini App opened outside group.\n\n<pre>%s</pre>", string(debugMsg)),
-				telegram.SendOptions{ParseMode: "HTML"},
+				&telegram.SendOptions{ParseMode: "HTML"},
 			)
 			if err != nil {
 				log.Println("Failed to send initData debug:", err)
