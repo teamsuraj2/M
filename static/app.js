@@ -25,10 +25,7 @@ window.onload = async () => {
       console.warn("Debug report failed:", err);
     }
 
-    document.body.innerHTML = `
-      <div class="container">
-        <h3>❌ This app must be opened from a Telegram <b>group chat</b>.</h3>
-    `;
+    document.body.innerHTML = '<h3>❌ This app must be opened from a Telegram <b>group chat</b>.</h3>';
     return;
   }
 
