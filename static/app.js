@@ -2,6 +2,7 @@ const tg = window.Telegram.WebApp;
 let chat_id;
 
 window.onload = async () => {
+  tg.ready();
   const initData = tg?.initDataUnsafe;
   const user = initData?.user ?? null;
   const chat = initData?.chat ?? null;
@@ -27,8 +28,6 @@ window.onload = async () => {
     document.body.innerHTML = `
       <div class="container">
         <h3>❌ This app must be opened from a Telegram <b>group chat</b>.</h3>
-        <p>Please open your group > Menu > Mini Apps > Settings.</p>
-      </div>
     `;
     return;
   }
