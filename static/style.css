@@ -96,20 +96,9 @@ body {
         color 0.3s ease;
 }
 
-/* Remove 'inner box' appearance from Shoelace select */
 sl-select::part(display-input) {
   border: none !important;
-  background: transparent !important;
   box-shadow: none !important;
-  padding: 12px 0 !important; /* Remove side padding if you want even flatter style */
-}
-sl-select::part(base) {
-  background: transparent !important;
-  box-shadow: none !important;
-}
-sl-select::part(combobox) {
-  border-radius: 0 !important;
-  background: transparent !important;
 }
 
 .container {
