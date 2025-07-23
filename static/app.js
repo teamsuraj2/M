@@ -147,10 +147,8 @@ async function loadBioMode() {
 
     // Add live update event listener
     switchEl.addEventListener('sl-change', () => {
-      saveBioMode().then(() => {
-        showToast("✅ BioMode updated", "success");
-      }).catch(err => {
-        showToast("❌ Failed to update BioMode", "error");
+      saveBioMode().catch(err => {
+        showToast(`❌ Failed to update BioMode:  ${err?.message || err || "Unknown error"}`, "error");
       });
     });
   } catch (e) {
@@ -184,20 +182,16 @@ async function loadEchoSettings() {
 
     // Add live update event listeners
     selectEl.addEventListener('sl-change', () => {
-      saveEchoSettings().then(() => {
-        showToast("✅ Echo settings updated", "success");
-      }).catch(err => {
-        showToast("❌ Failed to update echo settings", "error");
+      saveEchoSettings().catch(err => {
+        showToast(`❌ Failed to update echo settings:  ${err?.message || err || "Unknown error"}`, "error");
       });
     });
 
     inputEl.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') {
         if (validateLongLimit(inputEl.value)) {
-          saveEchoSettings().then(() => {
-            showToast("✅ Long limit updated", "success");
-          }).catch(err => {
-            showToast("❌ Failed to update long limit", "error");
+          saveEchoSettings().catch(err => {
+            showToast(`❌ Failed to update long limit:  ${err?.message || err || "Unknown error"}`, "error");
           });
         } else {
           showToast("⚠️ Long limit must be between 200 and 4000", "warning");
@@ -245,10 +239,8 @@ async function loadLinkFilter() {
 
     // Add live update event listener for switch
     switchEl.addEventListener('sl-change', () => {
-      saveLinkFilterState().then(() => {
-        showToast("✅ Link filter updated", "success");
-      }).catch(err => {
-        showToast("❌ Failed to update link filter", "error");
+      saveLinkFilterState().catch(err => {
+        showToast(`❌ Failed to update link filter:  ${err?.message || err || "Unknown error"}`, "error");
       });
     });
   } catch (e) {
@@ -271,10 +263,8 @@ function addDomainRow(domain) {
   `;
   tr.querySelector('button').onclick = () => {
     tbody.removeChild(tr);
-    saveDomainRemove(domain).then(() => {
-      showToast(`✅ Domain "${domain}" removed`, "success");
-    }).catch(err => {
-      showToast("❌ Failed to remove domain", "error");
+    saveDomainRemove(domain).catch(err => {
+      showToast(`❌ Failed to remove domain:  ${err?.message || err || "Unknown error"}`, "error");
     });
   };
   tbody.appendChild(tr);
@@ -288,8 +278,8 @@ document.getElementById('allow-btn').onclick = () => {
   if (hostname && isValidDomain(hostname)) {
     addDomainRow(hostname);
     input.value = '';
-    saveDomainAdd(hostname).then(() => {}).catch(() => {
-      showToast("❌ Failed to add domain", "error");
+    saveDomainAdd(hostname).catch(err => {
+      showToast(`❌ Failed to add domain:  ${err?.message || err || "Unknown error"}`, "error");
     });
   } else {
     showToast("⚠️ Please enter a valid domain or IP (e.g., example.com or 127.0.0.1)", "warning");
