@@ -1,18 +1,99 @@
+:root {
+  /* Light theme */
+  --md-sys-color-primary: #6750A4;
+  --md-sys-color-on-primary: #FFFFFF;
+  --md-sys-color-primary-container: #EADDFF;
+  --md-sys-color-on-primary-container: #21005D;
+  --md-sys-color-secondary: #625B71;
+  --md-sys-color-on-secondary: #FFFFFF;
+  --md-sys-color-secondary-container: #E8DEF8;
+  --md-sys-color-on-secondary-container: #1D192B;
+  --md-sys-color-tertiary: #7D5260;
+  --md-sys-color-on-tertiary: #FFFFFF;
+  --md-sys-color-tertiary-container: #FFD8E4;
+  --md-sys-color-on-tertiary-container: #31111D;
+  --md-sys-color-error: #BA1A1A;
+  --md-sys-color-on-error: #FFFFFF;
+  --md-sys-color-error-container: #FFDAD6;
+  --md-sys-color-on-error-container: #410002;
+  --md-sys-color-background: #FFFBFE;
+  --md-sys-color-on-background: #1C1B1F;
+  --md-sys-color-surface: #FFFBFE;
+  --md-sys-color-on-surface: #1C1B1F;
+  --md-sys-color-surface-variant: #E7E0EC;
+  --md-sys-color-on-surface-variant: #49454F;
+  --md-sys-color-outline: #79747E;
+  --md-sys-color-outline-variant: #CAC4D0;
+  --md-sys-color-shadow: #000000;
+  --md-sys-color-scrim: #000000;
+  --md-sys-color-inverse-surface: #313033;
+  --md-sys-color-inverse-on-surface: #F4EFF4;
+  --md-sys-color-inverse-primary: #D0BCFF;
+  --md-sys-color-surface-dim: #DDD8DD;
+  --md-sys-color-surface-bright: #FFFBFE;
+  --md-sys-color-surface-container-lowest: #FFFFFF;
+  --md-sys-color-surface-container-low: #F7F2FA;
+  --md-sys-color-surface-container: #F3EDF7;
+  --md-sys-color-surface-container-high: #ECE6F0;
+  --md-sys-color-surface-container-highest: #E6E0E9;
+}
+
+[data-theme="dark"] {
+  /* Dark theme */
+  --md-sys-color-primary: #D0BCFF;
+  --md-sys-color-on-primary: #381E72;
+  --md-sys-color-primary-container: #4F378B;
+  --md-sys-color-on-primary-container: #EADDFF;
+  --md-sys-color-secondary: #CCC2DC;
+  --md-sys-color-on-secondary: #332D41;
+  --md-sys-color-secondary-container: #4A4458;
+  --md-sys-color-on-secondary-container: #E8DEF8;
+  --md-sys-color-tertiary: #EFB8C8;
+  --md-sys-color-on-tertiary: #492532;
+  --md-sys-color-tertiary-container: #633B48;
+  --md-sys-color-on-tertiary-container: #FFD8E4;
+  --md-sys-color-error: #FFB4AB;
+  --md-sys-color-on-error: #690005;
+  --md-sys-color-error-container: #93000A;
+  --md-sys-color-on-error-container: #FFDAD6;
+  --md-sys-color-background: #10090D;
+  --md-sys-color-on-background: #E6E0E9;
+  --md-sys-color-surface: #10090D;
+  --md-sys-color-on-surface: #E6E0E9;
+  --md-sys-color-surface-variant: #49454F;
+  --md-sys-color-on-surface-variant: #CAC4D0;
+  --md-sys-color-outline: #938F99;
+  --md-sys-color-outline-variant: #49454F;
+  --md-sys-color-shadow: #000000;
+  --md-sys-color-scrim: #000000;
+  --md-sys-color-inverse-surface: #E6E0E9;
+  --md-sys-color-inverse-on-surface: #313033;
+  --md-sys-color-inverse-primary: #6750A4;
+  --md-sys-color-surface-dim: #10090D;
+  --md-sys-color-surface-bright: #3B2F32;
+  --md-sys-color-surface-container-lowest: #0B0408;
+  --md-sys-color-surface-container-low: #1D1B20;
+  --md-sys-color-surface-container: #211F26;
+  --md-sys-color-surface-container-high: #2B2930;
+  --md-sys-color-surface-container-highest: #36343B;
+}
+
 body {
   padding: 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--md-sys-color-surface-dim);
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   min-height: 100vh;
   margin: 0;
+  color: var(--md-sys-color-on-background);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
   max-width: 420px;
   margin: 0 auto;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  background: var(--md-sys-color-surface-container);
+  border-radius: 28px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
   overflow: hidden;
 }
 
@@ -20,15 +101,15 @@ body {
   text-align: center;
   margin: 0;
   padding: 24px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  color: white;
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
   font-size: 1.5em;
-  font-weight: 600;
-  border-radius: 20px 20px 0 0;
+  font-weight: 500;
+  border-radius: 28px 28px 0 0;
 }
 
 .settings-section {
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
 }
 
 .settings-section:last-of-type {
@@ -42,11 +123,11 @@ body {
   padding: 20px 24px;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: white;
+  background: var(--md-sys-color-surface);
 }
 
 .section-header:hover {
-  background: #f8f9fa;
+  background: var(--md-sys-color-surface-container-high);
 }
 
 .section-title {
@@ -54,8 +135,8 @@ body {
   align-items: center;
   gap: 12px;
   font-size: 1.1em;
-  font-weight: 600;
-  color: #2d3748;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface);
 }
 
 .section-icon {
@@ -64,7 +145,7 @@ body {
 
 .expand-icon {
   font-size: 1.2em;
-  color: #718096;
+  color: var(--md-sys-color-on-surface-variant);
   transition: transform 0.3s ease;
 }
 
@@ -76,7 +157,7 @@ body {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease;
-  background: #f8f9fa;
+  background: var(--md-sys-color-surface-container-low);
 }
 
 .section-content.expanded {
@@ -85,17 +166,17 @@ body {
 }
 
 .section-description {
-  background: white;
+  background: var(--md-sys-color-surface);
   padding: 16px;
-  border-radius: 12px;
+  border-radius: 16px;
   margin-bottom: 20px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid var(--md-sys-color-primary);
 }
 
 .section-description p {
   margin: 0 0 8px 0;
   line-height: 1.5;
-  color: #2d3748;
+  color: var(--md-sys-color-on-surface);
 }
 
 .section-description p:last-child {
@@ -103,19 +184,19 @@ body {
 }
 
 .usage-info {
-  background: #f7fafc;
+  background: var(--md-sys-color-surface-container);
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 12px;
   margin: 12px 0;
 }
 
 .warning {
-  color: #e53e3e !important;
+  color: var(--md-sys-color-error) !important;
   font-weight: 500;
 }
 
 .admin-note {
-  color: #3182ce !important;
+  color: var(--md-sys-color-primary) !important;
   font-weight: 500;
 }
 
@@ -136,8 +217,8 @@ body {
 }
 
 .domains-table-container {
-  background: white;
-  border-radius: 12px;
+  background: var(--md-sys-color-surface);
+  border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -148,18 +229,18 @@ body {
 }
 
 .domains-table th {
-  background: #667eea;
-  color: white;
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
   padding: 12px 16px;
   text-align: left;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 0.9em;
 }
 
 .domains-table td {
   padding: 12px 16px;
-  border-bottom: 1px solid #e2e8f0;
-  color: #2d3748;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  color: var(--md-sys-color-on-surface);
 }
 
 .domains-table tr:last-child td {
@@ -167,31 +248,24 @@ body {
 }
 
 .domains-table tr:hover {
-  background: #f7fafc;
+  background: var(--md-sys-color-surface-container);
 }
 
 .remove-btn {
-  background: #fed7d7;
-  color: #e53e3e;
+  background: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-on-error-container);
   border: none;
-  padding: 6px 12px;
-  border-radius: 6px;
+  padding: 8px 16px;
+  border-radius: 20px;
   cursor: pointer;
   font-size: 0.9em;
+  font-weight: 500;
   transition: all 0.2s ease;
 }
 
 .remove-btn:hover {
-  background: #feb2b2;
-}
-
-.save-button {
-  width: calc(100% - 48px);
-  margin: 24px;
-  padding: 16px;
-  font-size: 1.1em;
-  font-weight: 600;
-  background: linear-gradient(135deg, #48bb78, #38a169) !important;
+  background: var(--md-sys-color-error);
+  color: var(--md-sys-color-on-error);
 }
 
 .loading,
@@ -199,54 +273,61 @@ body {
   margin-top: 60px;
   text-align: center;
   font-size: 1.3em;
-  color: white;
+  color: var(--md-sys-color-on-background);
 }
 
-/* Shoelace component customizations */
+/* Shoelace component customizations for Material 3 */
 sl-switch::part(base) {
   --height: 2rem;
   --thumb-size: 1.5rem;
-  --track-color-checked: #667eea;
+  --track-color-checked: var(--md-sys-color-primary);
+  --track-color-unchecked: var(--md-sys-color-outline);
+  --thumb-color: var(--md-sys-color-on-primary);
 }
 
 sl-input::part(base),
 sl-select::part(base) {
-  background: white;
+  background: var(--md-sys-color-surface-container-highest);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 sl-input::part(input),
 sl-select::part(display-input) {
   padding: 12px 16px;
-  border: 2px solid #e2e8f0;
+  border: 1px solid var(--md-sys-color-outline);
   border-radius: 12px;
   font-size: 1em;
   transition: border-color 0.2s ease;
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
 }
 
 sl-input::part(input):focus,
 sl-select::part(display-input):focus {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--md-sys-color-primary);
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: -1px;
 }
 
 sl-button::part(base) {
-  border-radius: 12px;
-  padding: 12px 20px;
-  font-weight: 600;
+  border-radius: 20px;
+  padding: 12px 24px;
+  font-weight: 500;
   transition: all 0.2s ease;
 }
 
 sl-button[variant="primary"]::part(base) {
-  background: #667eea;
-  border-color: #667eea;
+  background: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
 }
 
 sl-button[variant="primary"]::part(base):hover {
-  background: #5a67d8;
-  border-color: #5a67d8;
+  background: var(--md-sys-color-primary-container);
+  border-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
   transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Error page styles */
@@ -259,13 +340,12 @@ sl-button[variant="primary"]::part(base):hover {
 }
 
 .error-card {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
+  background: var(--md-sys-color-surface-container);
+  border-radius: 28px;
   padding: 40px;
   text-align: center;
   max-width: 420px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .error-icon {
@@ -274,30 +354,30 @@ sl-button[variant="primary"]::part(base):hover {
 }
 
 .error-title {
-  color: #2d3748;
+  color: var(--md-sys-color-on-surface);
   font-size: 1.5em;
-  font-weight: 600;
+  font-weight: 500;
   margin: 0 0 16px 0;
 }
 
 .error-message {
-  color: #718096;
+  color: var(--md-sys-color-on-surface-variant);
   font-size: 1.1em;
   margin: 0 0 24px 0;
 }
 
 .error-details {
-  background: #f7fafc;
-  border-left: 4px solid #e53e3e;
+  background: var(--md-sys-color-surface);
+  border-left: 4px solid var(--md-sys-color-error);
   padding: 16px;
-  border-radius: 8px;
+  border-radius: 12px;
   margin: 20px 0;
   text-align: left;
 }
 
 .error-details p {
   margin: 0 0 8px 0;
-  color: #2d3748;
+  color: var(--md-sys-color-on-surface);
   font-size: 0.9em;
   line-height: 1.5;
 }
@@ -314,22 +394,23 @@ sl-button[variant="primary"]::part(base):hover {
 }
 
 .retry-btn {
-  padding: 12px 20px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 12px;
-  font-weight: 600;
+  border-radius: 20px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 1em;
-  background: #667eea;
-  color: white;
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
 }
 
 .retry-btn:hover {
-  background: #5a67d8;
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
   transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-
 
 /* Responsive design */
 @media (max-width: 480px) {
@@ -339,12 +420,13 @@ sl-button[variant="primary"]::part(base):hover {
 
   .container {
     margin: 0;
-    border-radius: 16px;
+    border-radius: 20px;
   }
 
   .main-title {
     padding: 20px;
     font-size: 1.3em;
+    border-radius: 20px 20px 0 0;
   }
 
   .section-header {
@@ -360,14 +442,10 @@ sl-button[variant="primary"]::part(base):hover {
     align-items: stretch;
   }
 
-  .save-button {
-    margin: 20px;
-    width: calc(100% - 40px);
-  }
-
   .error-card {
     padding: 30px 20px;
     margin: 0;
+    border-radius: 20px;
   }
 
   .retry-btn {
