@@ -15,6 +15,8 @@ import (
 	"main/database"
 )
 
+var SiteUrl string 
+
 // Serve JSON response
 func writeJSON(w http.ResponseWriter, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
@@ -30,11 +32,10 @@ func startAPIServer(bot *telegram.Client) {
 			scheme = "https"
 		}
 
-		siteUrl := scheme + "://" + r.Host
-
+		SiteUrl := scheme + "://" + r.Host
 		fmt.Fprintf(w, `window.AppConfig = {
 		siteUrl: %q
-	};`, siteUrl)
+	};`, SiteUrl)
 	})
 
 	http.Handle("/", http.FileServer(http.Dir("./static")))
