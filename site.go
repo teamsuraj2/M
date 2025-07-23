@@ -15,7 +15,7 @@ import (
 	"main/database"
 )
 
-var SiteUrl string 
+var SiteUrl string
 
 // Serve JSON response
 func writeJSON(w http.ResponseWriter, data interface{}) {
