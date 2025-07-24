@@ -311,9 +311,11 @@ sl-input::part(input) {
 }
 
 sl-select {
-    --sl-input-background-color: transparent;
+    --sl-input-background-color: var(--md-sys-color-surface);
     --sl-input-border-color: var(--md-sys-color-outline);
     --sl-input-border-radius-medium: 12px;
+    --sl-input-focus-ring-color: transparent;
+    --sl-focus-ring: none;
 }
 
 sl-select::part(combobox) {
@@ -321,6 +323,7 @@ sl-select::part(combobox) {
     background: var(--md-sys-color-surface);
     border-radius: 12px;
     box-shadow: none !important;
+    outline: none !important;
 }
 
 sl-select::part(listbox) {
@@ -339,28 +342,35 @@ sl-select[open]::part(combobox) {
 
 sl-select::part(display-input) {
     color: var(--md-sys-color-on-surface);
-    border: none;
-    outline: none;
-    box-shadow: none;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
 }
 
-sl-input::part(input):focus,
-sl-select::part(display-input):focus {
-    border-color: var(--md-sys-color-primary);
-    outline: 2px solid var(--md-sys-color-primary);
-    outline-offset: -1px;
-}
-
-/* Remove focus outline overlay on select */
+/* Remove all focus rings and overlays */
 sl-select:focus {
-    outline: none;
-    box-shadow: none;
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
 }
 
 sl-select:focus::part(combobox) {
-    outline: none;
+    outline: none !important;
+    border-color: var(--md-sys-color-primary) !important;
+    box-shadow: none !important;
+}
+
+sl-select:focus-within {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Remove focus ring from input fields too */
+sl-input::part(input):focus {
     border-color: var(--md-sys-color-primary);
-    box-shadow: 0 0 0 2px rgba(var(--md-sys-color-primary), 0.2);
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 sl-button::part(base) {
