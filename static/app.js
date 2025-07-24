@@ -48,6 +48,8 @@ window.onload = async () => {
     document.getElementById("main-content").style.display = "block";
     
   } catch (e) {
+document.getElementById("loading").style.display = "none";
+   
     showErrorPage(e?.message ?? e);
   }
 };
