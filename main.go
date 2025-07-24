@@ -52,7 +52,7 @@ func main() {
 	modules.LoadMods(client)
 
 	startAPIServer(client)
- time.Sleep(5 *time.Second)
+	time.Sleep(5 * time.Second)
 	if !pingApi() {
 		config.PrintAndExit("Unable to connect to API. Make sure your backend is running and accessible.")
 	}
