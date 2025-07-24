@@ -465,6 +465,38 @@ sl-button[variant="primary"]::part(base):hover {
         align-items: stretch;
     }
 
+    .domains-table-container {
+        overflow-x: auto;
+        margin: 0 -8px;
+    }
+
+    .domains-table {
+        min-width: 300px;
+    }
+
+    .domains-table th,
+    .domains-table td {
+        padding: 8px 12px;
+        font-size: 0.9em;
+    }
+
+    .domains-table th:first-child,
+    .domains-table td:first-child {
+        min-width: 120px;
+        word-break: break-word;
+    }
+
+    .domains-table th:last-child,
+    .domains-table td:last-child {
+        width: 80px;
+        text-align: center;
+    }
+
+    .remove-btn {
+        padding: 6px 12px;
+        font-size: 0.8em;
+    }
+
     .error-card {
         padding: 30px 20px;
         margin: 0;
