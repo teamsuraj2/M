@@ -140,7 +140,7 @@ if isEn, err := database.IsLinkFilterEnabled(m.ChatID()); err != nil {
 m.Respond("⚠️ Usage:\n<code>/nolinks on</code> – Enable link filtering\n<code>/nolinks off</code> – Disable link filtering")
 
 } else {
-		m.Respond("Currently Nolinks mode is " + map[bool]string{true: "Enabled", false: "Disabled"}[isEn)] + "for your chat.")
+		m.Respond("Currently Nolinks mode is " + map[bool]string{true: "Enabled", false: "Disabled"}[isEn] + "for your chat.")
 }
 		return telegram.EndGroup
 	}
