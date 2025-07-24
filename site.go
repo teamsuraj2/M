@@ -24,19 +24,24 @@ func writeJSON(w http.ResponseWriter, data interface{}) {
 }
 
 func startAPIServer(bot *telegram.Client) {
-	http.HandleFunc("/config.js", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/javascript")
+  http.HandleFunc("/config.js", func(w http.ResponseWriter, r *http.Request) {
+  	w.Header().Set("Content-Type", "application/javascript")
 
-		scheme := "http"
-		if r.TLS != nil {
-			scheme = "https"
-		}
+  	scheme := "http"
+  	if r.TLS != nil {
+  		scheme = "https"
+  	}
 
-		SiteUrl := scheme + "://" + r.Host
-		fmt.Fprintf(w, `window.AppConfig = {
-		siteUrl: %q
-	};`, SiteUrl)
-	})
+	  pathPrefix := path.Dir(r.URL.Path)
+  	if pathPrefix == "." {
+  		pathPrefix = ""
+  	}
+
+  	SiteUrl = scheme + "://" + r.Host + pathPrefix
+	  fmt.Fprintf(w, `window.AppConfig = {
+  siteUrl: %q
+};`, SiteUrl)
+    })
 
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 

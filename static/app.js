@@ -1,18 +1,35 @@
 const tg = window.Telegram.WebApp;
 let chat_id;
-let isDarkTheme = false;
 
 window.onload = async () => {
   tg.ready();
-  isDarkTheme = tg.colorScheme === "dark";
   applyTheme();
+  tg.onEvent("themeChanged", applyTheme);
 
-  const initData = tg?.initDataUnsafe;
-  const user = initData?.user ?? null;
-  const chat = initData?.chat ?? null;
-  const initRaw = tg?.initData;
+  if (!tg || !tg.initDataUnsafe || !tg.initDataUnsafe.user) {
+    showErrorPage("This page must be opened inside Telegram.", {
+      title: "WebApp Only",
+      message: "This tool can only be used from within the Telegram WebApp.",
+      showRetry: false
+    });
+    return;
+  }
+  
+  const initData = tg.initDataUnsafe;
+  const user = initData.user;
 
-  chat_id = 2867211623;
+  const urlParams = new URLSearchParams(location.search);
+  chat_id = urlParams.get("chat_id");
+
+  if (!chat_id) {
+    showErrorPage("Missing 'chat_id' querystring in URL", {
+      title: "Invalid Request",
+      message: "This page requires a valid chat_id query string to function.",
+      showRetry: false
+    });
+    return;
+  }
+
   tg.expand();
 
   try {
@@ -22,22 +39,28 @@ window.onload = async () => {
       loadLinkFilter()
     ]);
 
-    // Only show main content if all settings loaded successfully
     document.getElementById("loading").style.display = "none";
     document.getElementById("main-content").style.display = "block";
 
   } catch (e) {
-    // Hide loading and show error page
-    document.getElementById("loading").style.display = "none";
-    showErrorPage(e?.message ?? e);
-    return;
+    showErrorPage(e?.message ?? e, {
+      title: "Settings Unavailable",
+      message: "Unable to connect to the Backend API"
+    });
   }
 };
 
 // ----------------------- Theme Support -----------------------
+
 function applyTheme() {
-  document.body.setAttribute('data-theme', isDarkTheme ? 'dark': 'light');
+  let theme = "light"; // default fallback
+  if (tg && typeof tg.colorScheme === "string") {
+    theme = tg.colorScheme === "dark" ? "dark": "light";
+  }
+  document.body.setAttribute("data-theme", theme);
 }
+
+
 
 // ----------------------- Validation Functions -----------------------
 function extractHostname(input) {
@@ -95,26 +118,33 @@ function toggleSection(sectionId) {
 }
 
 // ----------------------- Error Handling -----------------------
-function showErrorPage(error) {
-  document.getElementById("loading").style.display = "none";
+function showErrorPage(error, options = {}) {
+  const {
+    title = "Something Went Wrong",
+    message = "An unexpected error occurred.",
+    showRetry = true
+  } = options;
+
+  document.getElementById("loading")?.remove();
   document.body.innerHTML = `
   <div class="error-container">
   <div class="error-card">
   <div class="error-icon">⚠️</div>
-  <h2 class="error-title">Settings Unavailable</h2>
-  <p class="error-message">Unable to connect to the settings API</p>
+  <h2 class="error-title">${title}</h2>
+  <p class="error-message">${message}</p>
   <div class="error-details">
-  <p><strong>Error:</strong> ${error}</p>
-  <p>Please check that your backend API is running and accessible.</p>
+  <p><strong>Error:</strong> ${error ?? "Unknown error"}</p>
   </div>
-  <div class="error-actions">
+  ${
+  showRetry
+  ? `<div class="error-actions">
   <button onclick="location.reload()" class="retry-btn">🔄 Retry</button>
-  </div>
+  </div>`: ""
+  }
   </div>
   </div>
   `;
 }
-
 
 // ----------------------- BioMode -----------------------
 async function loadBioMode() {
@@ -251,10 +281,10 @@ function addDomainRow(domain) {
     saveDomainRemove(domain).catch(err => {
       showToast(`❌ Failed to remove domain: ${err?.message || err || "Unknown error"}`, "error");
       // Re-add the row if API call fails
-      tbody.insertBefore(tr, tbody.firstChild); 
+      tbody.insertBefore(tr, tbody.firstChild);
     });
   };
-  tbody.insertBefore(tr, tbody.firstChild); 
+  tbody.insertBefore(tr, tbody.firstChild);
 }
 
 document.getElementById('allow-btn').onclick = () => {
