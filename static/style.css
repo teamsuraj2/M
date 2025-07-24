@@ -223,6 +223,8 @@ body {
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 16px;
+    min-height: 100px;
 }
 
 .domains-table {
@@ -279,7 +281,7 @@ body {
 }
 
 /* Shoelace component customizations for Material 3 */
-sl-switch::part(base) {
+sl-switch {
     --height: 2.5rem;
     --thumb-size: 1.8rem;
     --track-color-checked: var(--md-sys-color-primary);
@@ -288,8 +290,31 @@ sl-switch::part(base) {
     --track-width: 4rem;
 }
 
+sl-switch::part(base) {
+    background: transparent;
+    border: none;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+sl-switch::part(control) {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
 sl-switch[checked]::part(thumb) {
     --thumb-color: var(--md-sys-color-on-primary);
+}
+
+sl-switch:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+sl-switch:focus::part(base) {
+    outline: none !important;
+    box-shadow: none !important;
 }
 
 sl-input::part(base),
