@@ -54,7 +54,7 @@ func deleteLinkMessage(m *telegram.NewMessage) error {
 		return nil
 	}
 
-	if isEn, err := !database.IsLinkFilterEnabled(m.ChatID()); err != nil || !isEn {
+	if isEn, err := database.IsLinkFilterEnabled(m.ChatID()); err != nil || !isEn {
 		return nil
 	}
 	if ShouldIgnoreGroupAnonymous(m) {
