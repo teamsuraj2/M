@@ -22,12 +22,14 @@ func settingsComm(m *telegram.NewMessage) error {
 
 		return telegram.EndGroup
 	}
-
-	/*webButton := telegram.Button.WebView("🌐 Open WebApp", "https://gotgboy-571497f84322.herokuapp.com/")
-	markup := telegram.Button.Keyboard(
-		telegram.Button.Row(webButton),
+	
+	btn := telegram.NewKeyboard()
+	btn.AddRow(
+		telegram.Button.URL("⚙️ Settings", fmt.Sprintf("%?access_key=%s", config.WebAppUrl, helpers.EncodeDigits(m.ChatID()))),
+	
 	)
-	*/
-	m.Respond("in progress...")
+	m.Respond("Configure Your chat settings by this WebApp Interface", telegram.SendOptions{
+		ReplyMarkup: btn.Build(),
+	})
 	return nil
 }

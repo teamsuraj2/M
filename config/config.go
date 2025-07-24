@@ -17,10 +17,8 @@ var (
 	LoggerId int64
 	OwnerId  []int64
 	MongoUri string
-
-	StartImage    string
-	StartImageGif string
-	StartMediaUrl string
+	
+	StartImage string
 
 	Token     string
 	StartTime time.Time
@@ -46,17 +44,13 @@ func init() {
 	ApiId = int32(apiId)
 	ApiHash = Getenv[string]("API_HASH", "d927c13beaaf5110f25c505b7c071273", nil)
 	Token = Getenv[string]("TOKEN", "8050656956:AAGsJ8EniqZ1Bhe6F5xSelX08C43kzqboQI", nil)
+	
 	StartImage = Getenv[string](
-		"START_IMG_URL",
-		"https://telegra.ph/file/ba238ec5e542d8754cea7-dc1786aa23ae1224f2.jpg",
-		nil,
-	)
-	StartImageGif = Getenv[string](
 		"START_IMG_GIF",
 		"https://raw.githubusercontent.com/Vivekkumar-IN/assets/refs/heads/master/ezgif-408f355da640ed.gif",
 		nil,
 	)
-	StartMediaUrl = StartImageGif
+	
 	LoggerId = Getenv("LOGGER_ID", "-1002867211623", parseToInt64)
 	MongoUri = Getenv[string]("MONGO_DB_URI", "mongodb+srv://marin:marin69@cluster0.zxaf7uc.mongodb.net/?retryWrites=true&w=majority", nil)
 	SupportChannel = Getenv[string]("SUPPORT_CHANNEL", "https://t.me/Team_Dns_Network", nil)
@@ -71,12 +65,16 @@ func init() {
 		}
 		return ids
 	})
-
+	
 	if Token == "" {
-		log.Panic("TOKEN environment variable is empty")
+		PrintAndExit("TOKEN variable is empty, please fill it")
 	}
 	if MongoUri == "" {
-		log.Panic("MONGO_DB_URI environment variable is empty")
+		PrintAndExit("MONGO_DB_URI variable is empty, fill it")
+	}
+	
+	if WebAppUrl==""{
+	  PrintAndExit("WEB_APP_URL is not filled please fll it")
 	}
 }
 
@@ -91,4 +89,10 @@ func Getenv[T any](key, defaultValue string, convert func(string) T) T {
 	}
 
 	return any(value).(T)
+}
+
+
+func PrintAndExit(msg string, code int) {
+	fmt.Fprintln(os.Stderr, msg)
+	os.Exit(1)
 }

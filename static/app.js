@@ -14,19 +14,30 @@ window.onload = async () => {
     });
     return;
   }
-  
+
   const initData = tg.initDataUnsafe;
   const user = initData.user;
 
   const urlParams = new URLSearchParams(location.search);
-  chat_id = urlParams.get("chat_id");
+  access_key = urlParams.get("access_key");
 
-  if (!chat_id) {
-    showErrorPage("Missing 'chat_id' querystring in URL", {
+  if (!access_key) {
+    showErrorPage("Missing 'access_key' querystring in URL", {
       title: "Invalid Request",
-      message: "This page requires a valid chat_id query string to function.",
+      message: "This page requires a valid access_key query string to function.",
       showRetry: false
     });
+    return;
+  }
+
+  try {
+    chat_id = decodeDigits(access_key)
+  } catch (e) {
+    showErrorPage(e?.message ?? e, {
+      title: "Settings Unavailable",
+      message: "Looks like your access_key is wrong?"
+    });
+
     return;
   }
 
@@ -50,6 +61,23 @@ window.onload = async () => {
   }
 };
 
+// ----------------------- access_key to chat_id -----------------------
+
+const digitMap = "adefjtghkz"; // must match Go
+
+function decodeDigits(str) {
+  if (str.length !== 10) {
+    throw new Error("Invalid input length: expected 10 characters");
+  }
+
+  let result = "";
+  for (let ch of str) {
+    const idx = digitMap.indexOf(ch);
+    if (idx === -1) throw new Error("Invalid encoded character: " + ch);
+    result += idx.toString();
+  }
+  return parseInt(result, 10);
+}
 // ----------------------- Theme Support -----------------------
 
 function applyTheme() {

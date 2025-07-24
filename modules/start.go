@@ -15,10 +15,6 @@ import (
 var startMsG string = `<b>🛡 Hello <a href="tg://user?id=%d">%s</a>!</b> 👋  
 I'm <b><a href="tg://user?id=%d">%s</a></b>, your group’s security bot keeping chats clean and safe.
 
-✏️ <b>Edited messages</b> are auto-deleted  
-🖼️ <b>Media</b> is cleaned up instantly  
-📜 <b>Long messages</b> (default 800+ chars) get removed — limit is <i>customizable</i>!
-
 📣 Stay informed with instant alerts.  
 ✅ Add me now and I’ll start protecting your group!`
 
@@ -139,7 +135,7 @@ Link: <a href="%s">Link 1</a> <a href="%s">Link 2</a>`,
 		replyMarkup := btn.Build()
 
 		database.AddServedUser(m.Sender.ID)
-		return m.E(m.RespondMedia(config.StartMediaUrl, telegram.MediaOptions{Caption: caption, ReplyMarkup: replyMarkup}))
+		return m.E(m.RespondMedia(config.StartImage, telegram.MediaOptions{Caption: caption, ReplyMarkup: replyMarkup}))
 
 	}
 

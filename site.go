@@ -16,8 +16,6 @@ import (
 	"main/database"
 )
 
-var SiteUrl string
-
 // Serve JSON response
 func writeJSON(w http.ResponseWriter, data interface{}) {
 	w.Header().Set("Content-Type", "application/json")
@@ -25,29 +23,10 @@ func writeJSON(w http.ResponseWriter, data interface{}) {
 }
 
 func startAPIServer(bot *telegram.Client) {
-	http.HandleFunc("/config.js", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/javascript")
-
-		scheme := "http"
-		if r.TLS != nil {
-			scheme = "https"
-		}
-
-		pathPrefix := path.Dir(r.URL.Path)
-		if pathPrefix == "." {
-			pathPrefix = ""
-		}
-
-		SiteUrl = scheme + "://" + r.Host + pathPrefix
-		fmt.Fprintf(w, `window.AppConfig = {
-  siteUrl: %q
-};`, SiteUrl)
-	})
-
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-		writeJSON(w, map[string]string{"message": "pong"})
+		writeJSON(w, map[string]string{"success": true, "message": "pong"})
 	})
 	http.HandleFunc("/report-unauthorized", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
