@@ -277,13 +277,18 @@ document.getElementById('allow-btn').onclick = () => {
   if (hostname && isValidDomain(hostname)) {
     addDomainRow(hostname);
     input.value = '';
-    saveDomainAdd(hostname).catch(err => {
+    saveDomainAdd(hostname)
+    .then(() => {
+      showToast("✅ Domain added successfully!", "success");
+    })
+    .catch(err => {
       showToast(`❌ Failed to add domain:  ${err?.message || err || "Unknown error"}`, "error");
     });
   } else {
-    showToast("⚠️ Please enter a valid domain or IP (e.g., example.com or 127.0.0.1)", "warning");
+    showToast("⚠️ Please enter a valid domain (e.g., example.com)", "warning");
   }
 };
+
 
 // Add enter key support for domain input
 document.getElementById('allow-domain-input').addEventListener('keypress', (e) => {
