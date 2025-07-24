@@ -139,9 +139,9 @@ func startAPIServer(bot *telegram.Client) {
 				http.Error(w, "failed to get echo settings", http.StatusInternalServerError)
 				return
 			}
-		  if settings.Mode == "AUTO"{
-		    settings.Mode = "AUTOMATIC"
-		  }
+			if settings.Mode == "AUTO" {
+				settings.Mode = "AUTOMATIC"
+			}
 			writeJSON(w, map[string]interface{}{
 				"long_mode":  strings.ToLower(settings.Mode),
 				"long_limit": settings.Limit,
