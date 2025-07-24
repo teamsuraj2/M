@@ -18,7 +18,7 @@ type EchoSettings struct {
 }
 
 const (
-	defaultEchoLimit = 800
+	defaultEchoLimit = 450
 	defaultEchoMode  = "AUTO"
 )
 
