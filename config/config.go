@@ -90,7 +90,7 @@ func Getenv[T any](key, defaultValue string, convert func(string) T) T {
 	return any(value).(T)
 }
 
-func PrintAndExit(msg string, code int) {
+func PrintAndExit(msg string) {
 	fmt.Fprintln(os.Stderr, msg)
 	os.Exit(1)
 }
