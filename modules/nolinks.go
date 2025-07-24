@@ -132,8 +132,16 @@ func NoLinksCmd(m *telegram.NewMessage) error {
 	}
 
 	if len(args) < 2 {
-		//	m.Respond("⚠️ Usage:\n<code>/nolinks on</code> – Enable link filtering\n<code>/nolinks off</code> – Disable link filtering")
-		m.Respond("Currently Nolinks mode is " + map[bool]string{true: "Enabled", false: "Disabled"}[database.IsLinkFilterEnabled(m.ChatID())] + "for your chat.")
+
+
+if isEn, err := database.IsLinkFilterEnabled(m.ChatID()); err != nil {
+
+
+m.Respond("⚠️ Usage:\n<code>/nolinks on</code> – Enable link filtering\n<code>/nolinks off</code> – Disable link filtering")
+
+} else {
+		m.Respond("Currently Nolinks mode is " + map[bool]string{true: "Enabled", false: "Disabled"}[isEn)] + "for your chat.")
+}
 		return telegram.EndGroup
 	}
 	arg := strings.ToLower(args[1])
