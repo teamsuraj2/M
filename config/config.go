@@ -26,7 +26,7 @@ var (
 	SupportChannel string
 
 	WebAppUrl string // example http://t.me/vgithubbot/settings
-	SiteUrl string // https://gotgboy-571497f84322.herokuapp.com/
+	SiteUrl   string // https://gotgboy-571497f84322.herokuapp.com/
 )
 
 func init() {
