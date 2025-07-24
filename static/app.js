@@ -242,10 +242,16 @@ function addDomainRow(domain) {
   <td>${domain}</td>
   <td><button class="remove-btn" aria-label="Remove domain">Remove</button></td>
   `;
-  tr.querySelector('button').onclick = () => {
-    tbody.removeChild(tr);
+
+  const removeBtn = tr.querySelector('button');
+  removeBtn.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    tr.remove();
     saveDomainRemove(domain).catch(err => {
-      showToast(`❌ Failed to remove domain:  ${err?.message || err || "Unknown error"}`, "error");
+      showToast(`❌ Failed to remove domain: ${err?.message || err || "Unknown error"}`, "error");
+      // Re-add the row if API call fails
+      tbody.appendChild(tr);
     });
   };
   tbody.appendChild(tr);
