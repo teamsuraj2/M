@@ -18,26 +18,27 @@ window.onload = async () => {
   const initData = tg.initDataUnsafe;
   const user = initData.user;
 
-  const urlParams = new URLSearchParams(location.search);
-  access_key = urlParams.get("access_key");
+  // ✅ Extract access_key from start_param
+  const startParam = initData.start_param;
 
-  if (!access_key) {
-    showErrorPage("Missing 'access_key' querystring in URL", {
+  if (!startParam || !startParam.startsWith("access_key")) {
+    showErrorPage("Missing or invalid 'access_key' in Telegram WebApp", {
       title: "Invalid Request",
-      message: "This page requires a valid access_key query string to function.",
+      message: "This page requires a valid access_key to function.",
       showRetry: false
     });
     return;
   }
 
+  const access_key = startParam.replace("access_key", "");
+
   try {
-    chat_id = decodeDigits(access_key)
+    chat_id = decodeDigits(access_key);
   } catch (e) {
     showErrorPage(e?.message ?? e, {
       title: "Settings Unavailable",
       message: "Looks like your access_key is wrong?"
     });
-
     return;
   }
 
@@ -60,6 +61,7 @@ window.onload = async () => {
     });
   }
 };
+
 
 // ----------------------- access_key to chat_id -----------------------
 
