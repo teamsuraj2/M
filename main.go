@@ -52,9 +52,12 @@ func main() {
 	modules.LoadMods(client)
 
 	startAPIServer(client)
+if !pingApi() {
+		config.PrintAndExit("Unable to connect to API. Make sure your backend is running and accessible.")
+	}
 
-	if x := pingApi(); !x || (modules.BotInfo.Username != "" && !strings.Contains(config.WebAppUrl, modules.BotInfo.Username)) {
-		config.PrintAndExit("WEB_APP_URL is filled wrong please fill it correctly, or unable to connect api\n fill like http://t.me/ViyomBot/settings")
+	if modules.BotInfo.Username != "" && !strings.Contains(config.WebAppUrl, modules.BotInfo.Username) {
+		config.PrintAndExit("WEB_APP_URL is filled incorrectly. It should contain your bot's username.\nExample: http://t.me/ViyomBot/settings")
 	}
 
 	client.SendMessage(config.LoggerId, "Started...")
