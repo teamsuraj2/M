@@ -12,29 +12,6 @@ window.onload = async () => {
   const chat = initData?.chat ?? null;
   const initRaw = tg?.initData;
 
-  /*if (!chat?.id) {
-    // ❌ Not launched in a group
-    // Report to backend for debugging
-    try {
-      await fetch("/report-unauthorized", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user: user,
-          chat: chat,
-          initData: initRaw ?? "",
-        }),
-      });
-    } catch (err) {
-      console.warn("Debug report failed:", err);
-    }
-
-    document.body.innerHTML = '<h3>❌ This app must be opened from a Telegram <b>group chat</b>.</h3>';
-    return;
-  }
-
-  chat_id = chat.id;*/
-
   chat_id = 2867211623;
   tg.expand();
 
@@ -44,13 +21,16 @@ window.onload = async () => {
       loadEchoSettings(),
       loadLinkFilter()
     ]);
+
+    // Only show main content if all settings loaded successfully
     document.getElementById("loading").style.display = "none";
     document.getElementById("main-content").style.display = "block";
-    
+
   } catch (e) {
-document.getElementById("loading").style.display = "none";
-   
+    // Hide loading and show error page
+    document.getElementById("loading").style.display = "none";
     showErrorPage(e?.message ?? e);
+    return;
   }
 };
 
@@ -290,7 +270,6 @@ document.getElementById('allow-btn').onclick = () => {
     showToast("⚠️ Please enter a valid domain (e.g., example.com)", "warning");
   }
 };
-
 
 // Add enter key support for domain input
 document.getElementById('allow-domain-input').addEventListener('keypress', (e) => {
