@@ -16,18 +16,18 @@ var (
 	ApiHash  string
 	LoggerId int64
 	OwnerId  []int64
-	MongoUri       string
-	
-	StartImage     string
-	StartImageGif  string
-	StartMediaUrl  string
-	
-	Token          string
-	StartTime      time.Time
-	
+	MongoUri string
+
+	StartImage    string
+	StartImageGif string
+	StartMediaUrl string
+
+	Token     string
+	StartTime time.Time
+
 	SupportChat    string
 	SupportChannel string
-	
+
 	WebAppUrl string
 )
 

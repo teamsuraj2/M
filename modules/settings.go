@@ -1,10 +1,13 @@
 package modules
 
-import "github.com/amarnathcjd/gogram/telegram"
+import (
+	"github.com/amarnathcjd/gogram/telegram"
+
+	"main/config/helpers"
+)
 
 func settingsComm(m *telegram.NewMessage) error {
-  
-  	if !IsValidSupergroup(m) {
+	if !IsValidSupergroup(m) {
 		return telegram.EndGroup
 	}
 	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
@@ -19,14 +22,12 @@ func settingsComm(m *telegram.NewMessage) error {
 
 		return telegram.EndGroup
 	}
-	
-	
-	
+
 	/*webButton := telegram.Button.WebView("🌐 Open WebApp", "https://gotgboy-571497f84322.herokuapp.com/")
 	markup := telegram.Button.Keyboard(
 		telegram.Button.Row(webButton),
 	)
-*/
+	*/
 	m.Respond("in progress...")
 	return nil
 }
