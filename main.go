@@ -52,7 +52,7 @@ func main() {
 	modules.LoadMods(client)
 
 	startAPIServer(client)
-if !pingApi() {
+	if !pingApi() {
 		config.PrintAndExit("Unable to connect to API. Make sure your backend is running and accessible.")
 	}
 
