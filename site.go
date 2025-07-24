@@ -278,7 +278,6 @@ func startAPIServer(bot *telegram.Client) {
 		writeJSON(w, map[string]string{"status": "ok"})
 	})
 
-	go func() {
 		port := os.Getenv("PORT")
 		if port == "" {
 			port = "8080"
@@ -287,5 +286,4 @@ func startAPIServer(bot *telegram.Client) {
 		if err := http.ListenAndServe(":"+port, nil); err != nil {
 			log.Fatalf("API server error: %v", err)
 		}
-	}()
 }
