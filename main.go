@@ -19,9 +19,6 @@ func main() {
 	if err := database.MigrateUsers(); err != nil {
 		log.Panicf("MigrateUsers Error: %v", err)
 	}
-	if err := database.MigrateEcho(); err != nil {
-		log.Panicf("MigrateEcho Error: %v", err)
-	}
 	if err := database.MigrateChats(); err != nil {
 		log.Panicf("MigrateChats Error: %v", err)
 	}

@@ -23,8 +23,6 @@ const (
 	defaultEchoMode  = "AUTO"
 )
 
-var timeout = 5 * time.Second
-
 var validModes = map[string]string{
 	"AUTO":      "AUTO",
 	"AUTOMATIC": "AUTO",

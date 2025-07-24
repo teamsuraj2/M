@@ -6,7 +6,7 @@ window.onload = async () => {
   tg.ready();
   isDarkTheme = tg.colorScheme === "dark";
   applyTheme();
-  
+
   const initData = tg?.initDataUnsafe;
   const user = initData?.user ?? null;
   const chat = initData?.chat ?? null;
@@ -45,9 +45,6 @@ window.onload = async () => {
       loadLinkFilter()
     ]);
     document.getElementById("loading").style.display = "none";
-    document.getElementById("settings-container").style.display = "block";
-    
-    // Don't expand any section by default
   } catch (e) {
     showErrorPage(e?.message ?? e);
   }
@@ -55,14 +52,36 @@ window.onload = async () => {
 
 // ----------------------- Theme Support -----------------------
 function applyTheme() {
-  document.body.setAttribute('data-theme', isDarkTheme ? 'dark' : 'light');
+  document.body.setAttribute('data-theme', isDarkTheme ? 'dark': 'light');
 }
 
 // ----------------------- Validation Functions -----------------------
-function isValidDomain(domain) {
-  // Basic domain validation regex
-  const domainRegex = /^(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
-  return domainRegex.test(domain);
+function extractHostname(input) {
+  input = input.trim();
+  if (!input.startsWith("http://") && !input.startsWith("https://")) {
+    input = "http://" + input;
+  }
+
+  try {
+    const urlObj = new URL(input);
+    return urlObj.hostname.toLowerCase();
+  } catch {
+    return "";
+  }
+}
+
+function isValidDomain(hostname) {
+  if (!hostname) return false;
+
+  const ipv4Pattern = /^(?:\d{1,3}\.){3}\d{1,3}$/;
+  const ipv6Pattern = /^\[?[a-fA-F0-9:]+\]?$/;
+  const domainPattern = /^[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  return (
+    ipv4Pattern.test(hostname) ||
+    ipv6Pattern.test(hostname) ||
+    domainPattern.test(hostname)
+  );
 }
 
 function validateLongLimit(value) {
@@ -74,8 +93,8 @@ function validateLongLimit(value) {
 function toggleSection(sectionId) {
   const content = document.getElementById(`${sectionId}-content`);
   const icon = document.getElementById(`${sectionId}-icon`);
-  
-  // Close all other sections
+
+  /* // Close all other sections
   const allSections = ['biomode', 'echo', 'linkfilter'];
   allSections.forEach(id => {
     if (id !== sectionId) {
@@ -84,8 +103,8 @@ function toggleSection(sectionId) {
       otherContent.classList.remove('expanded');
       otherIcon.classList.remove('expanded');
     }
-  });
-  
+  });*/
+
   // Toggle current section
   content.classList.toggle('expanded');
   icon.classList.toggle('expanded');
@@ -95,20 +114,20 @@ function toggleSection(sectionId) {
 function showErrorPage(error) {
   document.getElementById("loading").style.display = "none";
   document.body.innerHTML = `
-    <div class="error-container">
-      <div class="error-card">
-        <div class="error-icon">⚠️</div>
-        <h2 class="error-title">Settings Unavailable</h2>
-        <p class="error-message">Unable to connect to the settings API</p>
-        <div class="error-details">
-          <p><strong>Error:</strong> ${error}</p>
-          <p>Please check that your backend API is running and accessible.</p>
-        </div>
-        <div class="error-actions">
-          <button onclick="location.reload()" class="retry-btn">🔄 Retry</button>
-        </div>
-      </div>
-    </div>
+  <div class="error-container">
+  <div class="error-card">
+  <div class="error-icon">⚠️</div>
+  <h2 class="error-title">Settings Unavailable</h2>
+  <p class="error-message">Unable to connect to the settings API</p>
+  <div class="error-details">
+  <p><strong>Error:</strong> ${error}</p>
+  <p>Please check that your backend API is running and accessible.</p>
+  </div>
+  <div class="error-actions">
+  <button onclick="location.reload()" class="retry-btn">🔄 Retry</button>
+  </div>
+  </div>
+  </div>
   `;
 }
 
@@ -121,13 +140,11 @@ async function loadBioMode() {
     const enabled = await res.json();
     const switchEl = document.getElementById('biomode-switch');
     switchEl.checked = !!enabled;
-    
+
     // Add live update event listener
     switchEl.addEventListener('sl-change', () => {
-      saveBioMode().then(() => {
-        showToast("✅ BioMode updated", "success");
-      }).catch(err => {
-        showToast("❌ Failed to update BioMode", "error");
+      saveBioMode().catch(err => {
+        showToast(`❌ Failed to update BioMode:  ${err?.message || err || "Unknown error"}`, "error");
       });
     });
   } catch (e) {
@@ -141,7 +158,9 @@ function saveBioMode() {
   const enabled = document.getElementById('biomode-switch').checked;
   return fetch(`/api/biomode?chat_id=${chat_id}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify(enabled),
   });
 }
@@ -152,38 +171,28 @@ async function loadEchoSettings() {
     const res = await fetch(`/api/echo?chat_id=${chat_id}`);
     if (!res.ok) throw new Error("API not available");
     const data = await res.json();
-    
+
     const selectEl = document.getElementById('longmode-select');
     const inputEl = document.getElementById('longlimit-input');
-    
+    const saveBtn = document.getElementById('save-echo-btn');
+
     selectEl.value = data?.long_mode ?? 'automatic';
     inputEl.value = data?.long_limit ?? 800;
-    
-    // Add live update event listeners
-    selectEl.addEventListener('sl-change', () => {
-      saveEchoSettings().then(() => {
-        showToast("✅ Echo settings updated", "success");
-      }).catch(err => {
-        showToast("❌ Failed to update echo settings", "error");
+
+    // ✅ Set click event on save button
+    saveBtn.addEventListener('click', () => {
+      if (!validateLongLimit(inputEl.value)) {
+        showToast("⚠️ Long limit must be between 200 and 4000", "warning");
+        inputEl.value = data?.long_limit ?? 800;
+        return;
+      }
+
+      saveEchoSettings().catch(err => {
+        showToast(`❌ Failed to save echo settings:  ${err?.message || err || "Unknown error"}`, "error");
       });
     });
-    
-    inputEl.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        if (validateLongLimit(inputEl.value)) {
-          saveEchoSettings().then(() => {
-            showToast("✅ Long limit updated", "success");
-          }).catch(err => {
-            showToast("❌ Failed to update long limit", "error");
-          });
-        } else {
-          showToast("⚠️ Long limit must be between 200 and 4000", "warning");
-          inputEl.value = data?.long_limit ?? 800; // Reset to previous value
-        }
-      }
-    });
+
   } catch (e) {
-    // Fallback to demo mode
     document.getElementById('longmode-select').value = 'automatic';
     document.getElementById('longlimit-input').value = 800;
     throw new Error("Could not load Echo Settings - API endpoint not found");
@@ -192,7 +201,8 @@ async function loadEchoSettings() {
 
 function saveEchoSettings() {
   const long_mode = document.getElementById('longmode-select').value;
-  let long_limit = parseInt(document.getElementById('longlimit-input').value, 10);
+  let long_limit = parseInt(document.getElementById('longlimit-input').value,
+    10);
   if (isNaN(long_limit) || long_limit < 200 || long_limit > 4000) {
     showToast("⚠️ Long limit must be between 200 and 4000", "warning");
     return Promise.reject("Invalid long limit");
@@ -200,8 +210,12 @@ function saveEchoSettings() {
 
   return fetch(`/api/echo?chat_id=${chat_id}`, {
     method: 'POST',
-    headers: {'Content-Type': 'application/json' },
-    body: JSON.stringify({ long_mode, long_limit }),
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      long_mode, long_limit
+    }),
   });
 }
 
@@ -211,7 +225,7 @@ async function loadLinkFilter() {
     const res = await fetch(`/api/linkfilter?chat_id=${chat_id}`);
     if (!res.ok) throw new Error("API not available");
     const data = await res.json();
-    
+
     const switchEl = document.getElementById('linkfilter-switch');
     switchEl.checked = !!data?.enabled;
     const domains = data?.allowed_domains ?? [];
@@ -219,13 +233,11 @@ async function loadLinkFilter() {
     const tbody = document.getElementById('allowed-links-body');
     tbody.innerHTML = '';
     domains.forEach(domain => addDomainRow(domain));
-    
+
     // Add live update event listener for switch
     switchEl.addEventListener('sl-change', () => {
-      saveLinkFilterState().then(() => {
-        showToast("✅ Link filter updated", "success");
-      }).catch(err => {
-        showToast("❌ Failed to update link filter", "error");
+      saveLinkFilterState().catch(err => {
+        showToast(`❌ Failed to update link filter:  ${err?.message || err || "Unknown error"}`, "error");
       });
     });
   } catch (e) {
@@ -243,15 +255,13 @@ function addDomainRow(domain) {
 
   const tr = document.createElement('tr');
   tr.innerHTML = `
-    <td>${domain}</td>
-    <td><button class="remove-btn" aria-label="Remove domain">Remove</button></td>
+  <td>${domain}</td>
+  <td><button class="remove-btn" aria-label="Remove domain">Remove</button></td>
   `;
   tr.querySelector('button').onclick = () => {
     tbody.removeChild(tr);
-    saveDomainRemove(domain).then(() => {
-      showToast(`✅ Domain "${domain}" removed`, "success");
-    }).catch(err => {
-      showToast("❌ Failed to remove domain", "error");
+    saveDomainRemove(domain).catch(err => {
+      showToast(`❌ Failed to remove domain:  ${err?.message || err || "Unknown error"}`, "error");
     });
   };
   tbody.appendChild(tr);
@@ -259,17 +269,17 @@ function addDomainRow(domain) {
 
 document.getElementById('allow-btn').onclick = () => {
   const input = document.getElementById('allow-domain-input');
-  const domain = input?.value?.trim()?.toLowerCase();
-  if (domain && isValidDomain(domain)) {
-    addDomainRow(domain);
+  const rawValue = input?.value ?? '';
+  const hostname = extractHostname(rawValue); // extract and normalize
+
+  if (hostname && isValidDomain(hostname)) {
+    addDomainRow(hostname);
     input.value = '';
-    saveDomainAdd(domain).then(() => {
-      showToast(`✅ Domain "${domain}" added`, "success");
-    }).catch(err => {
-      showToast("❌ Failed to add domain", "error");
+    saveDomainAdd(hostname).catch(err => {
+      showToast(`❌ Failed to add domain:  ${err?.message || err || "Unknown error"}`, "error");
     });
   } else {
-    showToast("⚠️ Please enter a valid domain (e.g., example.com)", "warning");
+    showToast("⚠️ Please enter a valid domain or IP (e.g., example.com or 127.0.0.1)", "warning");
   }
 };
 
@@ -283,19 +293,28 @@ document.getElementById('allow-domain-input').addEventListener('keypress', (e) =
 // Simplified functions for live updating
 async function saveLinkFilterState() {
   const enabled = document.getElementById('linkfilter-switch').checked;
-  const res = await fetch(`/api/linkfilter?chat_id=${chat_id}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ enabled }),
-  });
+  const res = await fetch(`/api/linkfilter?chat_id=${chat_id}`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        enabled
+      }),
+    });
   if (!res.ok) throw new Error("Failed to update LinkFilter state");
 }
 
 async function saveDomainAdd(domain) {
   const res = await fetch(`/api/linkfilter/allow?chat_id=${chat_id}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ domain }),
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      domain
+    }),
   });
   if (!res.ok) throw new Error("Failed to add domain");
 }
@@ -303,8 +322,12 @@ async function saveDomainAdd(domain) {
 async function saveDomainRemove(domain) {
   const res = await fetch(`/api/linkfilter/remove?chat_id=${chat_id}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ domain }),
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      domain
+    }),
   });
   if (!res.ok) throw new Error("Failed to remove domain");
 }
@@ -315,34 +338,32 @@ function showToast(message, type = "info") {
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
   toast.textContent = message;
-  
+
   // Style the toast
   toast.style.cssText = `
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: ${type === 'success' ? '#48bb78' : type === 'warning' ? '#ed8936' : type === 'error' ? '#e53e3e' : '#4299e1'};
-    color: white;
-    padding: 12px 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    font-weight: 500;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: ${type === 'success' ? '#48bb78': type === 'warning' ? '#ed8936': type === 'error' ? '#e53e3e': '#4299e1'};
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.3s ease;
   `;
-  
+
   document.body.appendChild(toast);
-  
+
   // Animate in
   setTimeout(() => toast.style.opacity = '1', 100);
-  
+
   // Remove after 3 seconds
   setTimeout(() => {
     toast.style.opacity = '0';
     setTimeout(() => document.body.removeChild(toast), 300);
   }, 3000);
 }
-
-// Save all functionality removed - now using live updates
