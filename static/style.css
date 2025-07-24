@@ -225,6 +225,8 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     margin-top: 16px;
     min-height: 100px;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .domains-table {
