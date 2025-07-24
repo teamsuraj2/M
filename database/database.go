@@ -90,7 +90,6 @@ func CreateIndex(ctx context.Context, coll *mongo.Collection, keys bson.D, uniqu
 			return
 		}
 	}
-	log.Printf("✅ Index created on %s with keys: %v, unique: %v\n", coll.Name(), keys, unique)
 }
 
 func DropAllIndexes(ctx context.Context, coll *mongo.Collection) error {
