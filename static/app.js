@@ -45,6 +45,8 @@ window.onload = async () => {
       loadLinkFilter()
     ]);
     document.getElementById("loading").style.display = "none";
+    document.getElementById("main-content").style.display = "block";
+    
   } catch (e) {
     showErrorPage(e?.message ?? e);
   }

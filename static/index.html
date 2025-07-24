@@ -30,173 +30,182 @@
             id="loading"
         ></sl-spinner>
 
-        <h1 class="main-title">⚙️ Group Settings</h1>
+        <div id="main-content" style="display: none">
+            <h1 class="main-title">⚙️ Group Settings</h1>
 
-        <!-- BioMode Section -->
-        <div class="settings-section">
-            <div class="section-header" onclick="toggleSection('biomode')">
-                <div class="section-title">
-                    <span class="section-icon">🛡️</span>
-                    <span>BioMode</span>
-                </div>
-                <span class="expand-icon" id="biomode-icon">▼</span>
-            </div>
-
-            <div class="section-content" id="biomode-content">
-                <div class="section-description">
-                    <p>
-                        <strong>🛡️ BioMode</strong> monitors user bios and
-                        deletes messages if they contain URLs.
-                    </p>
-                    <p class="warning">
-                        🚫 When enabled, users with links in their bios won't be
-                        able to send messages.
-                    </p>
-                    <p class="admin-note">
-                        👮 Only admins can enable or disable this feature.
-                    </p>
+            <!-- BioMode Section -->
+            <div class="settings-section">
+                <div class="section-header" onclick="toggleSection('biomode')">
+                    <div class="section-title">
+                        <span class="section-icon">🛡️</span>
+                        <span>BioMode</span>
+                    </div>
+                    <span class="expand-icon" id="biomode-icon">▼</span>
                 </div>
 
-                <div class="control-group">
-                    <sl-switch id="biomode-switch">Enable BioMode</sl-switch>
-                </div>
-            </div>
-        </div>
-
-        <!-- Echo Settings Section -->
-        <div class="settings-section">
-            <div class="section-header" onclick="toggleSection('echo')">
-                <div class="section-title">
-                    <span class="section-icon">📝</span>
-                    <span>Echo Settings</span>
-                </div>
-                <span class="expand-icon" id="echo-icon">▼</span>
-            </div>
-
-            <div class="section-content" id="echo-content">
-                <div class="section-description">
-                    <p>
-                        <strong>📝 Echo Mode</strong> sends back the provided
-                        text. Also allows setting how the bot handles long
-                        messages.
-                    </p>
-
-                    <div class="usage-info">
-                        <p><strong>Mode Settings:</strong></p>
+                <div class="section-content" id="biomode-content">
+                    <div class="section-description">
                         <p>
-                            • <strong>Off</strong> – Bot will no longer handle
-                            long messages
+                            <strong>🛡️ BioMode</strong> monitors user bios and
+                            deletes messages if they contain URLs.
                         </p>
-                        <p>
-                            • <strong>Manual</strong> – Bot will delete long
-                            messages greater than longlimit
+                        <p class="warning">
+                            🚫 When enabled, users with links in their bios
+                            won't be able to send messages.
                         </p>
-                        <p>
-                            • <strong>Automatic</strong> – Bot will delete
-                            messages greater than longlimit, paste it on
-                            telegraph and send back
+                        <p class="admin-note">
+                            👮 Only admins can enable or disable this feature.
                         </p>
                     </div>
 
-                    <p>
-                        <strong>Long Limit:</strong> From 200 to 4000 characters
-                        (default: 800)
-                    </p>
-                </div>
-
-                <div class="control-group">
-                    <sl-select id="longmode-select" label="Long Message Mode">
-                        <sl-option value="off">Off</sl-option>
-                        <sl-option value="manual">Manual</sl-option>
-                        <sl-option value="automatic">Automatic</sl-option>
-                    </sl-select>
-
-                    <sl-input
-                        id="longlimit-input"
-                        type="number"
-                        label="Long Message Limit (200–4000)"
-                        min="200"
-                        max="4000"
-                    ></sl-input>
-
-                    <sl-button id="save-echo-btn" variant="primary"
-                        >💾 Save Echo Settings</sl-button
-                    >
-                </div>
-            </div>
-        </div>
-
-        <!-- Link Filter Section -->
-        <div class="settings-section">
-            <div class="section-header" onclick="toggleSection('linkfilter')">
-                <div class="section-title">
-                    <span class="section-icon">🔗</span>
-                    <span>Link Filter</span>
-                </div>
-                <span class="expand-icon" id="linkfilter-icon">▼</span>
-            </div>
-
-            <div class="section-content" id="linkfilter-content">
-                <div class="section-description">
-                    <p>
-                        <strong>🔗 LinkFilter</strong> allows admins to restrict
-                        messages containing unapproved links.
-                    </p>
-
-                    <div class="usage-info">
-                        <p><strong>Mode Settings:</strong></p>
-                        <p>
-                            • <strong>On</strong> – Bot will watch for all
-                            messages. If they contain direct links except
-                            whitelisted, bot will delete
-                        </p>
-                        <p>• <strong>Off</strong> – No deletions</p>
-                    </div>
-
-                    <p>
-                        <strong>Add/Delete Links:</strong> Here you can
-                        add/delete domains directly by contacting backend
-                    </p>
-                    <p class="warning">
-                        🚫 Messages with links not in the allowed list will be
-                        automatically deleted.
-                    </p>
-                    <p class="admin-note">
-                        👮 Only admins can configure this filter.
-                    </p>
-                </div>
-
-                <div class="control-group">
-                    <sl-switch id="linkfilter-switch"
-                        >Enable Link Filter</sl-switch
-                    >
-
-                    <div class="domain-input-group">
-                        <sl-input
-                            id="allow-domain-input"
-                            placeholder="example.com"
-                            label="Add Allowed Domain"
-                        ></sl-input>
-                        <sl-button id="allow-btn" variant="primary"
-                            >Add</sl-button
+                    <div class="control-group">
+                        <sl-switch id="biomode-switch"
+                            >Enable BioMode</sl-switch
                         >
                     </div>
+                </div>
+            </div>
 
-                    <div class="domains-table-container">
-                        <table class="domains-table">
-                            <thead>
-                                <tr>
-                                    <th>Allowed Domains</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="allowed-links-body"></tbody>
-                        </table>
+            <!-- Echo Settings Section -->
+            <div class="settings-section">
+                <div class="section-header" onclick="toggleSection('echo')">
+                    <div class="section-title">
+                        <span class="section-icon">📝</span>
+                        <span>Echo Settings</span>
+                    </div>
+                    <span class="expand-icon" id="echo-icon">▼</span>
+                </div>
+
+                <div class="section-content" id="echo-content">
+                    <div class="section-description">
+                        <p>
+                            <strong>📝 Echo Mode</strong> sends back the
+                            provided text. Also allows setting how the bot
+                            handles long messages.
+                        </p>
+
+                        <div class="usage-info">
+                            <p><strong>Mode Settings:</strong></p>
+                            <p>
+                                • <strong>Off</strong> – Bot will no longer
+                                handle long messages
+                            </p>
+                            <p>
+                                • <strong>Manual</strong> – Bot will delete long
+                                messages greater than longlimit
+                            </p>
+                            <p>
+                                • <strong>Automatic</strong> – Bot will delete
+                                messages greater than longlimit, paste it on
+                                telegraph and send back
+                            </p>
+                        </div>
+
+                        <p>
+                            <strong>Long Limit:</strong> From 200 to 4000
+                            characters (default: 800)
+                        </p>
+                    </div>
+
+                    <div class="control-group">
+                        <sl-select
+                            id="longmode-select"
+                            label="Long Message Mode"
+                        >
+                            <sl-option value="off">Off</sl-option>
+                            <sl-option value="manual">Manual</sl-option>
+                            <sl-option value="automatic">Automatic</sl-option>
+                        </sl-select>
+
+                        <sl-input
+                            id="longlimit-input"
+                            type="number"
+                            label="Long Message Limit (200–4000)"
+                            min="200"
+                            max="4000"
+                        ></sl-input>
+
+                        <sl-button id="save-echo-btn" variant="primary"
+                            >💾 Save Echo Settings</sl-button
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <!-- Link Filter Section -->
+            <div class="settings-section">
+                <div
+                    class="section-header"
+                    onclick="toggleSection('linkfilter')"
+                >
+                    <div class="section-title">
+                        <span class="section-icon">🔗</span>
+                        <span>Link Filter</span>
+                    </div>
+                    <span class="expand-icon" id="linkfilter-icon">▼</span>
+                </div>
+
+                <div class="section-content" id="linkfilter-content">
+                    <div class="section-description">
+                        <p>
+                            <strong>🔗 LinkFilter</strong> allows admins to
+                            restrict messages containing unapproved links.
+                        </p>
+
+                        <div class="usage-info">
+                            <p><strong>Mode Settings:</strong></p>
+                            <p>
+                                • <strong>On</strong> – Bot will watch for all
+                                messages. If they contain direct links except
+                                whitelisted, bot will delete
+                            </p>
+                            <p>• <strong>Off</strong> – No deletions</p>
+                        </div>
+
+                        <p>
+                            <strong>Add/Delete Links:</strong> Here you can
+                            add/delete domains directly by contacting backend
+                        </p>
+                        <p class="warning">
+                            🚫 Messages with links not in the allowed list will
+                            be automatically deleted.
+                        </p>
+                        <p class="admin-note">
+                            👮 Only admins can configure this filter.
+                        </p>
+                    </div>
+
+                    <div class="control-group">
+                        <sl-switch id="linkfilter-switch"
+                            >Enable Link Filter</sl-switch
+                        >
+
+                        <div class="domain-input-group">
+                            <sl-input
+                                id="allow-domain-input"
+                                placeholder="example.com"
+                                label="Add Allowed Domain"
+                            ></sl-input>
+                            <sl-button id="allow-btn" variant="primary"
+                                >Add</sl-button
+                            >
+                        </div>
+
+                        <div class="domains-table-container">
+                            <table class="domains-table">
+                                <thead>
+                                    <tr>
+                                        <th>Allowed Domains</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="allowed-links-body"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
         <script src="https://telegram.org/js/telegram-web-app.js?58"></script>
         <script src="app.js"></script>
         <script src="/config.js"></script>
