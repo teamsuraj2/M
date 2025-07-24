@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
@@ -22,8 +23,31 @@ const (
 	defaultEchoMode  = "AUTO"
 )
 
+var timeout = 5 * time.Second
+
+var validModes = map[string]string{
+	"AUTO":      "AUTO",
+	"AUTOMATIC": "AUTO",
+	"MANUAL":    "MANUAL",
+	"OFF":       "OFF",
+}
+
+func normalizeMode(input string) (string, bool) {
+	mode := strings.ToUpper(input)
+	val, ok := validModes[mode]
+	return val, ok
+}
+
 func SetEchoSettings(data *EchoSettings) error {
 	key := fmt.Sprintf("echos:%d", data.ChatID)
+
+	if data.Mode != "" {
+		if normalized, ok := normalizeMode(data.Mode); ok {
+			data.Mode = normalized
+		} else {
+			return fmt.Errorf("invalid echo mode: %q", data.Mode)
+		}
+	}
 
 	if val, ok := config.Cache.Load(key); ok {
 		existing := val.(*EchoSettings)
@@ -48,7 +72,6 @@ func SetEchoSettings(data *EchoSettings) error {
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
-	data.Mode = strings.ToUpper(data.Mode)
 
 	update := bson.M{
 		"$set": bson.M{
@@ -90,14 +113,18 @@ func GetEchoSettings(chatID int64) (*EchoSettings, error) {
 		}
 	}
 
-	if settings.Mode == "" {
+	// Normalize legacy or incorrect values
+	mode := strings.ToUpper(settings.Mode)
+	if normalized, ok := normalizeMode(mode); ok {
+		settings.Mode = normalized
+	} else {
 		settings.Mode = defaultEchoMode
 	}
+
 	if settings.Limit == 0 {
 		settings.Limit = defaultEchoLimit
 	}
 
 	config.Cache.Store(key, &settings)
-
 	return &settings, nil
 }
