@@ -25,7 +25,8 @@ var (
 	SupportChat    string
 	SupportChannel string
 
-	WebAppUrl string
+	WebAppUrl string // example http://t.me/vgithubbot/settings
+	SiteUrl string // https://gotgboy-571497f84322.herokuapp.com/
 )
 
 func init() {
@@ -55,6 +56,7 @@ func init() {
 	SupportChannel = Getenv[string]("SUPPORT_CHANNEL", "https://t.me/Team_Dns_Network", nil)
 	SupportChat = Getenv[string]("SUPPORT_CHAT", "https://t.me/dns_support_group", nil)
 	WebAppUrl = Getenv[string]("WEB_APP_URL", "http://t.me/ViyomBot/settings", nil)
+
 	OwnerId = Getenv("OWNER_ID", "7706682472 5663483507", func(key string) []int64 {
 		id := strings.Split(key, " ")
 		var ids []int64

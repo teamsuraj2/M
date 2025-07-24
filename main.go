@@ -52,31 +52,7 @@ func main() {
 	modules.LoadMods(client)
 
 	startAPIServer(client)
-	time.Sleep(5 * time.Second)
-	if !pingApi() {
-		config.PrintAndExit("Unable to connect to API. Make sure your backend is running and accessible.")
-	}
-
-	if modules.BotInfo.Username != "" && !strings.Contains(config.WebAppUrl, modules.BotInfo.Username) {
-		config.PrintAndExit("WEB_APP_URL is filled incorrectly. It should contain your bot's username.\nExample: http://t.me/ViyomBot/settings")
-	}
-
 	client.SendMessage(config.LoggerId, "Started...")
 	log.Println("✅ Bot Started")
 	client.Idle()
-}
-
-func pingApi() bool {
-	client := &http.Client{Timeout: 5 * time.Second}
-
-	resp, err := client.Get(config.WebAppUrl + "/ping")
-	if err != nil {
-		return false
-	}
-	defer resp.Body.Close()
-
-	var res struct {
-		Success bool `json:"success"`
-	}
-	return json.NewDecoder(resp.Body).Decode(&res) == nil && res.Success
 }
