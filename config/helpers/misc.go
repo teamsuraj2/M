@@ -18,7 +18,7 @@ func LoadTyped[T any](cache *sync.Map, key string) (T, bool) {
 
 const digitMap = "adefjtghkz" // 0=a, 1=d, 2=e, 3=f, 4=j, 5=t, 6=g, 7=h, 8=k, 9=z
 
-func EncodeDigits(num int) string {
+func EncodeDigits(num int64) string {
 	s := strconv.Itoa(num)
 	var sb strings.Builder
 	for _, ch := range s {
