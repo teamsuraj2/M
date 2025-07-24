@@ -28,11 +28,11 @@ func settingsComm(m *telegram.NewMessage) error {
 
 	btn := telegram.NewKeyboard()
 	btn.AddRow(
-	telegram.Button.URL(
-		"⚙️ Settings",
-		fmt.Sprintf("%s?startapp=access_key%s", config.WebAppUrl, helpers.EncodeDigits(m.ChatID())),
-	),
-)
+		telegram.Button.URL(
+			"⚙️ Settings",
+			fmt.Sprintf("%s?startapp=access_key%s", config.WebAppUrl, helpers.EncodeDigits(m.ChatID())),
+		),
+	)
 	m.Respond("Configure Your chat settings by this WebApp Interface", telegram.SendOptions{
 		ReplyMarkup: btn.Build(),
 	})
