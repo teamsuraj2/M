@@ -53,7 +53,7 @@ func setBioMode(m *telegram.NewMessage) error {
 	args := strings.Fields(m.Text())
 
 	if len(args) < 2 {
-	  if isEn, err := database.GetBioMode(m.ChatID()) err != nil {
+	  if isEn, err := database.GetBioMode(m.ChatID()); err != nil {
 	    m.Respond("📚 Usage: <code>/biolink on</code> | <code>/biolink off</code>")
 	  } else {
 	    m.Respond("Currently bioLink mode is " + map[bool]string{true: "Enabled", false: "Disabled"}[isEn] + " for your chat")
