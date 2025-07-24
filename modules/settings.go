@@ -1,8 +1,11 @@
 package modules
 
 import (
+	"fmt"
+
 	"github.com/amarnathcjd/gogram/telegram"
 
+	"main/config"
 	"main/config/helpers"
 )
 
@@ -22,11 +25,10 @@ func settingsComm(m *telegram.NewMessage) error {
 
 		return telegram.EndGroup
 	}
-	
+
 	btn := telegram.NewKeyboard()
 	btn.AddRow(
 		telegram.Button.URL("⚙️ Settings", fmt.Sprintf("%?access_key=%s", config.WebAppUrl, helpers.EncodeDigits(m.ChatID()))),
-	
 	)
 	m.Respond("Configure Your chat settings by this WebApp Interface", telegram.SendOptions{
 		ReplyMarkup: btn.Build(),

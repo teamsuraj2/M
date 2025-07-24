@@ -1,10 +1,13 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/amarnathcjd/gogram/telegram"
 
@@ -49,10 +52,10 @@ func main() {
 	modules.LoadMods(client)
 
 	startAPIServer(client)
-	
+
 	if x := pingApi(); !x || (modules.BotInfo.Username != "" && !strings.Contains(config.WebAppUrl, modules.BotInfo.Username)) {
-	config.PrintAndExit("WEB_APP_URL is filled wrong please fill it correctly, or unable to connect api\n fill like http://t.me/ViyomBot/settings")
-}
+		config.PrintAndExit("WEB_APP_URL is filled wrong please fill it correctly, or unable to connect api\n fill like http://t.me/ViyomBot/settings")
+	}
 
 	client.SendMessage(config.LoggerId, "Started...")
 	log.Println("✅ Bot Started")
