@@ -251,10 +251,10 @@ function addDomainRow(domain) {
     saveDomainRemove(domain).catch(err => {
       showToast(`❌ Failed to remove domain: ${err?.message || err || "Unknown error"}`, "error");
       // Re-add the row if API call fails
-      tbody.appendChild(tr);
+      tbody.insertBefore(tr, tbody.firstChild); 
     });
   };
-  tbody.appendChild(tr);
+  tbody.insertBefore(tr, tbody.firstChild); 
 }
 
 document.getElementById('allow-btn').onclick = () => {
