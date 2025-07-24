@@ -25,11 +25,11 @@ func startAPIServer(bot *telegram.Client) {
 	http.Handle("/", http.FileServer(http.Dir("./static")))
 
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, map[string]interface{}{
-		"success": true,
-		"message": "pong",
+		writeJSON(w, map[string]interface{}{
+			"success": true,
+			"message": "pong",
+		})
 	})
-})
 	http.HandleFunc("/report-unauthorized", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
