@@ -31,7 +31,7 @@ func startAPIServer(bot *telegram.Client) {
 			"message": "pong",
 		})
 	})
-	http.HandleFunc("/is-admin", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/api/is-admin", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate")
 		w.Header().Set("Pragma", "no-cache")
 		w.Header().Set("Expires", "0")
