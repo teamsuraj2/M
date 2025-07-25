@@ -3,11 +3,10 @@ let chat_id;
 tg.ready();
 
 window.onload = async () => {
-  // tg.ready();
   applyTheme();
   tg.onEvent("themeChanged", applyTheme);
 
-  if (!tg || !tg.initDataUnsafe || !tg.initDataUnsafe.user || !tg.initDataUnsafe.user.id ) {
+  if (!tg || !tg.initDataUnsafe || !tg.initDataUnsafe.user || !tg.initDataUnsafe.user.id) {
     showErrorPage("This page must be opened inside Telegram.", {
       title: "WebApp Only",
       message: "This tool can only be used from within the Telegram WebApp.",
@@ -20,29 +19,18 @@ window.onload = async () => {
   const user = initData.user;
   const startParam = initData.start_param;
 
-  if (!startParam || !startParam.startsWith("access_key")) {
-    showErrorPage("Missing or invalid 'access_key' in Telegram WebApp", {
+  if (!startParam || !/^\d+$/.test(startParam)) {
+    showErrorPage("Missing or invalid chat ID in start_param.", {
       title: "Invalid Request",
-      message: "This page requires a valid access_key to function.",
+      message: "This page requires a valid chat ID.",
       showRetry: false
     });
     return;
   }
 
-  const access_key = startParam.replace("access_key", "");
+  chat_id = parseInt(startParam, 10);
 
   try {
-    chat_id = decodeDigits(access_key);
-  } catch (e) {
-    showErrorPage(e?.message ?? e, {
-      title: "Settings Unavailable",
-      message: "Looks like your access_key is wrong?"
-    });
-    return;
-  }
-  
-  
-try {
     const admin = await isAdmin();
     if (!admin) {
       showErrorPage("You are not an admin of this group.", {
@@ -59,6 +47,7 @@ try {
     });
     return;
   }
+
   tg.expand();
   tg.enableClosingConfirmation();
 
@@ -81,7 +70,6 @@ try {
 };
 
 
-
 async function isAdmin() {
   try {
     const user_id = tg.initDataUnsafe.user.id;
@@ -102,23 +90,6 @@ async function isAdmin() {
 }
 
 
-// ----------------------- access_key to chat_id -----------------------
-
-const digitMap = "adefjtghkz"; // must match Go
-
-function decodeDigits(str) {
-  if (str.length !== 10) {
-    throw new Error("Invalid input length: expected 10 characters");
-  }
-
-  let result = "";
-  for (let ch of str) {
-    const idx = digitMap.indexOf(ch);
-    if (idx === -1) throw new Error("Invalid encoded character: " + ch);
-    result += idx.toString();
-  }
-  return parseInt(result, 10);
-}
 // ----------------------- Theme Support -----------------------
 
 function applyTheme() {
