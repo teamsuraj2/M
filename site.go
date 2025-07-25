@@ -39,7 +39,7 @@ func startAPIServer(bot *telegram.Client) {
 
 		chatIDStr := r.URL.Query().Get("chat_id")
 		userIDStr := r.URL.Query().Get("user_id")
-   log.Printf("Received is-admin request: %s", r.URL.RawQuery)
+		log.Printf("Received is-admin request: %s", r.URL.RawQuery)
 		if chatIDStr == "" {
 			w.WriteHeader(http.StatusBadRequest)
 			writeJSON(w, map[string]string{"error": "chat_id is required"})
