@@ -274,9 +274,9 @@ async function loadLinkFilter() {
     switchEl.checked = !!data?.enabled;
     const domains = data?.allowed_domains ?? [];
 
-    const tbody = document.getElementById('allowed-links-body');
-    tbody.innerHTML = '';
-    domains.forEach(domain => addDomainRow(domain));
+    const listEl = document.getElementById('allowed-links-list');
+    listEl.innerHTML = '';
+    domains.forEach(domain => addDomainItem(domain));
 
     // Add live update event listener for switch
     switchEl.addEventListener('sl-change', () => {
@@ -287,34 +287,35 @@ async function loadLinkFilter() {
   } catch (e) {
     // Fallback to demo mode
     document.getElementById('linkfilter-switch').checked = false;
-    const tbody = document.getElementById('allowed-links-body');
-    tbody.innerHTML = '';
+    const listEl = document.getElementById('allowed-links-list');
+    listEl.innerHTML = '';
     throw new Error("Could not load LinkFilter - API endpoint not found");
   }
 }
 
-function addDomainRow(domain) {
-  const tbody = document.getElementById('allowed-links-body');
-  if ([...tbody.children].some(tr => tr.children[0].textContent === domain)) return;
+function addDomainItem(domain) {
+  const listEl = document.getElementById('allowed-links-list');
+  if ([...listEl.children].some(item => item.querySelector('.domain-name').textContent === domain)) return;
 
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-  <td>${domain}</td>
-  <td><button class="remove-btn" aria-label="Remove domain">Remove</button></td>
+  const item = document.createElement('div');
+  item.className = 'domain-item';
+  item.innerHTML = `
+    <span class="domain-name">${domain}</span>
+    <button class="remove-btn" aria-label="Remove domain">🗑️</button>
   `;
 
-  const removeBtn = tr.querySelector('button');
+  const removeBtn = item.querySelector('button');
   removeBtn.onclick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    tr.remove();
+    item.remove();
     saveDomainRemove(domain).catch(err => {
       showToast(`❌ Failed to remove domain: ${err?.message || err || "Unknown error"}`, "error");
-      // Re-add the row if API call fails
-      tbody.insertBefore(tr, tbody.firstChild);
+      // Re-add the item if API call fails
+      listEl.insertBefore(item, listEl.firstChild);
     });
   };
-  tbody.insertBefore(tr, tbody.firstChild);
+  listEl.insertBefore(item, listEl.firstChild);
 }
 
 document.getElementById('allow-btn').onclick = () => {
@@ -323,7 +324,7 @@ document.getElementById('allow-btn').onclick = () => {
   const hostname = extractHostname(rawValue); // extract and normalize
 
   if (hostname && isValidDomain(hostname)) {
-    addDomainRow(hostname);
+    addDomainItem(hostname);
     input.value = '';
     saveDomainAdd(hostname)
     .then(() => {
