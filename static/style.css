@@ -241,7 +241,7 @@ body {
 
 .domains-list {
     max-height: 150px;
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
     background: var(--md-sys-color-surface);
     border: none;
