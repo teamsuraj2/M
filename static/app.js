@@ -1,8 +1,9 @@
 const tg = window.Telegram.WebApp;
 let chat_id;
+tg.ready();
 
 window.onload = async () => {
-  tg.ready();
+  // tg.ready();
   applyTheme();
   tg.onEvent("themeChanged", applyTheme);
 
