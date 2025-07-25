@@ -7,7 +7,7 @@ window.onload = async () => {
   applyTheme();
   tg.onEvent("themeChanged", applyTheme);
 
-  if (!tg || !tg.initDataUnsafe || !tg.initDataUnsafe.user) {
+  if (!tg || !tg.initDataUnsafe || !tg.initDataUnsafe.user || tg.initDataUnsafe.user.id ) {
     showErrorPage("This page must be opened inside Telegram.", {
       title: "WebApp Only",
       message: "This tool can only be used from within the Telegram WebApp.",
@@ -19,7 +19,26 @@ window.onload = async () => {
   const initData = tg.initDataUnsafe;
   const user = initData.user;
 
-  // ✅ Extract access_key from start_param
+
+try {
+    const admin = await isAdmin();
+    if (!admin) {
+      showErrorPage("You are not an admin of this group.", {
+        title: "Access Denied",
+        message: "Only group admins can configure these settings.",
+        showRetry: false
+      });
+      return;
+    }
+  } catch (err) {
+    showErrorPage(err?.message ?? err, {
+      title: "Admin Check Failed",
+      message: "Could not verify your admin status.",
+    });
+    return;
+  }
+
+
   const startParam = initData.start_param;
 
   if (!startParam || !startParam.startsWith("access_key")) {
@@ -63,6 +82,27 @@ window.onload = async () => {
     });
   }
 };
+
+
+
+async function isAdmin() {
+  try {
+    const user_id = tg.initDataUnsafe.user.id;
+
+    const res = await fetch(`/api/is-admin?chat_id=${chat_id}&user_id=${user_id}`);
+    if (!res.ok) throw new Error("API not available");
+
+    const result = await res.json();
+
+    if (result.error) {
+      throw new Error(result.error);
+    }
+
+    return result.isAdmin;
+  } catch (e) {
+    throw new Error("Could not determine admin status: " + e.message);
+  }
+}
 
 
 // ----------------------- access_key to chat_id -----------------------
