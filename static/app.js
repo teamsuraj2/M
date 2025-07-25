@@ -7,7 +7,7 @@ window.onload = async () => {
   applyTheme();
   tg.onEvent("themeChanged", applyTheme);
 
-  if (!tg || !tg.initDataUnsafe || !tg.initDataUnsafe.user || tg.initDataUnsafe.user.id ) {
+  if (!tg || !tg.initDataUnsafe || !tg.initDataUnsafe.user || !tg.initDataUnsafe.user.id ) {
     showErrorPage("This page must be opened inside Telegram.", {
       title: "WebApp Only",
       message: "This tool can only be used from within the Telegram WebApp.",
