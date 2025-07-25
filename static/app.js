@@ -36,7 +36,8 @@ window.onload = async () => {
       showErrorPage("You are not an admin of this group.", {
         title: "Access Denied",
         message: "Only group admins can configure these settings.",
-        showRetry: false
+        showRetry: false,
+        noError: true
       });
       return;
     }
@@ -44,6 +45,7 @@ window.onload = async () => {
     showErrorPage(err?.message ?? err, {
       title: "Admin Check Failed",
       message: "Could not verify your admin status.",
+      noError: true
     });
     return;
   }
@@ -162,27 +164,31 @@ function showErrorPage(error, options = {}) {
   const {
     title = "Something Went Wrong",
     message = "An unexpected error occurred.",
-    showRetry = true
+    showRetry = true,
+    noError = false
   } = options;
+
+  if (noError) return;
 
   document.getElementById("loading")?.remove();
   document.body.innerHTML = `
-  <div class="error-container">
-  <div class="error-card">
-  <div class="error-icon">⚠️</div>
-  <h2 class="error-title">${title}</h2>
-  <p class="error-message">${message}</p>
-  <div class="error-details">
-  <p><strong>Error:</strong> ${error ?? "Unknown error"}</p>
-  </div>
-  ${
-  showRetry
-  ? `<div class="error-actions">
-  <button onclick="location.reload()" class="retry-btn">🔄 Retry</button>
-  </div>`: ""
-  }
-  </div>
-  </div>
+    <div class="error-container">
+      <div class="error-card">
+        <div class="error-icon">⚠️</div>
+        <h2 class="error-title">${title}</h2>
+        <p class="error-message">${message}</p>
+        <div class="error-details">
+          <p><strong>Error:</strong> ${error ?? "Unknown error"}</p>
+        </div>
+        ${
+          showRetry
+            ? `<div class="error-actions">
+                 <button onclick="location.reload()" class="retry-btn">🔄 Retry</button>
+               </div>`
+            : ""
+        }
+      </div>
+    </div>
   `;
 }
 
