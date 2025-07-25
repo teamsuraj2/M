@@ -43,6 +43,7 @@ window.onload = async () => {
   }
 
   tg.expand();
+  tg.enableClosingConfirmation();
 
   try {
     await Promise.all([
