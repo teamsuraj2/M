@@ -12,6 +12,7 @@ import (
 	"github.com/amarnathcjd/gogram/telegram"
 
 	"main/config"
+	"main/config/helpers"
 	"main/database"
 )
 
@@ -30,50 +31,50 @@ func startAPIServer(bot *telegram.Client) {
 			"message": "pong",
 		})
 	})
-http.HandleFunc("/is-admin", func(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate")
-	w.Header().Set("Pragma", "no-cache")
-	w.Header().Set("Expires", "0")
-	w.Header().Set("Surrogate-Control", "no-store")
+	http.HandleFunc("/is-admin", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate")
+		w.Header().Set("Pragma", "no-cache")
+		w.Header().Set("Expires", "0")
+		w.Header().Set("Surrogate-Control", "no-store")
 
-	chatIDStr := r.URL.Query().Get("chat_id")
-	userIDStr := r.URL.Query().Get("user_id")
+		chatIDStr := r.URL.Query().Get("chat_id")
+		userIDStr := r.URL.Query().Get("user_id")
 
-	if chatIDStr == ""{
-		w.WriteHeader(http.StatusBadRequest)
-		writeJSON(w, map[string]string{"error": "chat_id is required"})
-		return
-	}
+		if chatIDStr == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			writeJSON(w, map[string]string{"error": "chat_id is required"})
+			return
+		}
 
-if userIDStr == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		writeJSON(w, map[string]string{"error": "user_id is required"})
-		return
-	}
+		if userIDStr == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			writeJSON(w, map[string]string{"error": "user_id is required"})
+			return
+		}
 
-	chatID, err := strconv.ParseInt(chatIDStr, 10, 64)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		writeJSON(w, map[string]string{"error": "invalid chat_id"})
-		return
-	}
+		chatID, err := strconv.ParseInt(chatIDStr, 10, 64)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			writeJSON(w, map[string]string{"error": "invalid chat_id"})
+			return
+		}
 
-	userID, err := strconv.ParseInt(userIDStr, 10, 64)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		writeJSON(w, map[string]string{"error": "invalid user_id"})
-		return
-	}
+		userID, err := strconv.ParseInt(userIDStr, 10, 64)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			writeJSON(w, map[string]string{"error": "invalid user_id"})
+			return
+		}
 
-	isAdmin, err := helpers.IsChatAdmin(bot, chatID, userID)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		writeJSON(w, map[string]string{"error": err.Error()})
-		return
-	}
+		isAdmin, err := helpers.IsChatAdmin(bot, chatID, userID)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			writeJSON(w, map[string]string{"error": err.Error()})
+			return
+		}
 
-	writeJSON(w, map[string]bool{"isAdmin": isAdmin})
-})
+		writeJSON(w, map[string]bool{"isAdmin": isAdmin})
+	})
 
 	http.HandleFunc("/report-unauthorized", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
