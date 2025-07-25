@@ -30,7 +30,7 @@ func settingsComm(m *telegram.NewMessage) error {
 	btn.AddRow(
 		telegram.Button.URL(
 			"⚙️ Settings",
-			fmt.Sprintf("%s?startapp=access_key%s", config.WebAppUrl, helpers.EncodeDigits(m.ChatID())),
+			fmt.Sprintf("%s?startapp=%d", config.WebAppUrl, m.ChatID()),
 		),
 	)
 	m.Respond("Configure Your chat settings by this WebApp Interface", telegram.SendOptions{
