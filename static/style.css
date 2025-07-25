@@ -218,60 +218,73 @@ body {
     flex: 1;
 }
 
-.domains-table-container {
+.domains-list-container {
     background: var(--md-sys-color-surface);
     border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--md-sys-color-outline-variant);
     margin-top: 16px;
-    min-height: 100px;
     max-height: 300px;
-    overflow-y: auto;
+    overflow: hidden;
 }
 
-.domains-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.domains-table th {
-    background: var(--md-sys-color-primary);
-    color: var(--md-sys-color-on-primary);
-    padding: 12px 16px;
-    text-align: left;
-    font-weight: 500;
-    font-size: 0.9em;
-}
-
-.domains-table td {
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--md-sys-color-outline-variant);
-    color: var(--md-sys-color-on-surface);
-}
-
-.domains-table tr:last-child td {
-    border-bottom: none;
-}
-
-.domains-table tr:hover {
+.domains-list-header {
     background: var(--md-sys-color-surface-container);
+    color: var(--md-sys-color-on-surface);
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    font-weight: 600;
+    font-size: 0.9em;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.domains-list {
+    max-height: 150px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    background: var(--md-sys-color-surface);
+    border: none;
+}
+
+.domain-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    color: var(--md-sys-color-on-surface);
+    transition: background-color 0.2s ease;
+}
+
+.domain-item:hover {
+    background: var(--md-sys-color-surface-container-low);
+}
+
+.domain-name {
+    flex: 1;
+    font-weight: 500;
+    font-size: 1em;
 }
 
 .remove-btn {
-    background: var(--md-sys-color-error-container);
-    color: var(--md-sys-color-on-error-container);
+    background: transparent;
+    color: var(--md-sys-color-error);
     border: none;
-    padding: 8px 16px;
-    border-radius: 20px;
+    padding: 8px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 0.9em;
-    font-weight: 500;
+    font-size: 1.1em;
     transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
 }
 
 .remove-btn:hover {
-    background: var(--md-sys-color-error);
-    color: var(--md-sys-color-on-error);
+    background: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
 }
 
 .loading,
@@ -534,31 +547,20 @@ sl-button[variant="primary"]::part(base):hover {
         align-items: stretch;
     }
 
-    .domains-table-container {
+    .domains-list-container {
         overflow-x: auto;
         margin: 0 -8px;
     }
 
-    .domains-table {
-        min-width: 300px;
-    }
-
-    .domains-table th,
-    .domains-table td {
+    .domains-list-header,
+    .domain-item {
         padding: 8px 12px;
         font-size: 0.9em;
     }
 
-    .domains-table th:first-child,
-    .domains-table td:first-child {
+    .domain-name {
         min-width: 120px;
         word-break: break-word;
-    }
-
-    .domains-table th:last-child,
-    .domains-table td:last-child {
-        width: 80px;
-        text-align: center;
     }
 
     .remove-btn {
