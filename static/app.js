@@ -18,27 +18,6 @@ window.onload = async () => {
 
   const initData = tg.initDataUnsafe;
   const user = initData.user;
-
-
-try {
-    const admin = await isAdmin();
-    if (!admin) {
-      showErrorPage("You are not an admin of this group.", {
-        title: "Access Denied",
-        message: "Only group admins can configure these settings.",
-        showRetry: false
-      });
-      return;
-    }
-  } catch (err) {
-    showErrorPage(err?.message ?? err, {
-      title: "Admin Check Failed",
-      message: "Could not verify your admin status.",
-    });
-    return;
-  }
-
-
   const startParam = initData.start_param;
 
   if (!startParam || !startParam.startsWith("access_key")) {
@@ -61,7 +40,25 @@ try {
     });
     return;
   }
-
+  
+  
+try {
+    const admin = await isAdmin();
+    if (!admin) {
+      showErrorPage("You are not an admin of this group.", {
+        title: "Access Denied",
+        message: "Only group admins can configure these settings.",
+        showRetry: false
+      });
+      return;
+    }
+  } catch (err) {
+    showErrorPage(err?.message ?? err, {
+      title: "Admin Check Failed",
+      message: "Could not verify your admin status.",
+    });
+    return;
+  }
   tg.expand();
   tg.enableClosingConfirmation();
 
