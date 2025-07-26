@@ -26,6 +26,10 @@ var (
 	SupportChannel string
 
 	WebAppUrl string // example http://t.me/vgithubbot/settings
+
+
+
+  LogLevel utils.LogLevel = utils.DebugLevel
 )
 
 func init() {
