@@ -3,7 +3,6 @@ package modules
 import (
 	"fmt"
 	"html"
-	"log"
 	"strings"
 	"sync"
 	"time"
@@ -37,7 +36,6 @@ Sends back the provided text. Also allows setting how the bot handles long messa
 • <b>/setlonglimit</b> <code>&lt;number&gt;</code> – Set character limit (200–4000, default: 800).`)
 }
 
-
 type warningTracker struct {
 	globalLock sync.Mutex            // Protects access to locks map
 	locks      map[int64]*sync.Mutex // Per-chat locks
@@ -50,7 +48,6 @@ var deleteWarningTracker = warningTracker{
 }
 
 var logger = utils.NewLogger("echo.go").SetLevel(config.LogLevel)
-
 
 func EcoHandler(m *telegram.NewMessage) error {
 	if isgroup := IsValidSupergroup(m); !isgroup {
