@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/amarnathcjd/gogram/internal/utils"
 	"github.com/joho/godotenv"
 )
 
@@ -28,7 +27,6 @@ var (
 
 	WebAppUrl string // example http://t.me/vgithubbot/settings
 
-	LogLevel utils.LogLevel = utils.DebugLevel
 )
 
 func init() {
