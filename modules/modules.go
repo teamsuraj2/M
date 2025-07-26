@@ -41,7 +41,7 @@ var (
 		"/removelink",
 		"listlinks",
 		"/settings",
-		"/setting"
+		"/setting",
 	} // used in OnMessageFnc like if slices.Contains(Commands, m.GetCommand()){return nil}
 )
 var commandSet map[string]struct{}
