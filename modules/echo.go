@@ -171,6 +171,7 @@ Alternatively, use /echo for sending longer messages. 📜
 
 	return nil
 }
+
 func sendEchoMessage(m *telegram.NewMessage, text string) error {
 	var authorURL string
 	userFullName := strings.TrimSpace(m.Sender.FirstName + " " + m.Sender.LastName)
