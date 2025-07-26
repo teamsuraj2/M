@@ -3,7 +3,7 @@ let chat_id;
 tg.ready();
 
 window.onload = async () => {
-  applyTheme();
+  // applyTheme();
   tg.onEvent("themeChanged", applyTheme);
 
   if (!tg || !tg.initDataUnsafe || !tg.initDataUnsafe.user || !tg.initDataUnsafe.user.id) {
@@ -95,7 +95,7 @@ async function isAdmin() {
 
 // ----------------------- Theme Support -----------------------
 
-function applyTheme() {
+/* function applyTheme() {
   let theme = "light"; // default fallback
   if (tg && typeof tg.colorScheme === "string") {
     theme = tg.colorScheme === "dark" ? "dark": "light";
@@ -103,7 +103,7 @@ function applyTheme() {
   document.body.setAttribute("data-theme", theme);
 }
 
-
+*/
 
 // ----------------------- Validation Functions -----------------------
 function extractHostname(input) {
