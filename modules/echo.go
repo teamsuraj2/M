@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/amarnathcjd/gogram/internal/utils"
 	"github.com/amarnathcjd/gogram/telegram"
-        "github.com/amarnathcjd/gogram/internal/utils"
 
 	"main/config"
 	"main/config/helpers"
