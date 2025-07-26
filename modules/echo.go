@@ -3,6 +3,7 @@ package modules
 import (
 	"fmt"
 	"html"
+	"log"
 	"strings"
 	"sync"
 	"time"
@@ -147,8 +148,8 @@ func EcoHandler(m *telegram.NewMessage) error {
 				id = m.Sender.ID
 			}
 			text := fmt.Sprintf(`
-⚠️ <a href="tg://user?id=%d">%s</a>, your message exceeds the %d-character limit! 🚫  
-Please shorten it before sending. ✂️  
+⚠️ <a href="tg://user?id=%d">%s</a>, your message exceeds the %d-character limit! 🚫
+Please shorten it before sending. ✂️
 
 Alternatively, use /echo for sending longer messages. 📜
 `, id, name, settings.Limit)
@@ -280,6 +281,7 @@ Alternatively, use /echo for sending longer messages. 📜
 	log.Printf("deleteLongMessage: completed for message ID %d", m.ID)
 	return nil
 }
+
 func sendEchoMessage(m *telegram.NewMessage, text string) error {
 	var authorURL string
 	userFullName := strings.TrimSpace(m.Sender.FirstName + " " + m.Sender.LastName)
