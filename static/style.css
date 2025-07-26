@@ -79,8 +79,8 @@
     --md-sys-color-surface-container-highest: var(--tg-theme-secondary-bg-color);
 }
 
+/*
 [data-theme="dark"] {
-    /* Dark theme */
     --md-sys-color-primary: #d0bcff;
     --md-sys-color-on-primary: #381e72;
     --md-sys-color-primary-container: #4f378b;
@@ -118,6 +118,8 @@
     --md-sys-color-surface-container-high: #2b2930;
     --md-sys-color-surface-container-highest: #36343b;
 }
+
+*/
 
 body {
     padding: 16px;
