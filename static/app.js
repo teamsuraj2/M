@@ -10,7 +10,8 @@ window.onload = async () => {
     showErrorPage("This page must be opened inside Telegram.", {
       title: "WebApp Only",
       message: "This tool can only be used from within the Telegram WebApp.",
-      showRetry: false
+      showRetry: false,
+        noError: true
     });
     return;
   }
