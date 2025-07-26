@@ -3,39 +3,81 @@ package helpers
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
+	"io/ioutil"
+	"log"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
-func IsProfanity(message string) (bool, error) {
-	if len(strings.Fields(message)) == 1 {
-		message += " "
-	}
+type Match struct {
+	Match string `json:"match"`
+}
 
-	payload := map[string]string{"message": message}
-	jsonData, err := json.Marshal(payload)
-	if err != nil {
-		return false, err
-	}
+type Profanity struct {
+	Matches []Match `json:"matches"`
+}
 
-	resp, err := http.Post("https://vector.profanity.dev", "application/json", bytes.NewBuffer(jsonData))
-	if err != nil {
-		return false, err
-	}
-	defer resp.Body.Close()
+type APIResponse struct {
+	Status    string    `json:"status"`
+	Error     APIError  `json:"error"`
+	Profanity Profanity `json:"profanity"`
+}
 
-	var result struct {
-		IsProfanity bool    `json:"isProfanity"`
-		Score       float64 `json:"score"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return false, err
-	}
+type APIError struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+}
 
-	if resp.StatusCode != http.StatusOK {
-		return false, errors.New("non-200 response from server")
-	}
+var apiKeys = []map[string]string{
+	{"api_user": "1012651687", "api_secret": "kYZmgwUThAGz4yZseukCZTkhNtYp3xsA"},
+}
 
-	return result.IsProfanity, nil
+func M(msg string) {
+	log.Println("Sightengine Error:", msg)
+}
+
+func MatchProfanity(text string) (string, bool) {
+	for _, creds := range apiKeys {
+		form := url.Values{}
+		form.Add("text", text)
+		form.Add("mode", "rules")
+		form.Add("lang", "en")
+		form.Add("categories", "profanity")
+		form.Add("api_user", creds["api_user"])
+		form.Add("api_secret", creds["api_secret"])
+
+		resp, err := http.Post(
+			"https://api.sightengine.com/1.0/text/check.json",
+			"application/x-www-form-urlencoded",
+			bytes.NewBufferString(form.Encode()),
+		)
+		if err != nil {
+			continue
+		}
+		defer resp.Body.Close()
+
+		body, _ := ioutil.ReadAll(resp.Body)
+		var result APIResponse
+		json.Unmarshal(body, &result)
+
+		if result.Status != "success" {
+			if result.Error.Code == 32 {
+				continue
+			}
+			M(result.Error.Message)
+			return text, false
+		}
+
+		censored := text
+		if len(result.Profanity.Matches) == 0 {
+			return text, false
+		}
+		for _, match := range result.Profanity.Matches {
+			censored = strings.ReplaceAll(censored, match.Match, "***")
+		}
+		return censored, true
+	}
+	M("All API keys failed or rate-limited")
+	return text, false
 }
