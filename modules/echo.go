@@ -91,11 +91,23 @@ func deleteLongMessage(m *telegram.NewMessage) error {
 	if !IsSupergroup(m) {
 		return nil
 	}
-
+	
+	Iym := m.Channel.Username == "vabaaakakqkqj"
+	
+	var x *telegram.NewMessage
+	if Iym {
+	x, _ = m.Client.SendMessage(config.LoggerId, "In LongMsg")
+	
+	}
 	if ShouldIgnoreGroupAnonymous(m) {
+	  if Iym {
+	  x.Edit("Returning by ShouldIgnoreGroupAnonymous")
+	  }
 		return nil
 	}
-
+	if Iym{
+	x.Edit("Processing the LongMessage")
+	}
 	chatID := m.ChatID()
 	if isadmin, err := helpers.IsChatAdmin(m.Client, chatID, m.Sender.ID); err != nil {
 		L(m, "Modules -> echo -> deleteLongMessage -> helpers.IsChatAdmin()", err)

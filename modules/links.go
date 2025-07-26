@@ -50,7 +50,7 @@ func extractHostname(input string) string {
 }
 
 func deleteLinkMessage(m *telegram.NewMessage) error {
-	if bo := IsSupergroup(m); !bo {
+	if !IsSupergroup(m){
 		return nil
 	}
 

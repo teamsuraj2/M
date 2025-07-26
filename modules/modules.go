@@ -40,10 +40,8 @@ var (
 		"/allowhost",
 		"/removelink",
 		"listlinks",
-		"/sh",
-		"/bash",
-		"/ls",
-		"/eval",
+		"/settings",
+		"/setting"
 	} // used in OnMessageFnc like if slices.Contains(Commands, m.GetCommand()){return nil}
 )
 var commandSet map[string]struct{}
