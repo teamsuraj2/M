@@ -86,7 +86,7 @@ func EcoHandler(m *telegram.NewMessage) error {
 	return L(m, "Modules -> echo -> sendEchoMessage(...)", err)
 }
 
-func deleteLongMessage(m *telegram.NewMessage) error {
+/* func deleteLongMessage(m *telegram.NewMessage) error {
 	if !IsSupergroup(m) {
 		return nil
 	}
@@ -167,7 +167,119 @@ Alternatively, use /echo for sending longer messages. 📜
 	}
 	return nil
 }
+*/
 
+func deleteLongMessage(m *telegram.NewMessage) error {
+	log.Printf("deleteLongMessage: called for message ID %d in chat %d", m.ID, m.ChatID())
+
+	if !IsSupergroup(m) {
+		log.Printf("deleteLongMessage: not a supergroup, skipping.")
+		return nil
+	}
+
+	if ShouldIgnoreGroupAnonymous(m) {
+		log.Printf("deleteLongMessage: group is set to ignore anonymous messages, skipping.")
+		return nil
+	}
+
+	chatID := m.ChatID()
+	log.Printf("deleteLongMessage: checking admin status for user %d in chat %d", m.Sender.ID, chatID)
+	isadmin, err := helpers.IsChatAdmin(m.Client, chatID, m.Sender.ID)
+	if err != nil {
+		L(m, "Modules -> echo -> deleteLongMessage -> helpers.IsChatAdmin()", err)
+		log.Printf("deleteLongMessage: error checking admin status: %v", err)
+		return nil
+	} else if isadmin {
+		log.Printf("deleteLongMessage: user is admin, skipping.")
+		return nil
+	}
+
+	log.Printf("deleteLongMessage: fetching echo settings for chat %d", chatID)
+	settings, err := database.GetEchoSettings(chatID)
+	L(m, "Modules -> echo -> database.GetEchoSettings(...)", err)
+	if err != nil {
+		log.Printf("deleteLongMessage: failed to fetch echo settings: %v", err)
+		return nil
+	}
+
+	if m.Text() == "" {
+		log.Printf("deleteLongMessage: message has no text, skipping.")
+		return nil
+	}
+	if len(m.Text()) < settings.Limit {
+		log.Printf("deleteLongMessage: message length (%d) is below limit (%d), skipping.", len(m.Text()), settings.Limit)
+		return nil
+	}
+	log.Printf("deleteLongMessage: message exceeds limit (%d >= %d)", len(m.Text()), settings.Limit)
+
+	var isAutomatic bool
+	switch settings.Mode {
+	case "OFF":
+		log.Printf("deleteLongMessage: echo mode is OFF, skipping.")
+		return nil
+	case "AUTO":
+		log.Printf("deleteLongMessage: echo mode is AUTO, enabling automatic handling.")
+		isAutomatic = true
+	default:
+		log.Printf("deleteLongMessage: echo mode is %s, treating as manual.", settings.Mode)
+	}
+
+	log.Printf("deleteLongMessage: attempting to delete message ID %d", m.ID)
+	if _, err := m.Delete(); err != nil {
+		log.Printf("deleteLongMessage: error deleting message: %v", err)
+		if handleNeedPerm(err, m) {
+			return err
+		}
+		L(m, "Modules -> echo -> deleteLongMessage -> m.Delete()", err)
+		return nil
+	}
+	log.Printf("deleteLongMessage: message deleted successfully.")
+
+	if !isAutomatic {
+		log.Printf("deleteLongMessage: manual mode, checking warning cooldown.")
+		deleteWarningTracker.Lock(chatID)
+		defer deleteWarningTracker.Unlock(chatID)
+
+		lastWarning, exists := deleteWarningTracker.chats[chatID]
+		if !exists || time.Since(lastWarning) > time.Second {
+			var name string
+			var id int64
+			if m.SenderChat.ID != 0 {
+				name = m.SenderChat.Title
+				id = m.SenderChat.ID
+			} else {
+				name = strings.TrimSpace(m.Sender.FirstName + " " + m.Sender.LastName)
+				id = m.Sender.ID
+			}
+
+			text := fmt.Sprintf(`
+⚠️ <a href="tg://user?id=%d">%s</a>, your message exceeds the %d-character limit! 🚫  
+Please shorten it before sending. ✂️  
+
+Alternatively, use /echo for sending longer messages. 📜
+`, id, name, settings.Limit)
+
+			log.Printf("deleteLongMessage: sending warning to user %d", id)
+			_, err := m.Respond(text)
+			if err != nil {
+				L(m, "Modules -> echo -> manual -> m.Respond()", err)
+				log.Printf("deleteLongMessage: failed to send warning: %v", err)
+				return err
+			}
+			deleteWarningTracker.chats[chatID] = time.Now()
+			log.Printf("deleteLongMessage: warning sent and cooldown updated.")
+		} else {
+			log.Printf("deleteLongMessage: cooldown active, not sending another warning.")
+		}
+	} else {
+		log.Printf("deleteLongMessage: automatic echo enabled, forwarding message.")
+		err = sendEchoMessage(m, m.Text())
+		return L(m, "modules -> echo -> Auto -> sendEchoMessage()", err)
+	}
+
+	log.Printf("deleteLongMessage: completed for message ID %d", m.ID)
+	return nil
+}
 func sendEchoMessage(m *telegram.NewMessage, text string) error {
 	var authorURL string
 	userFullName := strings.TrimSpace(m.Sender.FirstName + " " + m.Sender.LastName)
