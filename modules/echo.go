@@ -37,6 +37,7 @@ Sends back the provided text. Also allows setting how the bot handles long messa
 • <b>/setlonglimit</b> <code>&lt;number&gt;</code> – Set character limit (200–4000, default: 800).`)
 }
 
+
 type warningTracker struct {
 	globalLock sync.Mutex            // Protects access to locks map
 	locks      map[int64]*sync.Mutex // Per-chat locks
@@ -47,6 +48,9 @@ var deleteWarningTracker = warningTracker{
 	locks: make(map[int64]*sync.Mutex),
 	chats: make(map[int64]time.Time),
 }
+
+var logger = utils.NewLogger("echo.go").SetLevel(config.LogLevel)
+
 
 func EcoHandler(m *telegram.NewMessage) error {
 	if isgroup := IsValidSupergroup(m); !isgroup {
@@ -87,157 +91,75 @@ func EcoHandler(m *telegram.NewMessage) error {
 	return L(m, "Modules -> echo -> sendEchoMessage(...)", err)
 }
 
-/* func deleteLongMessage(m *telegram.NewMessage) error {
-	if !IsSupergroup(m) {
-		return nil
-	}
-
-	Iym := m.Channel.Username == "vabaaakakqkqj"
-	if ShouldIgnoreGroupAnonymous(m) {
-		return nil
-	}
-
-	chatID := m.ChatID()
-	if isadmin, err := helpers.IsChatAdmin(m.Client, chatID, m.Sender.ID); err != nil {
-		L(m, "Modules -> echo -> deleteLongMessage -> helpers.IsChatAdmin()", err)
-		return nil
-	} else if isadmin {
-		return nil
-	}
-
-	settings, err := database.GetEchoSettings(chatID)
-	var isAutomatic bool
-	L(m, "Modules -> echo -> database.GetEchoSettings(...)", err)
-	return nil
-
-	if m.Text() == "" || len(m.Text()) < settings.Limit {
-		if Iym {
-			m.Respond(fmt.Sprintf("Return inh Because len(text) = %d < %d = settings.Limit", len(m.Text()), settings.Limit))
-		}
-		return nil
-	}
-	if settings.Mode == "OFF" {
-		if Iym {
-			m.Respond("Returning Because Moe is off")
-		}
-		return nil
-	} else if settings.Mode == "AUTO" {
-		isAutomatic = true
-	}
-
-	if _, err := m.Delete(); err != nil && handleNeedPerm(err, m) {
-		return err
-	} else if err != nil {
-		L(m, "Modules -> echo -> deleteLongMessage -> m.Delete()", err)
-		return nil
-	}
-
-	if !isAutomatic {
-		deleteWarningTracker.Lock(chatID)
-		defer deleteWarningTracker.Unlock(chatID)
-
-		lastWarning, exists := deleteWarningTracker.chats[chatID]
-		if !exists || time.Since(lastWarning) > time.Second {
-			var name string
-			var id int64
-			if m.SenderChat.ID != 0 {
-				name = m.SenderChat.Title
-				id = m.SenderChat.ID
-			} else {
-				name = strings.TrimSpace(m.Sender.FirstName + " " + m.Sender.LastName)
-				id = m.Sender.ID
-			}
-			text := fmt.Sprintf(`
-⚠️ <a href="tg://user?id=%d">%s</a>, your message exceeds the %d-character limit! 🚫
-Please shorten it before sending. ✂️
-
-Alternatively, use /echo for sending longer messages. 📜
-`, id, name, settings.Limit)
-
-			_, err := m.Respond(text)
-			if err != nil {
-				L(m, "Modules -> echo -> manual -> m.Respond()", err)
-
-				return err
-			}
-			deleteWarningTracker.chats[chatID] = time.Now()
-		}
-	} else if isAutomatic {
-		err = sendEchoMessage(m, m.Text())
-		return L(m, "modules -> echo -> Auto -> sendEchoMessage()", err)
-	}
-	return nil
-}
-*/
-
 func deleteLongMessage(m *telegram.NewMessage) error {
-	log.Printf("deleteLongMessage: called for message ID %d in chat %d", m.ID, m.ChatID())
+	logger.Debug("deleteLongMessage: called for message ID", m.ID, "in chat", m.ChatID())
 
 	if !IsSupergroup(m) {
-		log.Printf("deleteLongMessage: not a supergroup, skipping.")
+		logger.Debug("deleteLongMessage: not a supergroup, skipping.")
 		return nil
 	}
 
 	if ShouldIgnoreGroupAnonymous(m) {
-		log.Printf("deleteLongMessage: group is set to ignore anonymous messages, skipping.")
+		logger.Debug("deleteLongMessage: group is set to ignore anonymous messages, skipping.")
 		return nil
 	}
 
 	chatID := m.ChatID()
-	log.Printf("deleteLongMessage: checking admin status for user %d in chat %d", m.Sender.ID, chatID)
+	logger.Debug("deleteLongMessage: checking admin status for user", m.Sender.ID, "in chat", chatID)
+
 	isadmin, err := helpers.IsChatAdmin(m.Client, chatID, m.Sender.ID)
 	if err != nil {
 		L(m, "Modules -> echo -> deleteLongMessage -> helpers.IsChatAdmin()", err)
-		log.Printf("deleteLongMessage: error checking admin status: %v", err)
+		logger.Error("deleteLongMessage: error checking admin status:", err)
 		return nil
 	} else if isadmin {
-		log.Printf("deleteLongMessage: user is admin, skipping.")
+		logger.Debug("deleteLongMessage: user is admin, skipping.")
 		return nil
 	}
 
-	log.Printf("deleteLongMessage: fetching echo settings for chat %d", chatID)
+	logger.Debug("deleteLongMessage: fetching echo settings for chat", chatID)
 	settings, err := database.GetEchoSettings(chatID)
 	L(m, "Modules -> echo -> database.GetEchoSettings(...)", err)
 	if err != nil {
-		log.Printf("deleteLongMessage: failed to fetch echo settings: %v", err)
+		logger.Error("deleteLongMessage: failed to fetch echo settings:", err)
 		return nil
 	}
 
 	if m.Text() == "" {
-		log.Printf("deleteLongMessage: message has no text, skipping.")
+		logger.Debug("deleteLongMessage: message has no text, skipping.")
 		return nil
 	}
 	if len(m.Text()) < settings.Limit {
-		log.Printf("deleteLongMessage: message length (%d) is below limit (%d), skipping.", len(m.Text()), settings.Limit)
+		logger.Debug("deleteLongMessage: message length (", len(m.Text()), ") is below limit (", settings.Limit, "), skipping.")
 		return nil
 	}
-	log.Printf("deleteLongMessage: message exceeds limit (%d >= %d)", len(m.Text()), settings.Limit)
+	logger.Info("deleteLongMessage: message exceeds limit (", len(m.Text()), ">=", settings.Limit, ")")
 
 	var isAutomatic bool
 	switch settings.Mode {
 	case "OFF":
-		log.Printf("deleteLongMessage: echo mode is OFF, skipping.")
+		logger.Debug("deleteLongMessage: echo mode is OFF, skipping.")
 		return nil
 	case "AUTO":
-		log.Printf("deleteLongMessage: echo mode is AUTO, enabling automatic handling.")
+		logger.Debug("deleteLongMessage: echo mode is AUTO, enabling automatic handling.")
 		isAutomatic = true
 	default:
-		log.Printf("deleteLongMessage: echo mode is %s, treating as manual.", settings.Mode)
+		logger.Debug("deleteLongMessage: echo mode is", settings.Mode, ", treating as manual.")
 	}
 
-	log.Printf("deleteLongMessage: attempting to delete message ID %d", m.ID)
+	logger.Debug("deleteLongMessage: attempting to delete message ID", m.ID)
 	if _, err := m.Delete(); err != nil {
-		log.Printf("deleteLongMessage: error deleting message: %v", err)
+		logger.Error("deleteLongMessage: error deleting message:", err)
 		if handleNeedPerm(err, m) {
 			return err
 		}
 		L(m, "Modules -> echo -> deleteLongMessage -> m.Delete()", err)
 		return nil
 	}
-	log.Printf("deleteLongMessage: message deleted successfully.")
+	logger.Info("deleteLongMessage: message deleted successfully.")
 
 	if !isAutomatic {
-		log.Printf("deleteLongMessage: manual mode, checking warning cooldown.")
+		logger.Debug("deleteLongMessage: manual mode, checking warning cooldown.")
 		deleteWarningTracker.Lock(chatID)
 		defer deleteWarningTracker.Unlock(chatID)
 
@@ -260,25 +182,25 @@ Please shorten it before sending. ✂️
 Alternatively, use /echo for sending longer messages. 📜
 `, id, name, settings.Limit)
 
-			log.Printf("deleteLongMessage: sending warning to user %d", id)
+			logger.Debug("deleteLongMessage: sending warning to user", id)
 			_, err := m.Respond(text)
 			if err != nil {
 				L(m, "Modules -> echo -> manual -> m.Respond()", err)
-				log.Printf("deleteLongMessage: failed to send warning: %v", err)
+				logger.Error("deleteLongMessage: failed to send warning:", err)
 				return err
 			}
 			deleteWarningTracker.chats[chatID] = time.Now()
-			log.Printf("deleteLongMessage: warning sent and cooldown updated.")
+			logger.Debug("deleteLongMessage: warning sent and cooldown updated.")
 		} else {
-			log.Printf("deleteLongMessage: cooldown active, not sending another warning.")
+			logger.Debug("deleteLongMessage: cooldown active, not sending another warning.")
 		}
 	} else {
-		log.Printf("deleteLongMessage: automatic echo enabled, forwarding message.")
+		logger.Debug("deleteLongMessage: automatic echo enabled, forwarding message.")
 		err = sendEchoMessage(m, m.Text())
 		return L(m, "modules -> echo -> Auto -> sendEchoMessage()", err)
 	}
 
-	log.Printf("deleteLongMessage: completed for message ID %d", m.ID)
+	logger.Debug("deleteLongMessage: completed for message ID", m.ID)
 	return nil
 }
 
