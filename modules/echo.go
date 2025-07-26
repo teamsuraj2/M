@@ -253,7 +253,7 @@ func sendEchoMessage(m *telegram.NewMessage, text string) error {
 		L(m, "Modules -> echo -> sendEchoMessage -> m.Respond()", err)
 	}
 
-	return telegram.EndGroup
+	return err
 }
 
 func (w *warningTracker) Lock(chatId int64) {
