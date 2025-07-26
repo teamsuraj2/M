@@ -3,7 +3,6 @@ package modules
 import (
 	"fmt"
 	"html"
-	"log"
 	"strings"
 	"sync"
 	"time"
@@ -94,16 +93,14 @@ func deleteLongMessage(m *telegram.NewMessage) error {
 
 	Iym := m.Channel.Username == "vabaaakakqkqj"
 	if ShouldIgnoreGroupAnonymous(m) {
-		
 		return nil
 	}
-	
+
 	chatID := m.ChatID()
 	if isadmin, err := helpers.IsChatAdmin(m.Client, chatID, m.Sender.ID); err != nil {
 		L(m, "Modules -> echo -> deleteLongMessage -> helpers.IsChatAdmin()", err)
 		return nil
 	} else if isadmin {
-	  
 		return nil
 	}
 
@@ -113,17 +110,15 @@ func deleteLongMessage(m *telegram.NewMessage) error {
 	return nil
 
 	if m.Text() == "" || len(m.Text()) < settings.Limit {
-	  if Iym {
-	m.Respond(fmt.Sprintf("Return inh Because len(text) = %d < %d = settings.Limit", len(m.Text()), settings.Limit))
-	
-	}
+		if Iym {
+			m.Respond(fmt.Sprintf("Return inh Because len(text) = %d < %d = settings.Limit", len(m.Text()), settings.Limit))
+		}
 		return nil
 	}
 	if settings.Mode == "OFF" {
-	  if Iym {
-	m.Respond("Returning Because Moe is off")
-	
-	}
+		if Iym {
+			m.Respond("Returning Because Moe is off")
+		}
 		return nil
 	} else if settings.Mode == "AUTO" {
 		isAutomatic = true
@@ -147,7 +142,7 @@ func deleteLongMessage(m *telegram.NewMessage) error {
 			if m.SenderChat.ID != 0 {
 				name = m.SenderChat.Title
 				id = m.SenderChat.ID
-			} else  {
+			} else {
 				name = strings.TrimSpace(m.Sender.FirstName + " " + m.Sender.LastName)
 				id = m.Sender.ID
 			}
@@ -161,8 +156,8 @@ Alternatively, use /echo for sending longer messages. 📜
 			_, err := m.Respond(text)
 			if err != nil {
 				L(m, "Modules -> echo -> manual -> m.Respond()", err)
-		
-		return err
+
+				return err
 			}
 			deleteWarningTracker.chats[chatID] = time.Now()
 		}
@@ -184,7 +179,7 @@ func sendEchoMessage(m *telegram.NewMessage, text string) error {
 
 	url, err := helpers.CreateTelegraphPage(text, userFullName, authorURL)
 	if err != nil {
-	  L(m, "Modules -> echo -> CreateTelegraphPage", err)
+		L(m, "Modules -> echo -> CreateTelegraphPage", err)
 		return err
 	}
 
@@ -196,8 +191,8 @@ func sendEchoMessage(m *telegram.NewMessage, text string) error {
 	if m.IsReply() {
 		rmsg, err := m.Client.GetMessageByID(m.ChatID(), m.ReplyID())
 		if err != nil {
-		  L(m, "Modules -> echo -> sendEchoMessage -> GetReplyMessage()", err)
-		return err
+			L(m, "Modules -> echo -> sendEchoMessage -> GetReplyMessage()", err)
+			return err
 		} else if rmsg.Sender != nil {
 			replyUserFullName := strings.TrimSpace(rmsg.Sender.FirstName + " " + rmsg.Sender.LastName)
 
@@ -222,8 +217,7 @@ func sendEchoMessage(m *telegram.NewMessage, text string) error {
 
 	_, err = m.Respond(msg, opts)
 	if err != nil {
-	  L(m, "Modules -> echo -> sendEchoMessage -> m.Respond()", err)
-	  
+		L(m, "Modules -> echo -> sendEchoMessage -> m.Respond()", err)
 	}
 
 	return telegram.EndGroup
