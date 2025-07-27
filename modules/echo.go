@@ -169,7 +169,7 @@ Alternatively, use /echo for sending longer messages. 📜
 		return L(m, "modules -> echo -> Auto -> sendEchoMessage()", err)
 	}
 
-	return nil
+	return telegram.EndGroup
 }
 
 func sendEchoMessage(m *telegram.NewMessage, text string) error {
