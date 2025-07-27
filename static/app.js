@@ -290,8 +290,6 @@ function saveLongModeOnly() {
       long_mode, 
       long_limit: current_limit
     }),
-  }).then(() => {
-    showToast("✅ Mode updated successfully!", "success");
   });
 }
 
