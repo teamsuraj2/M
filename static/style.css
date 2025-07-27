@@ -255,12 +255,11 @@ body {
     color: var(--md-sys-color-on-background);
 }
 
-/* Shoelace component customizations for Material 3 */
 sl-switch {
     --height: 2.5rem;
     --thumb-size: 1.8rem;
     --track-color-checked: var(--md-sys-color-primary);
-    --track-color-unchecked: var(--md-sys-color-surface-variant);
+    --track-color-unchecked: var(--md-sys-color-outline);
     --thumb-color: var(--md-sys-color-surface);
     --track-width: 4rem;
 }
