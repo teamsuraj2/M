@@ -3,9 +3,6 @@ let chat_id;
 tg.ready();
 
 window.onload = async () => {
-  // applyTheme();
-  // tg.onEvent("themeChanged", applyTheme);
-
   if (!tg || !tg.initDataUnsafe || !tg.initDataUnsafe.user || !tg.initDataUnsafe.user.id) {
     showErrorPage("This page must be opened inside Telegram.", {
       title: "WebApp Only",
@@ -92,18 +89,6 @@ async function isAdmin() {
   }
 }
 
-
-// ----------------------- Theme Support -----------------------
-
-/* function applyTheme() {
-  let theme = "light"; // default fallback
-  if (tg && typeof tg.colorScheme === "string") {
-    theme = tg.colorScheme === "dark" ? "dark": "light";
-  }
-  document.body.setAttribute("data-theme", theme);
-}
-
-*/
 
 // ----------------------- Validation Functions -----------------------
 function extractHostname(input) {
@@ -242,6 +227,34 @@ async function loadEchoSettings() {
     selectEl.value = data?.long_mode ?? 'automatic';
     inputEl.value = data?.long_limit ?? 800;
 
+    // ✅ Live update for select
+    selectEl.addEventListener('sl-change', () => {
+      saveLongModeOnly().catch(err => {
+        showToast(`❌ Failed to update mode: ${err?.message || err || "Unknown error"}`, "error");
+      });
+    });
+
+    // ✅ Real-time validation for input
+    inputEl.addEventListener('sl-input', () => {
+      const value = parseInt(inputEl.value, 10);
+      const warningEl = document.getElementById('longlimit-warning');
+
+      if (inputEl.value && (isNaN(value) || value < 200 || value > 4000)) {
+        if (!warningEl) {
+          const warning = document.createElement('small');
+          warning.id = 'longlimit-warning';
+          warning.style.color = 'var(--tg-theme-destructive-text-color)';
+          warning.style.fontSize = '0.8rem';
+          warning.textContent = '⚠️ Value must be between 200 and 4000';
+          inputEl.parentNode.appendChild(warning);
+        }
+      } else {
+        if (warningEl) {
+          warningEl.remove();
+        }
+      }
+    });
+
     // ✅ Set click event on save button
     saveBtn.addEventListener('click', () => {
       if (!validateLongLimit(inputEl.value)) {
@@ -250,8 +263,10 @@ async function loadEchoSettings() {
         return;
       }
 
-      saveEchoSettings().catch(err => {
-        showToast(`❌ Failed to save echo settings:  ${err?.message || err || "Unknown error"}`, "error");
+      saveEchoSettings().then(() => {
+        showToast("✅ Your settings have been updated successfully!", "success");
+      }).catch(err => {
+        showToast(`❌ Failed to save echo settings: ${err?.message || err || "Unknown error"}`, "error");
       });
     });
 
@@ -260,6 +275,24 @@ async function loadEchoSettings() {
     document.getElementById('longlimit-input').value = 800;
     throw new Error("Could not load Echo Settings - API endpoint not found");
   }
+}
+
+function saveLongModeOnly() {
+  const long_mode = document.getElementById('longmode-select').value;
+  const current_limit = parseInt(document.getElementById('longlimit-input').value, 10) || 800;
+
+  return fetch(`/api/echo?chat_id=${chat_id}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      long_mode, 
+      long_limit: current_limit
+    }),
+  }).then(() => {
+    showToast("✅ Mode updated successfully!", "success");
+  });
 }
 
 function saveEchoSettings() {
