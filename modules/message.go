@@ -23,7 +23,7 @@ func OnMessageFnc(m *telegram.NewMessage) error {
 	handlers := []func(*telegram.NewMessage) error{
 		deleteLongMessage,
 		deleteLinkMessage,
-DeleteAbuseHandle,
+		DeleteAbuseHandle,
 		deleteUserMsgIfBio,
 	}
 

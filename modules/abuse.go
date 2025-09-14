@@ -12,21 +12,21 @@ import (
 	"main/database"
 )
 
- func init() {
- 	AddHelp(
- 		"🚫 Abuse",
-	"noabuse_help",
+func init() {
+	AddHelp(
+		"🚫 Abuse",
+		"noabuse_help",
 		"<b>🚫 NoAbuse Filter</b>\n"+
- 			"Automatically detects and filters abusive or offensive language in group messages.\n\n"+
- 			"<b>🔧 Commands:</b>\n"+
- 			"• <code>/noabuse on</code> – Enable abuse detection ✅\n"+
- 			"• <code>/noabuse off</code> – Disable abuse detection ❌\n\n"+
- 			"<b>ℹ️ Notes:</b>\n"+
- 			"– Messages with offensive content will be censored or removed.\n"+
+			"Automatically detects and filters abusive or offensive language in group messages.\n\n"+
+			"<b>🔧 Commands:</b>\n"+
+			"• <code>/noabuse on</code> – Enable abuse detection ✅\n"+
+			"• <code>/noabuse off</code> – Disable abuse detection ❌\n\n"+
+			"<b>ℹ️ Notes:</b>\n"+
+			"– Messages with offensive content will be censored or removed.\n"+
 			"– 👮 Only group admins can configure this setting.\n\n"+
 			"<blockquote>🔧 This feature is under development and may not work properly at this moment.</blockquote>",
- 	)
- }
+	)
+}
 
 func NoAbuseCmd(m *telegram.NewMessage) error {
 	args := strings.Fields(m.Text())
@@ -104,7 +104,6 @@ func DeleteAbuseHandle(m *telegram.NewMessage) error {
 		user = fmt.Sprintf(`<a href="tg://user?id=%d">%s</a>`, m.SenderID(), html.EscapeString(userFullName))
 	}
 	m.Respond(fmt.Sprintf("🚫 %s, Your message was deleted due to abusive words.", user))
-	
 
 	return telegram.EndGroup
 }
