@@ -12,25 +12,23 @@ import (
 	"main/database"
 )
 
-// func init() {
-// 	AddHelp(
-// 		"🚫 Abuse",
-// 		"noabuse_help",
-// 		"<b>🚫 NoAbuse Filter</b>\n"+
-// 			"Automatically detects and filters abusive or offensive language in group messages.\n\n"+
-// 			"<b>🔧 Commands:</b>\n"+
-// 			"• <code>/noabuse on</code> – Enable abuse detection ✅\n"+
-// 			"• <code>/noabuse off</code> – Disable abuse detection ❌\n\n"+
-// 			"<b>ℹ️ Notes:</b>\n"+
-// 			"– Messages with offensive content will be censored or removed.\n"+
-// 			"– 👮 Only group admins can configure this setting.\n\n"+
-// 			"<blockquote>🔧 This feature is under development and may not work at this moment.</blockquote>",
-// 	)
+ func init() {
+ 	AddHelp(
+ 		"🚫 Abuse",
+	"noabuse_help",
+		"<b>🚫 NoAbuse Filter</b>\n"+
+ 			"Automatically detects and filters abusive or offensive language in group messages.\n\n"+
+ 			"<b>🔧 Commands:</b>\n"+
+ 			"• <code>/noabuse on</code> – Enable abuse detection ✅\n"+
+ 			"• <code>/noabuse off</code> – Disable abuse detection ❌\n\n"+
+ 			"<b>ℹ️ Notes:</b>\n"+
+ 			"– Messages with offensive content will be censored or removed.\n"+
+			"– 👮 Only group admins can configure this setting.\n\n"+
+			"<blockquote>🔧 This feature is under development and may not work properly at this moment.</blockquote>",
+ 	)
 // }
 
 func NoAbuseCmd(m *telegram.NewMessage) error {
-	m.Respond("feature is under development...")
-	return telegram.EndGroup
 	args := strings.Fields(m.Text())
 	if isgroup := IsValidSupergroup(m); !isgroup {
 		return telegram.EndGroup
@@ -88,7 +86,7 @@ func DeleteAbuseHandle(m *telegram.NewMessage) error {
 	} else if isadmin {
 		return nil
 	}
-	isNsfw, profane := helpers.MatchNSFWText(m.RawText(true))
+	isNsfw := helpers.ContainsAbusiveWord(m.Text())
 	if !isNsfw {
 		return nil
 	}
@@ -105,13 +103,8 @@ func DeleteAbuseHandle(m *telegram.NewMessage) error {
 		userFullName := strings.TrimSpace(m.Sender.FirstName + " " + m.Sender.LastName)
 		user = fmt.Sprintf(`<a href="tg://user?id=%d">%s</a>`, m.SenderID(), html.EscapeString(userFullName))
 	}
-	if len(m.Text()) < 800 && profane != "" {
-		m.Respond(
-			fmt.Sprintf("🚫 %s, Your message was deleted due to abusive words.\nDetected: <code>%s</code>", user, profane),
-		)
-	} else {
-		m.Respond(fmt.Sprintf("🚫 %s, Your message was deleted due to abusive words.", user))
-	}
+	m.Respond(fmt.Sprintf("🚫 %s, Your message was deleted due to abusive words.", user))
+	
 
-	return nil
+	return telegram.EndGroup
 }

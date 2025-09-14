@@ -1,76 +1,128 @@
 package helpers
 
-import (
-	"regexp"
-	"strings"
-
-	"main/config"
-	"main/database"
-)
-
-func WildcardToRegex(w string) string {
-	escaped := regexp.QuoteMeta(w)
-	escaped = strings.ReplaceAll(escaped, `\*\*`, `(?s:.*)`)
-	escaped = strings.ReplaceAll(escaped, `\*`, `.*`)
-	escaped = strings.ReplaceAll(escaped, `\?`, `.`)
-	return `(?i)` + escaped
+func ContainsAbusiveWord(sentence string) bool {
+    words := strings.Fields(strings.ToLower(sentence))
+    for _, w := range words {
+        if _, exists := abusiveWords[w]; exists {
+            return true
+        }
+    }
+    return false
 }
 
-func UpdateNSFWRegexCache() error {
-	words, err := database.GetNSFWWords()
-	if err != nil {
-		return err
-	}
 
-	var patterns []*regexp.Regexp
-	for _, word := range words {
-		pattern := WildcardToRegex(word)
-		re, err := regexp.Compile(pattern)
-		if err == nil {
-			patterns = append(patterns, re)
-		}
-	}
+var abusiveWords = map[string]struct{}{
+    "aad": {}, "aand": {}, "bahenchod": {}, "behenchod": {}, "bhenchod": {}, "bhenchodd": {}, "b.c.": {}, "bc": {},
+    "bakchod": {}, "bakchodd": {}, "bakchodi": {}, "bevda": {}, "bewda": {}, "bevdey": {}, "bewday": {}, "bevakoof": {},
+   "bhadua": {}, "bhaduaa": {}, "bhadva": {},
+    "bhadvaa": {}, "bhadwa": {}, "bhadwaa": {}, "bhosada": {}, "bhosda": {}, "bhosdaa": {}, "bhosdike": {}, "bhonsdike": {},
+    "bsdk": {}, "b.s.d.k": {}, "bhosdiki": {}, "bhosdiwala": {}, "bhosdiwale": {}, "bhosadchodal": {}, "bhosadchod": {},
+    "babbe": {}, "babbey": {}, "bube": {}, "bubey": {}, "bur": {}, "burr": {}, "buurr": {}, "buur": {}, "charsi": {},
+    "chooche": {}, "choochi": {}, "chuchi": {}, "chhod": {}, "chod": {}, "chodd": {}, "chudne": {}, "chudney": {},
+    "chudwa": {}, "chudwaa": {}, "chudwane": {}, "chudwaane": {}, "choot": {}, "chut": {}, "chute": {}, "chutia": {},
+    "chutiya": {}, "chutiye": {}, "chuttad": {}, "chutad": {}, "dalaal": {}, "dalal": {}, "dalle": {}, "dalley": {},
+    "fattu": {}, "gadha": {}, "gadhe": {}, "gadhalund": {}, "gaand": {}, "gand": {}, "gandu": {}, "gandfat": {},
+    "gandfut": {}, "gandiya": {}, "gandiye": {}, "goo": {}, "gu": {}, "gote": {}, "gotey": {}, "gotte": {}, "hag": {},
+    "haggu": {}, "hagne": {}, "hagney": {}, "harami": {}, "haramjada": {}, "haraamjaada": {}, "haramzyada": {},
+    "haraamzyaada": {}, "haraamjaade": {}, "haraamzaade": {}, "haraamkhor": {}, "haramkhor": {}, "jhat": {}, "jhaat": {},
+    "jhaatu": {}, "jhatu": {}, "kutta": {}, "kutte": {}, "kuttey": {}, "kutia": {}, "kutiya": {}, "kuttiya": {}, "kutti": {},
+    "landi": {}, "landy": {}, "laude": {}, "laudey": {}, "laura": {}, "lora": {}, "lauda": {}, "ling": {}, "loda": {},
+    "lode": {}, "lund": {}, "launda": {}, "lounde": {}, "laundey": {}, "laundi": {}, "loundi": {}, "laundiya": {},
+    "loundiya": {}, "lulli": {}, "madarchod": {}, "madarchodd": {}, "madarchood": {},
+    "madarchoot": {}, "madarchut": {}, "m.c.": {}, "mc": {}, "mamme": {}, "mammey": {}, "moot": {}, "mut": {}, "mootne": {},
+    "mutne": {}, "mooth": {}, "muth": {}, "nunni": {}, "nunnu": {}, "paaji": {}, "paji": {}, "pesaab": {}, "pesab": {},
+    "peshaab": {}, "peshab": {}, "pilla": {}, "pillay": {}, "pille": {}, "pilley": {}, "pisaab": {}, "pisab": {},
+    "pkmkb": {}, "porkistan": {}, "raand": {}, "rand": {}, "randi": {}, "randy": {}, "suar": {}, "tatte": {},
 
-	config.Cache.Store("nsfw_regex", patterns)
-	return nil
+    "arsehole": {}, "asshat": {}, "asshole": {},
+    "bastard": {}, "big black cock": {}, "bitch": {}, "bloody": {}, "blowjob": {}, "bollocks": {}, "bugger": {}, "bullshit": {},
+    "chicken shit": {}, "ching chong": {}, "clusterfuck": {}, "cock": {}, "cocksucker": {}, "coonass": {}, "cornhole": {},
+    "cox–zucker machine": {}, "cracker": {}, "crap": {}, "cunt": {},
+    "dick": {}, "dumbass": {},
+    "enshittification": {},
+    "faggot": {}, "feck": {}, "fuck": {}, "fuck her right in the pussy": {}, "fuck joe biden": {}, "fuck, marry, kill": {}, "fuckery": {},
+    "grab 'em by the pussy": {},
+    "healslut": {},
+    "if you see kay": {},
+    "jesus fucking christ": {},
+    "kike": {},
+    "motherfucker": {},
+    "nigga": {}, "nigger": {}, "use of nigger in proper names": {},
+    "pajeet": {}, "paki": {}, "poof": {}, "poofter": {}, "prick": {}, "pussy": {},
+    "ratfucking": {}, "retard": {}, "russian warship, go fuck yourself": {},
+    "serving cunt": {}, "shit": {}, "shit happens": {}, "shithouse": {}, "shitposting": {}, "shitter": {}, "shut the fuck up": {}, "shut the hell up": {},
+    "slut": {}, "son of a bitch": {}, "spic": {},
+    "taking the piss": {}, "twat": {},
+    "unclefucker": {},
+    "wanker": {}, "whore": {},
+    
+        "18+": {},     "sex": {},     "porn": {},     "nude": {},     "blowjob": {},     "boobs": {},     "bobs": {},     "condom": {},     "xxx": {},     "adult": {},
+    "nangi": {},     "randi": {},     "chutiya": {},     "madarchod": {},     "bhenchod": {},     "gaand": {},     "gand": {},     "lund": {},     "ch**d": {},     "g***i": {},
+    "harami": {},     "kutte": {},     "boor": {},     "chuchi": {},     "kutta": {},     "gandu": {},     "madharchod": {},     "lundoo": {},     "lodu": {},     "bhains": {},
+    "chod": {},     "randi": {},     "randa": {},     "haramzada": {},     "randi ka bacha": {},     "bhosdiwala": {},     "bhosdike": {},     "mc": {},     "mcchod": {},     "randi ki aulaad": {},
+    "gand mara": {},     "lund mar": {},     "lauda": {},     "loda": {},     "chodu": {},     "chut": {},     "chutiyapa": {},     "chutiye": {},     "chut ke": {},     "chut ke laude": {},
+    "chut ke bache": {},     "bhosadike": {},     "ch**d": {},     "g***i": {},     "m**ch*d": {},     "b**chod": {},     "b***chod": {},     "sex": {},     "porn": {},     "nude": {},
+    "fuck": {},     "bitch": {},     "dick": {},     "pussy": {},     "slut": {},     "boobs": {},     "cock": {},     "asshole": {},     "chudai": {},     "rand": {},
+    "chhinar": {},     "sexy": {},     "hot girl": {},     "chutiya": {},     "madarchod": {},     "Madhrachod": {},     "Madharchod": {},     "betichod": {},     "behenchod": {},     "gandu": {},
+    "randi": {},     "bhosdi": {},     "hijda": {},     "lund": {},     "chod": {},     "jhaatu": {},     "harami": {},     "kamina": {},     "saala": {},     "gand": {},
+    "pagal": {},     "bhadwa": {},     "chut": {},     "bevkoof": {},     "nikkamma": {},     "haramkhor": {},     "chaalu": {},     "fattuu": {},     "dhakkan": {},     "gadha": {},
+    "kutta": {},     "suvar": {},     "besharam": {},     "bhosdike": {},     "teri maa ki chut": {},     "teri behan ki chut": {},     "randi ka bacha": {},     "chinal ka bacha": {},     "gb road pe teri ma show karti": {},     "gb road ke paidaish": {},
+    "teri ma ka boor": {},     "teri ma ka boor fadhu": {},     "teri ma ki chut mai ungali kardu": {},     "teri bahan ki chut fadhu": {},     "teri bahan ki gand mai ungali karu": {},     "teri bahan ki boor ungali karu": {},     "teri bahan meri rakhail": {},     "teri ma meri rakhail": {},     "Dm karo baby": {},     "Inbox karo baby": {},
+    "private group chalogi baby": {},     "tera porn banauga": {},     "tera hot video viral karunga": {},     "Ruk Madhar chodh": {},     "sale": {},     "Randi ke pille tore ma ko chodho": {},     "chutad": {},     "haramzaada": {},     "haram ki aulaad": {},     "suvar ka baccha": {},
+    "gand ka keeda": {},     "chirkut": {},     "ghatiya": {},     "sadela": {},     "choor": {},     "lutera": {},     "chichora": {},     "badtameez": {},     "baddimag": {},     "fraud": {},
+    "nalayak": {},     "bewda": {},     "sandass": {},     "ganda": {},     "dhongi": {},     "bhikhari": {},     "faltu": {},     "kachra": {},     "pagal kutta": {},     "badmash": {},
+    "aalsi": {},     "kanjoos": {},     "ghamandi": {},     "farzi": {},     "dhurt": {},     "bakchod": {},     "gappi": {},     "nakli": {},     "chalu": {},     "lafanga": {},
+    "bakwas": {},     "bikau": {},     "chapri": {},     "nalla": {},     "tatti": {},     "jhantu": {},     "ullu ka pattha": {},     "ulloo": {},     "chindi": {},     "panauti": {},
+    "lukkha": {},     "kuttiya": {},     "kaminey": {},     "kamzarf": {},     "budbak": {},     "chirkut": {},     "sust": {},     "tharki": {},     "bhagoda": {},     "kutta kamina": {},
+    "Madharchodh apni ma mat chuda": {},     "Madharchodh apni bahan mat chuda": {},     "Hello koi ladki chudegi": {},     "bhains ki aankh": {},     "teri taang tod dunga": {},     "teri band baja dunga": {},     "tera dimaag kharab hai": {},     "teri waat laga dunga": {},     "teri maa ka bhosda": {},     "teri gaand maar dunga": {},
+    "sex": {},     "porn": {},     "nude": {},     "nangi": {},     "chudai": {},     "bhabhi chudai": {},     "sex chat": {},     "sex chat karogi": {},     "sex chat karogi baby": {},     "lund": {},
+    "gaand": {},     "bhosda": {},     "chut": {},     "maal": {},     "jism": {},     "randi": {},     "randi khana": {},     "desi sex": {},     "hot video": {},     "nangi ladki": {},
+    "bhabhi nudes": {},     "bhabhi sex": {},     "sexy aunty": {},     "nude aunty": {},     "bhabhi ki chut": {},     "real meet": {},     "viral video": {},     "rape video": {},     "nudes viral": {},     "aunty ki chut": {},
+    "boobs": {},     "tits": {},     "nipple": {},     "dildo": {},     "pussy": {},     "vagina": {},     "penis": {},     "cock": {},     "dick": {},     "cum": {},
+    "anal": {},     "squirt": {},     "deepthroat": {},     "hentai": {},     "bdsm": {},     "lesbian": {},     "gay sex": {},     "futa": {},     "69": {},     "screwing": {},
+    "sex chat": {},     "incest": {},     "stepmom": {},     "stepsis": {},     "stepbro": {},     "honeymoon sex": {},     "bhabhi nude": {},     "hot indian actress": {},     "bio links join all girls": {},     "join bio link": {},
+    "bio link join": {},     "join my chatting group": {},     "join viral video channel": {},     "join rape video channel": {},     "join naughty group": {},     "desi nudes": {},     "Wife swapping": {},     "Need boyfriend": {},     "I'm available came boy": {},     "Really meet only girls": {},
+    "Msg me boys": {},     "Genuine boys dm": {},     "Mom lover dm": {},     "Bhabhi lover dm": {},     "Aunty lover dm": {},     "Gay dm me": {},     "sexy saree": {},     "lingerie": {},     "erotic": {},     "kinky": {},
+    "naughty": {},     "sensual": {},     "lust": {},     "muth": {},     "muthi": {},     "masturbation": {},     "call girl": {},     "escort": {},     "sex worker": {},     "rape porn": {},
+    "forced porn": {},     "underage porn": {},     "child porn": {},     "pedo": {},     "loli": {},     "teen sex": {},     "schoolgirl porn": {},     "hijab porn": {},     "casting couch": {},     "sex tape": {},
+    "strip club": {},     "naked": {},     "uncensored": {},     "bikini photos": {},     "hot saree": {},     "sexy photos": {},     "onlyfans": {},     "patreon nudes": {},     "hot cam": {},     "sex cam": {},
+    "live sex": {},     "private parts": {},     "exposed": {},     "naked selfie": {},     "sex video": {},     "desi sex video": {},     "bollywood sex": {},     "lingam massage": {},     "tantra sex": {},     "milf": {},
+    "hotwife": {},     "swinger": {},     "erotic massage": {},     "boobs press": {},     "licking": {},     "lick pussy": {},     "moaning": {},     "dirty talk": {},     "hot girl": {},     "big boobs": {},
+    "tight pussy": {},     "wet pussy": {},     "hard cock": {},     "big cock": {},     "service available": {},     "paid service available": {},     "blowjob": {},     "I am ready message me": {},     "Boy's come inbox": {},     "I need girlfriend for sex chat": {},
+    "I'm full nude now": {},     "Paid show": {},     "video call available": {},     "fuck you": {},     "fuck me": {},     "pussy": {},     "boobs": {},     "handjob": {},     "sexy dance": {},     "strip tease": {},
+    "sex position": {},     "saree sex": {},     "sexy aunty video": {},     "hot desi bhabhi": {},     "bollywood hot": {},     "item girl": {},     "hot indian model": {},     "desi randi": {},     "desi call girl": {},     "sexy night": {},
+    "hijra sex": {},     "chudai story": {},     "sex story": {},     "suhagraat sex": {},     "honeymoon night": {},     "love making": {},     "hot romance": {},     "desi romance": {},     "hot chat": {},     "sexy time": {},
+    "naughty chat": {},     "dirty video": {},     "hidden cam": {},     "bathroom sex": {},     "hotel sex": {},     "massage sex": {},     "body to body massage": {},     "saree romance": {},     "choli romance": {},     "cleavage show": {},
+    "hot navel": {},     "desi thighs": {},     "big ass": {},     "backside show": {}, 
+    
+    "आंड़": {}, "आंड": {}, "आँड": {},
+    "बहनचोद": {}, "बेहेनचोद": {}, "भेनचोद": {},
+    "बकचोद": {}, "बकचोदी": {},
+    "बेवड़ा": {}, "बेवड़े": {}, "बेवकूफ": {},
+    "भड़ुआ": {}, "भड़वा": {},
+    "भोसड़ा": {}, "भोसड़ीके": {}, "भोसड़ीकी": {}, "भोसड़ीवाला": {}, "भोसड़ीवाले": {}, "भोसरचोदल": {}, "भोसदचोद": {}, "भोसड़ाचोदल": {}, "भोसड़ाचोद": {},
+    "बब्बे": {}, "बूबे": {}, "बुर": {},
+    "चरसी": {},
+    "चूचे": {}, "चूची": {}, "चुची": {},
+    "चोद": {}, "चुदने": {}, "चुदवा": {}, "चुदवाने": {},
+    "चूत": {}, "चूतिया": {}, "चुटिया": {}, "चूतिये": {}, "चुत्तड़": {}, "चूत्तड़": {},
+    "दलाल": {}, "दलले": {},
+    "फट्टू": {},
+    "गधा": {}, "गधे": {}, "गधालंड": {},
+    "गांड": {}, "गांडू": {}, "गंडफट": {}, "गंडिया": {}, "गंडिये": {},
+    "गू": {}, "गोटे": {},
+    "हग": {}, "हग्गू": {}, "हगने": {},
+    "हरामी": {}, "हरामजादा": {}, "हरामज़ादा": {}, "हरामजादे": {}, "हरामज़ादे": {}, "हरामखोर": {},
+    "झाट": {}, "झाटू": {},
+    "कुत्ता": {}, "कुत्ते": {}, "कुतिया": {}, "कुत्ती": {},
+    "लेंडी": {}, "लोड़े": {}, "लौड़े": {}, "लौड़ा": {}, "लोड़ा": {}, "लौडा": {}, "लिंग": {}, "लोडा": {}, "लोडे": {}, "लंड": {}, "लौंडा": {}, "लौंडे": {}, "लौंडी": {}, "लौंडिया": {},
+    "लुल्ली": {},
+    "मादरचोद": {}, "मादरचूत": {}, "मादरचुत": {},
+    "मम्मे": {},
+    "मूत": {}, "मुत": {}, "मूतने": {}, "मुतने": {}, "मूठ": {}, "मुठ": {},
+    "नुननी": {}, "नुननु": {},
+    "पेसाब": {}, "पेशाब": {}, "पिल्ला": {}, "पिल्ले": {}, "पिसाब": {},
+    "रांड": {}, "रंडी": {},
+    "सुअर": {}, "सूअर": {},
 }
 
-func MatchNSFWText(text string) (bool, string) {
-	val, ok := config.Cache.Load("nsfw_regex")
-	if !ok {
-		_ = UpdateNSFWRegexCache()
-		val, ok = config.Cache.Load("nsfw_regex")
-		if !ok {
-			return false, text
-		}
-	}
-
-	regexList, ok := val.([]*regexp.Regexp)
-	if !ok {
-		return false, text
-	}
-
-	matched := false
-	updated := text
-
-	for _, re := range regexList {
-		if re.MatchString(updated) {
-			matched = true
-			updated = re.ReplaceAllString(updated, "****")
-		}
-	}
-
-	/*if !matched {
-		var err error
-		matched, err = IsProfanity(updated)
-		if err != nil {
-			fmt.Println("IsProfanity Error:", err.Error())
-		}
-
-		if matched {
-			return true, ""
-		}
-	}*/
-
-	return matched, updated
-}

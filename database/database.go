@@ -22,7 +22,6 @@ var (
 	loggerDB    *mongo.Collection
 	linksDB     *mongo.Collection
 	bioLinkDB   *mongo.Collection
-	nsfwWordsDB *mongo.Collection
 	nsfwFlagsDB *mongo.Collection
 	timeout     = 11 * time.Second
 )
@@ -49,7 +48,6 @@ func init() {
 	loggerDB = db.Collection("logger")
 	linksDB = db.Collection("links")
 	bioLinkDB = db.Collection("biolinks")
-	nsfwWordsDB = db.Collection("nsfw_words")
 	nsfwFlagsDB = db.Collection("nsfw_flags")
 
 	// Indexes
