@@ -118,7 +118,7 @@ func CreateTelegraphPage(content, firstName, authorURL string) (string, error) {
 	for {
 		accessToken, err := getAvailableToken()
 		if err != nil {
-			log.Println("Telegraph Token error: %v", err)
+			log.Printf("Telegraph Token error: %v", err)
 			return "", err
 		}
 
@@ -136,7 +136,7 @@ func CreateTelegraphPage(content, firstName, authorURL string) (string, error) {
 
 		jsonData, err := json.Marshal(payload)
 		if err != nil {
-			log.Println("Telegraph json marshal error: %v", err)
+			log.Printf("Telegraph json marshal error: %v", err)
 			return "", err
 
 		}
@@ -150,7 +150,7 @@ func CreateTelegraphPage(content, firstName, authorURL string) (string, error) {
 
 		resp, err := client.Do(req)
 		if err != nil {
-			log.Println("Telegraph api error: %v", err)
+			log.Printf("Telegraph api error: %v", err)
 
 			return "", err
 		}
@@ -176,7 +176,7 @@ func CreateTelegraphPage(content, firstName, authorURL string) (string, error) {
 			continue
 		}
 
-		log.Println("Telegraph Error error: %s", result.Error)
+		log.Printf("Telegraph Error error: %s", result.Error)
 
 		return "", errors.New(result.Error)
 	}
