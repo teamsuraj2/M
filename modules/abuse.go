@@ -26,7 +26,7 @@ import (
 			"– 👮 Only group admins can configure this setting.\n\n"+
 			"<blockquote>🔧 This feature is under development and may not work properly at this moment.</blockquote>",
  	)
-// }
+ }
 
 func NoAbuseCmd(m *telegram.NewMessage) error {
 	args := strings.Fields(m.Text())
