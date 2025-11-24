@@ -41,4 +41,7 @@ in command diable all permissions  on /lockdown <s>: lock the group for that tim
 
 ## 🚀 **Deploy on Heroku**  
 
-[![Deploy to Heroku](https://dashboard.heroku.com/new?template=https://github.com/teamsuraj2/M)
+## 🚀 **Deploy on Heroku**  
+
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://dashboard.heroku.com/new?template=https://github.com/teamsuraj2/M)
+
