@@ -38,3 +38,7 @@ Image, button, math etc
 - [ ]. Lockdown
 
 in command diable all permissions  on /lockdown <s>: lock the group for that times
+
+## 🚀 **Deploy on Heroku**  
+
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://github.com/teamsuraj2/M)
