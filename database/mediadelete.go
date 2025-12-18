@@ -35,8 +35,8 @@ func GetMediaDeleteSettings(chatID int64) (*MediaDeleteSettings, error) {
 		settings = MediaDeleteSettings{
 			ChatID:           chatID,
 			Enabled:          false,
-			Delay:            12 * time.Hour,
-			DeleteFromUsers:  false,
+			Delay:            6 * time.Hour,
+			DeleteFromUsers:  true,
 			DeleteFromAdmins: false,
 		}
 	} else if err != nil {
@@ -51,11 +51,22 @@ func SetMediaDeleteEnabled(chatID int64, enabled bool) error {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
-	_, err := mediaDeleteDB.UpdateOne(ctx,
+	_, err := mediaDeleteDB.UpdateOne(
+		ctx,
 		bson.M{"chat_id": chatID},
-		bson.M{"$set": bson.M{"enabled": enabled}},
+		bson.M{
+			"$set": bson.M{
+				"enabled": enabled,
+			},
+			"$setOnInsert": bson.M{
+				"delay":              6 * time.Hour,
+				"delete_from_users":  true,
+				"delete_from_admins": false,
+			},
+		},
 		options.UpdateOne().SetUpsert(true),
 	)
+
 	if err == nil {
 		key := fmt.Sprintf("media_delete:%d", chatID)
 		config.Cache.Delete(key)
