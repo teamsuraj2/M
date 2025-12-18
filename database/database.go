@@ -24,9 +24,9 @@ var (
 	bioLinkDB   *mongo.Collection
 	nsfwFlagsDB *mongo.Collection
 
-	mediaDeleteDB, fileDeleteDB, msgDeleteDB *mongo.Collection
-	noForwardDB, noPhoneDB,  noHashtagsDB, noPromoDB                    *mongo.Collection
-	timeout                                  = 11 * time.Second
+	mediaDeleteDB, fileDeleteDB, msgDeleteDB        *mongo.Collection
+	noForwardDB, noPhoneDB, noHashtagsDB, noPromoDB *mongo.Collection
+	timeout                                         = 11 * time.Second
 )
 
 func init() {

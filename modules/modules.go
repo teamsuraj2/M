@@ -54,7 +54,7 @@ var (
 		"/noforward",
 		"/nophone",
 		"/purge",
-			"/nohashtags",
+		"/nohashtags",
 		"/nopromo",
 	}
 )

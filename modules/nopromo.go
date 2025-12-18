@@ -46,7 +46,7 @@ var promoPatterns = []struct {
 	// High priority patterns (25+ points = instant delete)
 	{regexp.MustCompile(`(?i)(stop\s*scrolling)`), 15},
 	{regexp.MustCompile(`(?i)(you'?ve\s*finally\s*found)`), 12},
-	
+
 	// Medium priority patterns (8-12 points)
 	{regexp.MustCompile(`(?i)(join\s*(now|us|today|right\s*now))`), 10},
 	{regexp.MustCompile(`(?i)(24\s*x?\s*7|24/7)\s*(active|chatting|vc|voice)`), 12},
@@ -63,10 +63,9 @@ var promoPatterns = []struct {
 	{regexp.MustCompile(`(?i)(looking\s*for\s*(a|the)\s*(best|right)?.*group)`), 8},
 	{regexp.MustCompile(`(?i)(welcome\s*to|join\s*our\s*channel)`), 8},
 	{regexp.MustCompile(`(?i)(group\s*owner|group\s*link)`), 7},
-	
-	{regexp.MustCompile(`(?i)(जय\s*श्री\s*राम).*(t\.me|join|group)`), 6},
- {regexp.MustCompile(`(?i)(सनातनी).*(group|channel|t\.me)`), 5},
 
+	{regexp.MustCompile(`(?i)(जय\s*श्री\s*राम).*(t\.me|join|group)`), 6},
+	{regexp.MustCompile(`(?i)(सनातनी).*(group|channel|t\.me)`), 5},
 }
 
 // Warning threshold (show warning but don't delete)
@@ -124,7 +123,7 @@ func NoPromoCmd(m *telegram.NewMessage) error {
 }
 
 func handlePromoMessages(m *telegram.NewMessage) error {
-	if !IsSupergroup(m) || m.IsReply(){
+	if !IsSupergroup(m) || m.IsReply() {
 		return nil
 	}
 
@@ -152,7 +151,7 @@ func handlePromoMessages(m *telegram.NewMessage) error {
 
 	// Calculate promo score
 	score := calculatePromoScore(m)
-	
+
 	if score < promoWarningThreshold {
 		return nil // Not promotional enough
 	}
@@ -186,14 +185,14 @@ func handlePromoMessages(m *telegram.NewMessage) error {
 func calculatePromoScore(m *telegram.NewMessage) int {
 	score := 0
 	text := m.Text()
-	
+
 	// Check against all patterns
 	for _, pattern := range promoPatterns {
 		if pattern.regex.MatchString(text) {
 			score += pattern.score
 		}
 	}
-	
+
 	// Count URLs using Telegram entities (proper way)
 	urlCount := 0
 	if m.Message.Entities != nil {
@@ -206,7 +205,7 @@ func calculatePromoScore(m *telegram.NewMessage) int {
 			}
 		}
 	}
-	
+
 	// Score based on URL count
 	if urlCount >= 5 {
 		score += 20 // Many URLs = likely spam
@@ -215,15 +214,15 @@ func calculatePromoScore(m *telegram.NewMessage) int {
 	} else if urlCount >= 2 {
 		score += 6
 	}
-	
+
 	// Long messages with multiple lines (likely promo)
 	lines := strings.Split(text, "\n")
-if len(lines) > 10 && len(text) > 500 && urlCount > 0 {
-    score += 10
-} else if len(lines) > 7 && len(text) > 300 && urlCount > 0 {
-    score += 6
-}
-	
+	if len(lines) > 10 && len(text) > 500 && urlCount > 0 {
+		score += 10
+	} else if len(lines) > 7 && len(text) > 300 && urlCount > 0 {
+		score += 6
+	}
+
 	// Proper emoji counting
 	emojiCount := countEmojis(text)
 	if emojiCount > 20 {
@@ -233,23 +232,22 @@ if len(lines) > 10 && len(text) > 500 && urlCount > 0 {
 	} else if emojiCount > 10 {
 		score += 5
 	}
-	
+
 	// ALL-CAPS spam detection
 	capsScore := detectAllCaps(text)
 	score += capsScore
-	
+
 	// Check for promotional structure (bullet points, formatting)
-	bulletCount := strings.Count(text, "•") + 
-				   strings.Count(text, "✨") + 
-				   strings.Count(text, "✅") 
-			
-	
+	bulletCount := strings.Count(text, "•") +
+		strings.Count(text, "✨") +
+		strings.Count(text, "✅")
+
 	if bulletCount > 8 {
 		score += 10
 	} else if bulletCount > 5 {
 		score += 6
 	}
-	
+
 	return score
 }
 
@@ -257,10 +255,10 @@ if len(lines) > 10 && len(text) > 500 && urlCount > 0 {
 func countEmojis(text string) int {
 	count := 0
 	inEmoji := false
-	
+
 	for _, r := range text {
 		isEmoji := isEmojiRune(r)
-		
+
 		if isEmoji && !inEmoji {
 			count++
 			inEmoji = true
@@ -268,21 +266,21 @@ func countEmojis(text string) int {
 			inEmoji = false
 		}
 	}
-	
+
 	return count
 }
 
 func isEmojiRune(r rune) bool {
 	// Emoji ranges
 	return (r >= 0x1F600 && r <= 0x1F64F) || // Emoticons
-		   (r >= 0x1F300 && r <= 0x1F5FF) || // Misc Symbols and Pictographs
-		   (r >= 0x1F680 && r <= 0x1F6FF) || // Transport and Map
-		   (r >= 0x1F1E0 && r <= 0x1F1FF) || // Regional indicators (flags)
-		   (r >= 0x2600 && r <= 0x26FF) ||   // Misc symbols
-		   (r >= 0x2700 && r <= 0x27BF) ||   // Dingbats
-		   (r >= 0xFE00 && r <= 0xFE0F) ||   // Variation Selectors
-		   (r >= 0x1F900 && r <= 0x1F9FF) || // Supplemental Symbols and Pictographs
-		   (r >= 0x1FA70 && r <= 0x1FAFF)    // Symbols and Pictographs Extended-A
+		(r >= 0x1F300 && r <= 0x1F5FF) || // Misc Symbols and Pictographs
+		(r >= 0x1F680 && r <= 0x1F6FF) || // Transport and Map
+		(r >= 0x1F1E0 && r <= 0x1F1FF) || // Regional indicators (flags)
+		(r >= 0x2600 && r <= 0x26FF) || // Misc symbols
+		(r >= 0x2700 && r <= 0x27BF) || // Dingbats
+		(r >= 0xFE00 && r <= 0xFE0F) || // Variation Selectors
+		(r >= 0x1F900 && r <= 0x1F9FF) || // Supplemental Symbols and Pictographs
+		(r >= 0x1FA70 && r <= 0x1FAFF) // Symbols and Pictographs Extended-A
 }
 
 // Detect excessive ALL-CAPS spam
@@ -290,11 +288,11 @@ func detectAllCaps(text string) int {
 	if len(text) < 50 {
 		return 0 // Too short to judge
 	}
-	
+
 	upperCount := 0
 	lowerCount := 0
 	letterCount := 0
-	
+
 	for _, r := range text {
 		if unicode.IsLetter(r) {
 			letterCount++
@@ -305,13 +303,13 @@ func detectAllCaps(text string) int {
 			}
 		}
 	}
-	
+
 	if letterCount == 0 {
 		return 0
 	}
-	
+
 	capsRatio := float64(upperCount) / float64(letterCount)
-	
+
 	// High caps ratio with significant text = spam
 	if capsRatio > 0.7 && letterCount > 50 {
 		return 12
@@ -320,6 +318,6 @@ func detectAllCaps(text string) int {
 	} else if capsRatio > 0.5 && letterCount > 50 {
 		return 5
 	}
-	
+
 	return 0
 }
