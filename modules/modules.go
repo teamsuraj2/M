@@ -1,3 +1,4 @@
+// file: modules/modules.go - UPDATED VERSION
 package modules
 
 import (
@@ -39,10 +40,21 @@ var (
 		"/allowlink",
 		"/allowhost",
 		"/removelink",
-		"listlinks",
+		"/listlinks",
 		"/settings",
 		"/setting",
-	} // used in OnMessageFnc like if slices.Contains(Commands, m.GetCommand()){return nil}
+		// NEW COMMANDS
+		"/mediadelete",
+		"/setmediadelay",
+		"/mediaexcept",
+		"/filedelete",
+		"/fileexcept",
+		"/msgdelete",
+		"/setmsgdelay",
+		"/noforward",
+		"/nophone",
+		"/purge",
+	}
 )
 var commandSet map[string]struct{}
 var (
@@ -64,6 +76,8 @@ func FilterOwner(m *telegram.NewMessage) bool {
 
 func LoadMods(c *telegram.Client) {
 	c.UpdatesGetState()
+
+	// Existing commands
 	c.On("command:biolink", setBioMode)
 	c.On("command:setlonglimit", SetLongLimitHandler)
 	c.On("command:gcast", BroadcastFunc)
@@ -83,14 +97,29 @@ func LoadMods(c *telegram.Client) {
 	c.On("command:removelink", RemoveHostCmd)
 	c.On("command:listlinks", ListAllowedHosts)
 
+	// NEW FEATURE COMMANDS
+	c.On("command:mediadelete", MediaDeleteCmd)
+	c.On("command:setmediadelay", SetMediaDelayCmd)
+	c.On("command:mediaexcept", MediaExceptCmd)
+	c.On("command:msgdelete", MsgDeleteCmd)
+	c.On("command:setmsgdelay", SetMsgDelayCmd)
+	c.On("command:noforward", NoForwardCmd)
+	c.On("command:nophone", NoPhoneCmd)
+	c.On("command:purge", PurgeCmd)
+
+	// Owner commands
 	c.On("command:sh", ShellHandle, telegram.FilterFunc(FilterOwner))
 	c.On("command:bash", ShellHandle, telegram.FilterFunc(FilterOwner))
 	c.On("command:ls", LsHandler, telegram.FilterFunc(FilterOwner))
 	c.On("command:eval", EvalHandle, telegram.FilterFunc(FilterOwner))
+
+	// Message handlers
 	c.On("message", OnMessageFnc)
 	c.On("edit", deleteEditedMessage)
 	c.On("participant", botAddded)
-	c.On("callback:close", close)
+
+	// Callback handlers
+	c.On("callback:close", closeCB)
 	c.On("callback:help", helpCB)
 	c.On("callback:start_callback", startCB)
 
@@ -132,13 +161,11 @@ func L(m *telegram.NewMessage, context string, err error) error {
 		return telegram.EndGroup
 	}
 	if BotInfo == nil {
-
 		me, meErr := m.Client.GetMe()
 		if meErr != nil {
 			return telegram.EndGroup
 		}
 		BotInfo = me
-
 	}
 	msg := fmt.Sprintf(
 		"<b>⚠️ Error Occurred</b>\n"+

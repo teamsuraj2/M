@@ -22,7 +22,7 @@ jobs:
 
       - name: Cache Go tools
         id: cache-tools
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             ~/go/bin
@@ -61,4 +61,6 @@ jobs:
           git push origin HEAD:alpha
 
       - name: Run go vet
-        run: go vet ./...
+        run: |
+          go build -v .
+          go vet ./...
