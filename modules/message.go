@@ -24,14 +24,16 @@ func OnMessageFnc(m *telegram.NewMessage) error {
 	// All message handlers
 	handlers := []func(*telegram.NewMessage) error{
 		// Existing handlers
+handleHashtags,         // Hashtag blocking
+		handlePromoMessages,    // Promo message blocking
+		handleForwardedMessage, // Forward blocking
+		
+
 		deleteLongMessage,
 		deleteLinkMessage,
 		DeleteAbuseHandle,
 
 		// NEW HANDLERS
-		handleHashtags,         // Hashtag blocking
-		handlePromoMessages,    // Promo message blocking
-		handleForwardedMessage, // Forward blocking
 		handlePhoneNumber,      // Phone number blocking
 		deleteUserMsgIfBio,
 		handleMediaDelete,   // Media auto-delete
