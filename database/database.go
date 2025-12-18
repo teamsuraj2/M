@@ -25,7 +25,7 @@ var (
 	nsfwFlagsDB *mongo.Collection
 
 	mediaDeleteDB, fileDeleteDB, msgDeleteDB *mongo.Collection
-	noForwardDB, noPhoneDB                   *mongo.Collection
+	noForwardDB, noPhoneDB,  noHashtagsDB, noPromoDB                    *mongo.Collection
 	timeout                                  = 11 * time.Second
 )
 
@@ -57,6 +57,8 @@ func init() {
 	msgDeleteDB = db.Collection("msg_delete")
 	noForwardDB = db.Collection("no_forward")
 	noPhoneDB = db.Collection("no_phone")
+	noHashtagsDB = db.Collection("no_hashtags")
+	noPromoDB = db.Collection("no_promo")
 
 	// Indexes
 
@@ -69,6 +71,8 @@ func init() {
 	CreateIndex(ctx, msgDeleteDB, bson.D{{Key: "chat_id", Value: 1}}, true)
 	CreateIndex(ctx, noForwardDB, bson.D{{Key: "chat_id", Value: 1}}, true)
 	CreateIndex(ctx, noPhoneDB, bson.D{{Key: "chat_id", Value: 1}}, true)
+	CreateIndex(ctx, noHashtagsDB, bson.D{{Key: "chat_id", Value: 1}}, true)
+	CreateIndex(ctx, noPromoDB, bson.D{{Key: "chat_id", Value: 1}}, true)
 }
 
 func Disconnect() {

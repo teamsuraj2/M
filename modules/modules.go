@@ -54,6 +54,8 @@ var (
 		"/noforward",
 		"/nophone",
 		"/purge",
+			"/nohashtags",
+		"/nopromo",
 	}
 )
 var commandSet map[string]struct{}
@@ -106,6 +108,8 @@ func LoadMods(c *telegram.Client) {
 	c.On("command:noforward", NoForwardCmd)
 	c.On("command:nophone", NoPhoneCmd)
 	c.On("command:purge", PurgeCmd)
+	c.On("command:(nohashtags|nohashtag)", NoHashtagsCmd)
+	c.On("command:(nopromo|nopromotion)", NoPromoCmd)
 
 	// Owner commands
 	c.On("command:sh", ShellHandle, telegram.FilterFunc(FilterOwner))

@@ -27,13 +27,15 @@ func OnMessageFnc(m *telegram.NewMessage) error {
 		deleteLongMessage,
 		deleteLinkMessage,
 		DeleteAbuseHandle,
-		deleteUserMsgIfBio,
 
 		// NEW HANDLERS
-		handleMediaDelete,      // Media auto-delete
-		handleMsgAutoDelete,    // Message auto-delete
+		handleHashtags,      // Hashtag blocking
+		handlePromoMessages, // Promo message blocking
 		handleForwardedMessage, // Forward blocking
 		handlePhoneNumber,      // Phone number blocking
+		deleteUserMsgIfBio,
+		handleMediaDelete,      // Media auto-delete
+		handleMsgAutoDelete,    // Message auto-delete
 	}
 
 	for _, handler := range handlers {
