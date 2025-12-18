@@ -38,7 +38,7 @@ func OnMessageFnc(m *telegram.NewMessage) error {
 
 	for _, handler := range handlers {
 		if err := handler(m); err != nil {
-			if errors.Is(err, telegram.EndGroup) {
+			if errors.Is(err, telegram.EndGroup) || telegram.MatchError(err, "MESSAGE_DELETE_FORBIDDEN"){
 				return telegram.EndGroup
 			}
 			return L(m, "Modules -> message -> Handler", err)
