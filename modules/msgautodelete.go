@@ -71,7 +71,7 @@ func MsgDeleteCmd(m *telegram.NewMessage) error {
 		return L(m, "Modules -> msgdelete -> SetMsgDeleteEnabled", err)
 	}
 
-	status := "💬 Message auto-delete enabled ✅\n🛡️ Admins are exempt from deletion"
+	status := "💬 Message auto-delete enabled ✅"
 	if !enable {
 		status = "🚫 Message auto-delete disabled ❌"
 	}
