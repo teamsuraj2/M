@@ -54,7 +54,7 @@ func init() {
 	LoggerId = Getenv("LOGGER_ID", "-1002867211623", parseToInt64)
 	MongoUri = Getenv[string]("MONGO_DB_URI", "mongodb+srv://marin:marin69@cluster0.zxaf7uc.mongodb.net/?retryWrites=true&w=majority", nil)
 	SupportChannel = Getenv[string]("SUPPORT_CHANNEL", "https://t.me/Team_Dns_Network", nil)
-	SupportChat = Getenv[string]("SUPPORT_CHAT", "https://t.me/dns_support_group", nil)
+	SupportChat = Getenv[string]("SUPPORT_CHAT", "https://t.me/dnsmusicupdate", nil)
 	WebAppUrl = Getenv[string]("WEB_APP_URL", "http://t.me/ViyomBot/settings", nil)
 
 	OwnerId = Getenv("OWNER_ID", "7706682472 5663483507", func(key string) []int64 {
