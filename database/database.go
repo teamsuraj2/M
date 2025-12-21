@@ -23,7 +23,10 @@ var (
 	linksDB     *mongo.Collection
 	bioLinkDB   *mongo.Collection
 	nsfwFlagsDB *mongo.Collection
-	timeout     = 11 * time.Second
+
+	mediaDeleteDB, fileDeleteDB, msgDeleteDB        *mongo.Collection
+	noForwardDB, noPhoneDB, noHashtagsDB, noPromoDB *mongo.Collection
+	timeout                                         = 11 * time.Second
 )
 
 func init() {
@@ -49,6 +52,13 @@ func init() {
 	linksDB = db.Collection("links")
 	bioLinkDB = db.Collection("biolinks")
 	nsfwFlagsDB = db.Collection("nsfw_flags")
+	mediaDeleteDB = db.Collection("media_delete")
+	fileDeleteDB = db.Collection("file_delete")
+	msgDeleteDB = db.Collection("msg_delete")
+	noForwardDB = db.Collection("no_forward")
+	noPhoneDB = db.Collection("no_phone")
+	noHashtagsDB = db.Collection("no_hashtags")
+	noPromoDB = db.Collection("no_promo")
 
 	// Indexes
 
@@ -56,6 +66,13 @@ func init() {
 	CreateIndex(ctx, echoDB, bson.D{{Key: "chat_id", Value: 1}}, true)
 	CreateIndex(ctx, linksDB, bson.D{{Key: "chat_id", Value: 1}}, true)
 	CreateIndex(ctx, loggerDB, bson.D{{Key: "enabled", Value: 1}}, false)
+	CreateIndex(ctx, mediaDeleteDB, bson.D{{Key: "chat_id", Value: 1}}, true)
+	CreateIndex(ctx, fileDeleteDB, bson.D{{Key: "chat_id", Value: 1}}, true)
+	CreateIndex(ctx, msgDeleteDB, bson.D{{Key: "chat_id", Value: 1}}, true)
+	CreateIndex(ctx, noForwardDB, bson.D{{Key: "chat_id", Value: 1}}, true)
+	CreateIndex(ctx, noPhoneDB, bson.D{{Key: "chat_id", Value: 1}}, true)
+	CreateIndex(ctx, noHashtagsDB, bson.D{{Key: "chat_id", Value: 1}}, true)
+	CreateIndex(ctx, noPromoDB, bson.D{{Key: "chat_id", Value: 1}}, true)
 }
 
 func Disconnect() {
