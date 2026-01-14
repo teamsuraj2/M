@@ -43,7 +43,7 @@ func init() {
 	apiId := Getenv("API_ID", "12380656", parseToInt64)
 	ApiId = int32(apiId)
 	ApiHash = Getenv[string]("API_HASH", "d927c13beaaf5110f25c505b7c071273", nil)
-	Token = Getenv[string]("TOKEN", "8050656956:AAGsJ8EniqZ1Bhe6F5xSelX08C43kzqboQI", nil)
+	Token = Getenv[string]("TOKEN", "8224265794:AAFaUVPwtcvvq8nI3V_ugG74zyZPtE_MkXo", nil)
 
 	StartImage = Getenv[string](
 		"START_IMG_GIF",
