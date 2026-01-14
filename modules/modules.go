@@ -102,7 +102,7 @@ func LoadMods(c *telegram.Client) {
 	// NEW FEATURE COMMANDS
 	c.On("command:mediadelete", MediaDeleteCmd)
 	c.On("command:setmediadelay", SetMediaDelayCmd)
-	c.On("command:mediaexcept", MediaExceptCmd)
+	//c.On("command:mediaexcept", MediaExceptCmd)
 	c.On("command:msgdelete", MsgDeleteCmd)
 	c.On("command:setmsgdelay", SetMsgDelayCmd)
 	c.On("command:noforward", NoForwardCmd)
